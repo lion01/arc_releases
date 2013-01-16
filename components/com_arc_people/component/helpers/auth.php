@@ -65,10 +65,12 @@ class ApothAuth_People
 	 */
 	function limitQuery($givenQuery, $limitOn, $inTable = false, $inCol = false, $uId = false, $actionId = false, $joinSlug = '~LIMITINGJOIN~' )
 	{
+//		dump( func_get_args(), 'limitQuery args' );
 		$db = &JFactory::getDBO();
 		$user = &ApotheosisLib::getUser( $uId );
 		
 		$tableName = ApotheosisLibAcl::getUserTable( 'people.people', $user->id );
+//		dump( $tableName, 'tableName' );
 		
 		switch( $limitOn ) {
 		case( 'people' ):

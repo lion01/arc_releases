@@ -63,7 +63,7 @@ else {
 	<div><span id="now_or_date" style="display:none">
 	<input type="radio" name="nowbox" value="now" checked="checked" /> Now<br />
 	<input type="radio" name="nowbox" value="at"/>At: </span>
-		<?php echo JHTML::_( 'arc.date', 'msg_date[date]', $date ); ?>
+		<?php echo JHTML::_( 'arc.dateField', 'msg_date[date]', $date ); ?>
 		<input type="text" id="msg_date[time]" name="msg_date[time]" value="<?php echo $time ?>" style="width: 4em;" /> (00:00 to 23:59)
 	</div>
 </div>

@@ -18,6 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class ApothFactory_Assessment_Assessment extends ApothFactory
 {
 	var $_access;
+	var $_date;
 	
 	/**
 	 * Constructs a new assessment factory object
@@ -51,6 +52,19 @@ class ApothFactory_Assessment_Assessment extends ApothFactory
 			ApotheosisLibAcl::getRoleId('group_ancestor_admin'),
 			ApotheosisLibAcl::getRoleId('group_ancestor_teacher')
 		);
+	}
+	
+	/**
+	 * To comply with automated saving of factories
+	 * we must explicitly sleep any class vars in child factories
+	 */
+	function __sleep()
+	{
+		$parentVars = parent::__sleep();
+		$myVars = array( '_access', '_date' );
+		$allVars = array_merge( $parentVars, $myVars );
+		
+		return $allVars;
 	}
 	
 	function initialise()
@@ -441,6 +455,7 @@ class ApothFactory_Assessment_Assessment extends ApothFactory
 		ApotheosisLibDbTmp::flush( $u->id );
 	}
 }
+
 
 /**
  * Assessment Object Assessment

@@ -26,6 +26,7 @@ class ReportControllerSubreport extends ReportController
 	{
 		$model = $this->getModel( 'subreport' );
 		$view = &$this->getView ( 'subreport', jRequest::getVar( 'format', 'html' ) );
+		$navModel = $this->getModel( 'nav' );
 		$navView = &$this->getView ( 'nav', 'html' );
 		
 		$activity = JRequest::getVar( 'activity', 'view');
@@ -33,13 +34,18 @@ class ReportControllerSubreport extends ReportController
 		
 		$model->setSubreport( JRequest::getVar( 'subreport', null ) );
 		
-		$fCrumbs = ApothFactory::_( 'core.breadcrumb', $this->getVar( 'fCrumbs' ) );
-		$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Individual Report', array( 'action'=>'apoth_report_'.$this->get( 'Activity' ).'_subreport' ) );
-		$this->saveVar( 'fCrumbs', $fCrumbs, ApothFactory::getIncFile( 'core.breadcrumb' ) );
+		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
+		$crumb = $fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Individual Report', ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_'.$this->get( 'Activity' ).'_subreport' ) );
+		$fCrumbs->curtailTrail( ARC_REPORT_CRUMB_TRAIL, $crumb->getId() );
 		
-		$navView->display();
+		$view->nav = &$navView;
 		$view->setModel( $model, true );
 		$view->display();
+		$this->saveModel( 'nav' );
 	}
 	
 	function showmore()
@@ -64,23 +70,28 @@ class ReportControllerSubreport extends ReportController
 //		var_dump( $_POST );
 		$model = $this->getModel( 'subreport' );
 		
-		$ok = $model->setSubreport( JRequest::getVar( 'subreport', null ) );
+		$subreportId = JRequest::getVar( 'subreport', null );
+		$ok = $model->setSubreport( $subreportId );
 		
 		if( $ok ) {
-			$data = array();
-			$raw = JRequest::get( 'post');
-			foreach( $raw as $k=>$v ) {
-				$matches = array();
-				if( preg_match( '~^f_(.*)$~', $k, $matches ) ) {
-					$data[$matches[1]] = $v;
+			$canEdit = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$subreportId, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_INCOMPLETE ) );
+			
+			if( $canEdit ) {
+				$data = array();
+				$raw = JRequest::get( 'post');
+				foreach( $raw as $k=>$v ) {
+					$matches = array();
+					if( preg_match( '~^f_(.*)$~', $k, $matches ) ) {
+						$data[$matches[1]] = $v;
+					}
+					
 				}
 				
+				$model->updateSubreport( $data );
 			}
 			
-			$model->updateSubreport( $data );
-			
 			if( JRequest::getVar( 'commit' ) ) {
-				$ok = $model->saveSubreport( JRequest::getVar( 'status', ARC_REPORT_STATUS_NASCENT ) );
+				$ok = $model->saveSubreport( JRequest::getVar( 'status', ARC_REPORT_STATUS_NASCENT ), null );
 			}
 			
 			echo ( $ok ? 'saved' : 'failed' );

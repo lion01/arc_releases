@@ -26,7 +26,7 @@ class MessageModelHub extends JModel
 		parent::__construct();
 		$this->fTags = ApothFactory::_( 'message.Tag', $this->fTags );
 		$this->fMsg = ApothFactory::_( 'message.Message', $this->fMsg );
-		$this->fThread = ApothFactory::_( 'message.Thread', $this->fThread );
+		$this->fThread = ApothFactory::_( 'message.thread', $this->fThread );
 		$this->threadPager = ApothPagination::_( 'message.thread', $this->threadPager );
 		
 		$f = reset( $this->fTags->getInstances( array('category'=>'folder', 'label'=>'searched', 'folder'=>null) ) );
@@ -38,9 +38,28 @@ class MessageModelHub extends JModel
 	{
 		$this->fTags = ApothFactory::_( 'message.Tag', $this->fTags );
 		$this->fMsg = ApothFactory::_( 'message.Message', $this->fMsg );
-		$this->fThread = ApothFactory::_( 'message.Thread', $this->fThread );
+		$this->fThread = ApothFactory::_( 'message.thread' );
 		$this->threadPager = ApothPagination::_( 'message.thread', $this->threadPager );
+		
+		// re-link model threads with those in factory
+		if( is_array( $this->threads ) ) {
+			foreach( $this->threads as $threadId=>$thread ) {
+				unset( $this->threads[$threadId] );
+				$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
+			}
+		}
 		unset( $this->curThread );
+	}
+	
+	/**
+	 * Counter the main controller a little as the thread factory must be saved
+	 * in the general factory store in order that it be available for the paginator
+	 */
+	function __sleep()
+	{
+		$this->fThread->_doNotPersist = false;
+		unset( $this->fThread );
+		return array_keys( get_object_vars( $this ) );
 	}
 	
 	function setDate()
@@ -92,10 +111,8 @@ class MessageModelHub extends JModel
 			}
 			$tmp = $this->threadPager->getPagedInstances();
 			
-			foreach( $tmp as $k=>$v ) {
-				$tmp2 = $this->fThread->getInstance( $v );
-				$this->threads[$tmp2->getId()] = $tmp2;
-				unset( $tmp2 );
+			foreach( $tmp as $threadId ) {
+				$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
 			}
 		}
 		unset( $this->curThread );

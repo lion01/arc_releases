@@ -46,7 +46,10 @@ class ApotheosisData_Assessment extends ApotheosisData
 	
 	function prepare( $aspId = null, $pId = null, $gId = null, $validFrom = null, $validTo = null, $limPeople = null, $limGroups = null, $restrict = true )
 	{
-//		var_dump_pre( func_get_args(), 'args for prepare' );
+//		global $doDump;
+//		if( $doDump ) { dump( 'preparing aspects' ); }
+//		if( $doDump ) { dump( func_get_args(), 'args for prepare' ); }
+		
 		$this->fAss = &ApothFactory::_( 'assessment.assessment' );
 		$this->fAsp = &ApothFactory::_( 'assessment.aspect' );
 		
@@ -73,8 +76,8 @@ class ApotheosisData_Assessment extends ApotheosisData
 		$e = ApotheosisData::_( 'timetable.studentEnrolments', $requirements, $limPeople, $limGroups );
 		$this->_enrolments = ApotheosisData::_( 'timetable.enrolmentHistory', $e, $requirements['valid_from'], $requirements['valid_to'] );
 		
-//		var_dump_pre( $e, 'e' );
-//		var_dump_pre( $this->_enrolments, 'enrolments' );
+//		if( $doDump ) { dump( $e, 'e' ); }
+//		if( $doDump ) { dump( $this->_enrolments, 'enrolments' ); }
 		$groups = array();
 		foreach( $this->_enrolments as $pId=>$cur ) {
 			foreach( $cur as $curId=>$hGroups ) {
@@ -87,6 +90,7 @@ class ApotheosisData_Assessment extends ApotheosisData
 		// then that lets us know what group assignments we want in our assessments
 		$requirements['groups'] = $groups;
 		$this->_assessments = &$this->fAss->getInstances( $requirements );
+//		if( $doDump ) { dump( $this->_assessments, 'assessments' ); }
 		
 		$aspEnrolments = array();
 		foreach( $this->_assessments as $aId ) {
@@ -135,6 +139,8 @@ class ApotheosisData_Assessment extends ApotheosisData
 		}
 		
 		$this->fAsp->loadAspectData( $aspEnrolments );
+//		if( $doDump ) { dump( $this->fAsp->_instances, 'loaded aspects' ); }
+//		if( $doDump ) { dump( 'preparing aspects' ); }
 	}
 }
 ?>

@@ -1,0 +1,52 @@
+@CHARSET "ISO-8859-1";
+
+#arc_nav {
+	padding-right: 5px;
+	text-align: center;
+}
+
+#arc_nav ul li {
+	display: block;
+	height: 95px;
+	width: 100%;
+	border: 1px solid grey;
+}
+
+#arc_main_narrow {
+	margin-left: 130px;
+}
+
+#arc_nav li {
+	overflow: hidden;
+}
+#arc_nav a {
+	color: #4b4b4b;
+}
+#arc_nav .current a {
+	color: #00b81c;
+}
+#arc_nav a:hover {
+	text-decoration: none;
+}
+.inline_icon {
+	line-height: 20px;
+}
+.inline_icon:before {
+	font-size: 50px;
+	line-height: 15px;
+}
+.menu_icon {
+	line-height: 80px;
+}
+.menu_icon:before {
+	font-size: 150px;
+	line-height: 45px;
+}
+.menu_icon:before,
+.inline_icon:before {
+	font-family: "EntypoRegular";
+}
+#nav_wc:before    { content: "& "; }
+#nav_over:before  { content: ", "; }
+#nav_print:before { content: "< "; }
+#nav_admin:before { content: "@ "; }

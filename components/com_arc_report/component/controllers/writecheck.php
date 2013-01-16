@@ -30,21 +30,26 @@ class ReportControllerWritecheck extends ReportController
 	{
 		$model = $this->getModel( 'writecheck' );
 		$view = &$this->getView ( 'writecheck', 'html' );
+		$navModel = $this->getModel( 'nav' );
 		$navView = &$this->getView ( 'nav', 'html' );
 		
-		$fCrumbs = ApothFactory::_( 'core.breadcrumb', $this->getVar( 'fCrumbs' ) );
-		$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Write & Check', array( 'action'=>'apoth_report_writecheck' ) );
-		$this->saveVar( 'fCrumbs', $fCrumbs, ApothFactory::getIncFile( 'core.breadcrumb' ) );
+		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
+		$crumb = $fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Write & Check', ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_writecheck' ) );
+		$fCrumbs->curtailTrail( ARC_REPORT_CRUMB_TRAIL, $crumb->getId() );
 		
 		$model->setCycles();
 		$model->setWriteProgress();
 		$model->setCheckProgress();
 		
-		$navView->display();
+		$view->nav = &$navView;
 		$view->setModel( $model, true );
 		$view->display();
 		
-//		$this->saveModel();
+		$this->saveModel( 'nav' );
 	}
 }
 ?>

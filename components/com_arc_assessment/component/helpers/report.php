@@ -24,19 +24,28 @@ class ApothReportField_Assessment_Mark extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+//		global $doDump;
+//		$doDump = ( $this->_id == 114 );
+//		if( $doDump ) { dump( $this, 'field 114 object' ); }
 		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
-		$aspId = $this->_config['aspId'];
-		$pId = $this->_rptData[$this->_core['lookup_source']];
-		$gId = null;
-		
-		ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, null, $this->_config['from'], $this->_config['to'], null, null, false );
 		if( is_null( $value ) ) {
-			$m = JHTML::_( 'arc_assessment.mark', $aspId, $pId, $gId );
+			$aspIds = $this->_config['aspIds'];
+			$pId = $this->_rptData[$this->_core['lookup_source']];
+			$gId = ApotheosisData::_( 'report.lookupGroup', $this->_rptData['rpt_group_id'] );
+			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, $gId, $this->_config['from'], $this->_config['to'], null, false, false );
+			
+			foreach( $aspIds as $aspId ) {
+				$m = JHTML::_( 'arc_assessment.mark', $aspId, $pId, $gId );
+				if( $m['hasMark'] ) {
+					break;
+				}
+			}
+			$m = $m['html'];
 		}
 		else {
 			$m = htmlspecialchars( $value );
 		}
-		$m .= '(needs proper asp, pupil, group vals)';
+//		$doDump = false;
 		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
 	}
@@ -58,7 +67,7 @@ class ApothReportField_Assessment_MarkAverage extends ApothReportField
 		if( is_null( $value ) ) {
 			$aspIds = $this->_config['aspIds'];
 			$pId = $this->_rptData[$this->_core['lookup_source']];
-			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, null, $this->_config['from'], $this->_config['to'], null, null, false );
+			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, null, $this->_config['from'], $this->_config['to'], null, false, false );
 			
 			$m = JHTML::_( 'arc_assessment.markAverage', $aspIds, $pId, 'pupil' );
 			$m = $m['html'];
@@ -130,7 +139,7 @@ class ApothReportField_Assessment_MarkSummary extends ApothReportField
 				}
 			}
 		}
-		ApotheosisData::_( 'assessment.prepare', $asps, $pId, $groups, $this->_config['from'], $this->_config['to'], null, null, false );
+		ApotheosisData::_( 'assessment.prepare', $asps, $pId, $groups, $this->_config['from'], $this->_config['to'], null, false, false );
 		
 		// With the groups and aspects worked out, it's time to generate the data table
 		$html = '<table class="data">';

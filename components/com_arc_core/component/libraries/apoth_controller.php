@@ -25,26 +25,56 @@ jimport( 'joomla.application.helper' );
  */
 class ApothController extends JController
 {
+	/**
+	 * The current browsing session
+	 *
+	 * @var object
+	 */
 	var $_session;
-	var $_models;
-	var $_modelName;
-	var $_cycle;
-	var $_links; // store of links retrieved so far
 	
 	/**
-	 * Creates the controller (of course), and initialises all saved inclusion files
+	 * Array of inclusion files for management in and out of the session
+	 *
+	 * @var array
+	 */
+	var $_incFiles = array();
+	
+	/**
+	 * Array of model objects for management in and out of the session
+	 * Keyed on model name
+	 *
+	 * @var array
+	 */
+	var $_models = array();
+	
+	/**
+	 * Array of model type strings
+	 * Keyed on model name
+	 *
+	 * @var array
+	 */
+	var $_modelTypes = array();
+	
+	/**
+	 * The name of the model currently being managed
+	 *
+	 * @var string
+	 */
+	var $_modelName;
+	
+	/**
+	 * Creates the controller and initialises all saved inclusion files
 	 */
 	function __construct( $config = array() )
 	{
-		JHTML::_('behavior.mootools'); 
-		JHTML::_('behavior.modal'); 
+		// ### Security
 		
-		// Ensure we've checked access with our plugin, and that all is good there
-		// if it's not, redirect to somewhere safe
-		if( !defined( '_ARC_ACL' ) || _ARC_ACL !== true ){
+		// Ensure we've checked access with our plugin, and that all is good there.
+		// If it's not, redirect to somewhere safe.
+		if( !defined('_ARC_ACL') || (_ARC_ACL !== true) ) {
 			global $mainframe;
-			$ref = ( isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null );
-			$rObj = JURI::getInstance($ref);
+			$ref = ( isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null );
+			$rObj = JURI::getInstance( $ref );
 			$cObj = JURI::getInstance();
 			
 			$target = ( (!JURI::isInternal($ref) || ($rObj->toString() == $cObj->toString())) ? 'index.php' : $ref );
@@ -52,17 +82,26 @@ class ApothController extends JController
 			$mainframe->redirect( $target );
 		}
 		
+		
+		// ### Construction
+		
+		// With security done we can get on with constructing the controller
 		parent::__construct( $config );
 		$this->_session = &JSession::getInstance( 'none', array() );
 		$this->_incFiles = $this->_session->get( 'incFiles', array() );
 		
+		// Ensure mootools library and modal (interstitial) behaviors are present by default
+		JHTML::_('behavior.mootools');
+		JHTML::_('behavior.modal'); 
 		
-		// Handle data to be set up prior to page load
+		
+		// ### Handle data to be set up prior to page load
 		
 		// 1) Passthrough is used by the search forms.
-		//     If we have new data that needs to be saved
-		//     Otherwise, previously saved data needs to be retrieved 
+		//    If we have new data that needs to be saved, save it
+		//    Otherwise, previously saved data needs to be retrieved 
 		$pt = false;
+		
 		// if either post or get has the passthrough flag, use that data for passthrough
 		$post = JRequest::get( 'post' );
 		if( isset($post['passthrough']) ) {
@@ -74,6 +113,7 @@ class ApothController extends JController
 				$pt = $get;
 			}
 		}
+		
 		// new passthrough data is to be cleaned of system variables then saved under 'search'
 		if( is_array($pt) ) {
 			unset( $pt['option'] );
@@ -83,8 +123,8 @@ class ApothController extends JController
 			unset( $pt['Itemid'] );
 			$this->saveVar( 'search', $pt, null, 'passthrough' );
 		}
-		// previous data is to be retrieved 
-		// and set as the post data, not overwriting existing matching vars
+		// previous data is to be retrieved and set as the post data,
+		// not overwriting existing matching vars
 		else {
 			$pt = $this->getVar( 'search', 'passthrough' );
 			if( !is_null($pt) ) {
@@ -101,6 +141,9 @@ class ApothController extends JController
 		$this->deleteVar( 'request', 'preLoad' );
 	}
 	
+	
+	// ### General controller methods
+	
 	/**
 	 * Default method
 	 * Clears all session variables
@@ -109,53 +152,79 @@ class ApothController extends JController
 	 */
 	function display()
 	{
-		echo '<h3>To use the system, select one of the items from the dropdown menus</h3>';
-		echo '<h4>Clearing cached data...</h4>';
-		foreach( $this->_incFiles as $varName=>$v ) {
-			$this->_session->clear( $varName );
-			echo $varName.'<br />';
+		// output clearance messages whilst nuking all the vars
+		echo '<b>To use the system, select one of the items from the dropdown menus</b><br /><br />';
+		echo 'Clearing cached data...<br /><br />';
+		
+		$output = array();
+		foreach( $this->_incFiles as $varType=>$varNames ) {
+			ob_start();
+			$varType = ( $varType == 'factory' ) ? 'factorie' : $varType;
+			echo '&nbsp;&nbsp;&nbsp;<i><b>'.$varType.'s:</b></i><br />';
+			foreach( $varNames as $varName=>$incFiles ) {
+				$this->_session->clear( $varName );
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$varName.'<br />';
+			}
+			$output[] = ob_get_clean();
 		}
+		$output = implode( '<br />', $output );
+		
+		echo $output;
+		echo '<br />...all cached data cleared.';
+		
+		// clear any persistence set in any current factories
+		ApothFactory::clearPersistentFactories();
+		
+		// clear the session of incFiles
 		$this->_incFiles = array();
 		$this->_session->clear( 'incFiles' );
-		echo '<h4>...all cached data cleared </h4>';
 	}
 	
 	/**
-	 * Retrieves the already created model object if there is one
-	 * Initialises this->_session in the process
+	 * Retrieves the specified saved model object if there is one
 	 * 
-	 * @param string $type The type of the requested model, also default name
-	 * @param array $config Configuration parameters (optional)
-	 * @param string $name The model name instead of default taken from $type (optional)
-	 * @return object The requested model
+	 * @param string $type  The type of the requested model, also default name
+	 * @param array $config  Configuration parameters (optional)
+	 * @param string $name  The model name instead of default taken from $type (optional)
+	 * @return object  The requested model
 	 */
 	function &getModel( $type, $config = array(), $name = false )
 	{
 		if( !is_array($config) ) {$config = array();}
-		$this->_modelName = ( $name != false ? $name : $type );
+		$this->_modelName = ( $name != false ) ? $name : $type ;
 		
+		// if the model we want hasn't been initialised then try to do so now
 		if( empty($this->_models) || (!array_key_exists($this->_modelName, $this->_models)) ) {
-			$ses_model = $this->getVar( $this->_modelName, 'model' );
+			$sesModel = &$this->getVar( $this->_modelName, 'model' );
 			
-			if ( !is_null($ses_model) ) {
-//				echo 'using existing model (type: '.$type.', name: '.$this->_modelName.')<br />';
-				$this->_models[$this->_modelName] = $ses_model;
+			if ( !is_null($sesModel) ) {
+				$this->_models[$this->_modelName] = &$sesModel;
+				
+				// *** ApothModel hack
+				// *** this check can be dropped once all models inherit ApothModel
+				// *** at that point we can just auto delete models from the session
+				// this model inherits from ApothModel and therefore uses persistence
+				// then it is now safe to delete the serialised version
+				if( is_a($sesModel, 'ApothModel') ) {
+					$this->deleteModel( $this->_modelName );
+				}
 			}
 			else {
-//				echo 'using new model (type: '.$type.', name: '.$this->_modelName.')<br />';
 				$this->_models[$this->_modelName] = &parent::getModel( $type, '', $config );
 			}
+			
 			$this->_modelTypes[$this->_modelName] = $type;
 		}
-		// if we've already initialised the model, don't over-write it, just return it
+		
+		// return the model which may have already existed or just been initialised
 		return $this->_models[$this->_modelName];
 	}
 	
 	/**
 	 * Saves the current model to the session for later retrieval
 	 * 
-	 * @param string $name The name of the model (optional)
-	 * @param array $incFiles An optional array of files to be included in future page loads, for example the class definition file for an object (optional)
+	 * @param string $name  The name of the model (optional)
+	 * @param array $incFiles  An optional array of files to be included in future page loads, for example the class definition file for an object (optional)
 	 */
 	function saveModel( $name = false, $incFiles = array() )
 	{
@@ -166,10 +235,31 @@ class ApothController extends JController
 		$incFiles[] = $this->_getClassDefFile( $type );
 		
 		if( method_exists($this->_models[$name], 'getIncFiles') ) {
-			$incFiles = array_merge( $incFiles, $this->_models[$name]->getIncFiles(), ApothFactory::getIncFiles() );
+			$incFiles = array_merge( $incFiles, $this->_models[$name]->getIncFiles() );
 		}
-		else {
-			$incFiles = array_merge( $incFiles, ApothFactory::getIncFiles() );
+		
+		// *** ApothModel hack
+		// *** we won't need to do this once all models inherit apothmodel
+		// *** and set their own persistence for factory vars
+		if( !is_a($this->_models[$name], 'ApothModel') ) {
+			// we do not inherit apoth model so go through all vars and set all factory optional vars to persist
+			foreach( $this->_models[$name] as $modelVarName=>$modelVar ) {
+				if( is_a($modelVar, 'ApothFactory') ) {
+					
+					// persist all possible factory vars
+					$this->_models[$name]->$modelVarName->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+					$this->_models[$name]->$modelVarName->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+					$this->_models[$name]->$modelVarName->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+					$this->_models[$name]->$modelVarName->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
+					
+					// make sure this factory isn't saved in the session
+					// as it will be saved in the relevant model as it always was
+					$this->_models[$name]->$modelVarName->_doNotPersist = true;
+					
+					// make sure factory inc files get saved
+					$incFiles = array_merge( $incFiles, $modelVar->getIncFiles() );
+				}
+			}
 		}
 		
 		$this->saveVar( $name, $this->_models[$name], $incFiles, 'model' );
@@ -178,7 +268,7 @@ class ApothController extends JController
 	/**
 	 * Deletes the current model from the session
 	 * 
-	 * @param string $name The name of the model (optional)
+	 * @param string $name  The name of the model (optional)
 	 */
 	function deleteModel( $name = false )
 	{
@@ -192,8 +282,8 @@ class ApothController extends JController
 	/**
 	 * Finds the file containing the model class definition
 	 * 
-	 * @param string $name The name of the model
-	 * @return string $file The file with full path
+	 * @param string $name  The name of the model
+	 * @return string $file  The file with full path
 	 */
 	function _getClassDefFile( $name )
 	{
@@ -210,22 +300,22 @@ class ApothController extends JController
 	/**
 	 * Retrieves a variable from the session, any associated files are also retrieved and required
 	 * 
-	 * @param string $name The name of the variable
-	 * @param string $type The type of variable (optional)
-	 * @return object The requested session variable
+	 * @param string $name  The name of the variable
+	 * @param string $type  The type of variable (optional)
+	 * @return object  The requested session variable
 	 */
 	function getVar( $name, $type = 'var' )
 	{
-		$varName = $this->_getVarName( $name, $type );
+		$varName = $this->getVarName( $name, $type );
 		
-		if( isset($this->_incFiles[$varName]) ) {
-			if( is_array($this->_incFiles[$varName]) ) {
-				foreach( $this->_incFiles[$varName] as $k=>$file ) {
+		if( isset($this->_incFiles[$type][$varName]) ) {
+			if( is_array($this->_incFiles[$type][$varName]) ) {
+				foreach( $this->_incFiles[$type][$varName] as $file ) {
 					require_once( $file );
 				}
 			}
-			elseif( !is_null($this->_incFiles[$varName]) ) {
-				require_once( $this->_incFiles[$varName] );
+			elseif( !is_null($this->_incFiles[$type][$varName]) ) {
+				require_once( $this->_incFiles[$type][$varName] );
 			}
 		}
 		
@@ -236,19 +326,19 @@ class ApothController extends JController
 	 * Saves a variable and any associated required files in the session
 	 * 
 	 * @param string $name The name which will be used to retrieve this variable later
-	 * @param mixed $var The value to be saved
-	 * @param mixed $incFiles An optional file or array of files to be included in future page loads, for example the class definition file for an object (optional)
-	 * @param string $type The type of variable to save (optional)
+	 * @param mixed $var  The value to be saved
+	 * @param mixed $incFiles  An optional file or array of files to be included in future page loads, for example the class definition file for an object (optional)
+	 * @param string $type  The type of variable to save (optional)
 	 */
 	function saveVar( $name, $var, $incFiles = null, $type = 'var' )
 	{
-		$varName = $this->_getVarName( $name, $type );
+		$varName = $this->getVarName( $name, $type );
 		
 		if( is_array($incFiles) ) {
 			$incFiles = array_unique( $incFiles );
 		}
 		
-		$this->_incFiles[$varName] = $incFiles;
+		$this->_incFiles[$type][$varName] = $incFiles;
 		$this->_session->set( 'incFiles', $this->_incFiles );
 		$this->_session->set( $varName, serialize($var) );
 	}
@@ -256,15 +346,21 @@ class ApothController extends JController
 	/**
 	 * Deletes a variable and any associated required files from the session
 	 * 
-	 * @param string $name The name identifier of the saved model
-	 * @param string $type The type of variable to delete (optional)
+	 * @param string $name  The name identifier of the saved model
+	 * @param string $type  The type of variable to delete (optional)
 	 */
 	function deleteVar( $name, $type = 'var' )
 	{
-		$varName = $this->_getVarName( $name, $type );
+		$varName = $this->getVarName( $name, $type );
 		
-		if( is_array($this->_incFiles) && array_key_exists($varName, $this->_incFiles) ) {
-			unset( $this->_incFiles[$varName] );
+		if( isset( $this->_incFiles[$type] ) && is_array($this->_incFiles[$type]) && array_key_exists($varName, $this->_incFiles[$type]) ) {
+			// unset the specified vars incFiles
+			unset( $this->_incFiles[$type][$varName] );
+			
+			// if all the incFiles for the specified type have been unset, then unset the type array also
+			if( empty($this->_incFiles[$type]) ) {
+				unset( $this->_incFiles[$type] );
+			}
 		}
 		
 		$this->_session->set( 'incFiles', $this->_incFiles );
@@ -274,37 +370,120 @@ class ApothController extends JController
 	/**
 	 * Determines the name of the session variable
 	 * 
-	 * @param string $name The passed name of the variable
-	 * @return string $varName The session var name based on component, var type and passed name
+	 * @param string $name  The passed name of the variable
+	 * @return string $varName  The session var name based on component, var type and passed name
 	 */
-	function _getVarName( $name, $type )
+	function getVarName( $name, $type )
 	{
-		$component = JRequest::getVar( 'option' );
 		if( $type == 'passthrough' ) {
 			$varName = $type.'.'.$name;
 		}
+		elseif( $type == 'factory' ) {
+			$identParts = explode( '.', $name );
+			$varName = 'com_arc_'.$identParts[0].'.'.$type.'.'.$identParts[1];
+		}
 		else {
+			$component = JRequest::getVar( 'option' );
 			$varName = $component.'.'.$type.'.'.$name;
 		}
 		
 		return $varName;
 	}
 	
+	/**
+	 * Convenience function to allow legacy components to get their links
+	 * using updated methodologies
+	 * 
+	 * @param array|false $requirements  Array of requiremts for the link or false
+	 * @param array $dependancies  Array of dependencies for the link
+	 * @return string $link  The link determined from requirements and dependencies
+	 */
 	function _getLink( $requirements = false, $dependancies = array() )
 	{
 		// as this is a convenience function to wrap around getActionId
 		// we'll fill in current values for option and view
 		if( $requirements !== false ) {
-			if( !array_key_exists('option', $requirements) && ($val = JRequest::getVar('option', false)) !== false ) {
+			if( !array_key_exists('option', $requirements) && (($val = JRequest::getVar('option', false)) !== false) ) {
 				$requirements['option'] = $val;
 			}
-			if( !array_key_exists('view',   $requirements) && ($val = JRequest::getVar('view',   false)) !== false ) {
+			if( !array_key_exists('view',   $requirements) && (($val = JRequest::getVar('view',   false)) !== false) ) {
 				$requirements['view'] = $val;
 			}
 		}
 		$actionId = ApotheosisLib::getActionId( $requirements, $dependancies );
 		$link = ApotheosisLib::getActionLink( $actionId, $dependancies );
+		
 		return $link;
+	}
+	
+	/**
+	 * Intercept the component entry point call to JController->execute().
+	 * We passthrough the name of the derived task.
+	 * Check to see if any models have persistence set and if so save those models.
+	 * Tell ApothFactory to save any factories needing persistence.
+	 * 
+	 * @see JController::execute()
+	 * @param string $task  The task passed through from the child entry point controller
+	 */
+	function execute( $task )
+	{
+		// pass the derived task through from the component entry point
+		parent::execute( $task );
+		
+		$this->_savePersistent();
+	}
+	
+	function _savePersistent()
+	{
+		// after page has finished loading we perform persistence checks on all models,
+		// loop through each of the models associated with this MVC
+		foreach( $this->_models as $name=>$model ) {
+			// *** ApothModel hack
+			// *** the first if() check can be dropped once all models inherit ApothModel
+			// *** at that point we can just call hasPersistent() automatically
+			// does this model inherit from ApothModel
+			if( is_a($model, 'ApothModel') ) {
+				// do we have any vars to sleep?
+				if( $this->_models[$name]->hasPersistent() ) {
+					$this->saveModel( $name );
+				}
+			}
+		}
+		
+		// instruct ApothFactory to save its persistent factories
+		ApothFactory::savePersistentFactories();
+	}
+	
+	/**
+	 * Provides a wrapper for $mainframe call to redirect()
+	 * Directly calling $mainframe->redirect skips the saving that execute performs
+	 * All parameters to this function are as for redirect
+	 * 
+	 * @param $url
+	 * @param $msg
+	 * @param $msgType
+	 * @param $moved
+	 */
+	function saveAndRedirect( $url, $msg='', $msgType='message', $moved = false )
+	{
+		$this->_savePersistent();
+		global $mainframe;
+		$mainframe->redirect( $url, $msg, $msgType, $moved );
+	}
+	
+	/**
+	 * Provides a wrapper for $mainframe call to enqueueMessage().
+	 * Since JController->setMessage() cannot set a message type
+	 * we need to use JApplication->enqueueMessage() and wrapping it here
+	 * means no call to $mainframe in the child controllers
+	 * 
+	 * @param string $msg  The message to enqueue
+	 * @param string $type  The message type
+	 */
+	function enqueueMessage( $msg, $type = 'message' )
+	{
+		global $mainframe;
+		$mainframe->enqueueMessage( $msg, $type );
 	}
 }
 ?>

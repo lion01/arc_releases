@@ -1,5 +1,6 @@
 var loadingMore = false;
 var allScripts = new Array();
+var loadMoreXHR;
 
 /**
  * Set up listeners and Load in the first page of data
@@ -14,6 +15,9 @@ window.addEvent( 'domready', function() {
 });
 
 window.addEvent( 'subreportsLoaded', injectScripts );
+window.addEvent( 'arcFilterChange', cancelLoadMore );
+window.addEvent( 'arcFilterChange', hideAll );
+window.addEvent( 'arcSearchChange', reloadSome );
 
 /**
  * Scroll event handler
@@ -26,6 +30,14 @@ function onScrollCheck() {
 	}
 }
 
+function cancelLoadMore()
+{
+	// stuff's changing, so stop any now-obsolete xhr requests
+	if( (typeof( loadMoreXHR ) == 'object') && loadMoreXHR.running ) {
+		loadMoreXHR.cancel();
+	}
+}
+
 /**
  * Load in the next page of subreports
  */
@@ -35,7 +47,7 @@ function loadMore()
 		loadingMore = true;
 		$( 'list_loader' ).setStyle( 'display', 'block' );
 		
-		new Ajax( $( 'ajax_page_url' ).value, {
+		loadMoreXHR = new Ajax( $( 'ajax_page_url' ).value, {
 			'method':'get',
 			'onSuccess': function() {
 				try{
@@ -66,7 +78,8 @@ function loadMore()
 				$( 'list_error' ).setStyle( 'display', 'block' );
 				$( 'list_loader' ).setStyle( 'display', 'none' );
 			}
-		} ).request();
+		} );
+		loadMoreXHR.request();
 	}
 }
 
@@ -112,4 +125,30 @@ function injectScripts()
 		}
 	} );
 	el.remove();
+}
+
+
+/**
+ * Re-sets the search terms to those currently in the filters
+ * and loads resultant reports in place of the current displayed set
+ */
+function hideAll()
+{
+	// load newly filtered subreports
+	$( 'list_container' ).empty();
+	$( 'list_footer' ).setStyle( 'display', 'none' );
+}
+
+/**
+ * Re-sets the search terms to those currently in the filters
+ * and loads resultant reports in place of the current displayed set
+ */
+function reloadSome()
+{
+	// load newly filtered subreports
+	_resetPageId( $( 'ajax_page_url' ) );
+	$( 'list_container' ).empty();
+	$( 'list_footer' ).setStyle( 'display', 'none' );
+	loadingMore = false;
+	loadMore();
 }

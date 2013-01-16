@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Arc
- * @subpackage  API
+ * @subpackage  Report
  * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
  * Arc is free software: you can redistribute it and/or modify
@@ -12,8 +12,32 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+jimport( 'joomla.application.component.view' );
+
 /**
- * This file provides simple pathing access to all object files
+ * Report View Home
+ *
+ * @author     Punnet - Arc Team <arc_developers@pun.net>
+ * @package    Arc
+ * @subpackage Report
+ * @since      1.8
  */
-require_once( JPATH_SITE.DS.'components'.DS.'com_arc_api'.DS.'models'.DS.'object_consumer.php' );
+class ReportViewNav extends JView
+{
+	function __construct( $config = array() )
+	{
+		parent::__construct( $config );
+		$this->setLayout( 'json' );
+	}
+	
+	function displayFilterList()
+	{
+		parent::display( 'filterlist' );
+	}
+	
+	function displaySuccess()
+	{
+		echo json_encode( array( 'success'=>true ) );
+	}
+}
 ?>

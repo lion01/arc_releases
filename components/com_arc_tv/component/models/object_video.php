@@ -30,10 +30,10 @@ class ApothFactory_Tv_Video extends ApothFactory
 		if( is_null($vidDB) ) {
 			$params = &JComponentHelper::getParams( 'com_arc_tv' );
 			$options = array();
-			$options['host'] =     $params->get( 'host' );
-			$options['prefix'] =   $params->get( 'prefix' );
-			$options['driver'] =   $params->get( 'driver' );
-			$options['user'] =     $params->get( 'user' );
+			$options['host']     = $params->get( 'host' );
+			$options['prefix']   = $params->get( 'prefix' );
+			$options['driver']   = $params->get( 'driver' );
+			$options['user']     = $params->get( 'user' );
 			$options['password'] = $params->get( 'password' );
 			$options['database'] = $params->get( 'database' );
 			$vidDB = &JDatabase::getInstance( $options );
@@ -110,7 +110,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 	 */
 	function &getInstances( $requirements, $init = true, $orders = null )
 	{
-		$sId = $this->_getSearchId( $requirements );
+		$sId = $this->_getSearchId( $requirements, $orders );
 		$ids = $this->_getInstances( $sId );
 		if( is_null($ids) ) {
 			$db = &self::getVidDBO();
@@ -139,15 +139,15 @@ class ApothFactory_Tv_Video extends ApothFactory
 				case( 'id' ):
 					$wheres[] = $db->nameQuote('vid').'.'.$db->nameQuote('id').$assignPart;
 					break;
-					
+				
 				case( 'status' ):
 					$wheres[] = $db->nameQuote('vid').'.'.$db->nameQuote('status').$assignPart;
 					break;
-					
+				
 				case( 'owner' ):
 					$wheres[] = $db->nameQuote('vid').'.'.$db->nameQuote('person_id').$assignPart;
 					break;
-					
+				
 				case( 'exclude_ids' ):
 					if( is_array($val) ) {
 						$wheres[] = $db->nameQuote('vid').'.'.$db->nameQuote('id').' NOT '.$assignPart;
@@ -158,12 +158,12 @@ class ApothFactory_Tv_Video extends ApothFactory
 					$viewCount = true;
 					$whereCounts[] = $db->nameQuote('views').'.'.$db->nameQuote('viewed_on').' >= '.$db->Quote( $val );
 					break;
-					
+				
 				case( 'viewed_to' ):
 					$viewCount = true;
 					$whereCounts[] = $db->nameQuote('views').'.'.$db->nameQuote('viewed_on').' <= '.$db->Quote( $val );
 					break;
-					
+				
 				case( 'searched' ):
 				case( 'searched_tag' ):
 					// get the IDs of the searched words
@@ -191,17 +191,17 @@ class ApothFactory_Tv_Video extends ApothFactory
 						."\n".'   OR '.$db->nameQuote('vwv').'.'.$db->nameQuote('desc').$wordIdsPart
 						."\n".'   OR '.$db->nameQuote('vwv').'.'.$db->nameQuote('tag').$wordIdsPart.' )';
 							
-						$joins['vwv'] = 'INNER JOIN '.$db->nameQuote( 'video_words_view' ).' AS '.$db->nameQuote('vwv')
+						$joins['vwv'] = 'INNER JOIN '.$db->nameQuote('video_words_view').' AS '.$db->nameQuote('vwv')
 						."\n".'   ON '.$db->nameQuote('vwv').'.'.$db->nameQuote('video_id').' = '.$db->nameQuote('vid').'.'.$db->nameQuote('id');
 					}
 					elseif( $col == 'searched_tag' ) {
 						$wheres[] = '( '.$db->nameQuote('vwt').'.'.$db->nameQuote('word_id').$wordIdsPart.' )';
 							
-						$joins['vwv'] = 'INNER JOIN '.$db->nameQuote( 'video_words_tag' ).' AS '.$db->nameQuote('vwt')
+						$joins['vwv'] = 'INNER JOIN '.$db->nameQuote('video_words_tag').' AS '.$db->nameQuote('vwt')
 						."\n".'   ON '.$db->nameQuote('vwt').'.'.$db->nameQuote('video_id').' = '.$db->nameQuote('vid').'.'.$db->nameQuote('id');
 					}
 					break;
-					
+				
 				case( 'searched_mod' ):
 					$wheres[] = $db->nameQuote('vid').'.'.$db->nameQuote('status').$assignPart;
 					break;
@@ -227,7 +227,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 					switch( $orderOn ) {
 					case( 'view_count'):
 						$viewCount = true;
-						$orderBy[] = $orderOn.' '.$orderDir;
+						$orderBy[] = $db->nameQuote($orderOn).' '.$orderDir;
 						break;
 					
 					case( 'relevance' ):
@@ -259,10 +259,34 @@ class ApothFactory_Tv_Video extends ApothFactory
 						}
 						$orderBy[] = $db->nameQuote('score').' '.$orderDir;
 						break;
+						
+					case( 'creation_date' ):
+						$selects[] = 'MIN( '.$db->nameQuote('vsl').'.'.$db->nameQuote('date').' ) AS '.$db->nameQuote('creation_date');
+						
+						$joins[] = 'INNER JOIN '.$db->nameQuote('video_status_log').' AS '.$db->nameQuote('vsl')
+							."\n".'   ON '.$db->nameQuote('vsl').'.'.$db->nameQuote('video_id').' = '.$db->nameQuote('vid').'.'.$db->nameQuote('id');
+						
+						$groups[] = $db->nameQuote('vsl').'.'.$db->nameQuote('video_id');
+						
+						$orderBy[] = $db->nameQuote($orderOn).' '.$orderDir;
+						break;
+						
+					case( 'submitted_date' ):
+						$selects[] = 'MAX( '.$db->nameQuote('vsl').'.'.$db->nameQuote('date').' ) AS '.$db->nameQuote('submitted_date');
+						
+						$joins[] = 'INNER JOIN '.$db->nameQuote('video_status_log').' AS '.$db->nameQuote('vsl')
+							."\n".'   ON '.$db->nameQuote('vsl').'.'.$db->nameQuote('video_id').' = '.$db->nameQuote('vid').'.'.$db->nameQuote('id')
+							."\n".'  AND '.$db->nameQuote('vsl').'.'.$db->nameQuote('new_status_id').' = '.$db->Quote(ARC_TV_PENDING);
+						
+						$groups[] = $db->nameQuote('vsl').'.'.$db->nameQuote('video_id');
+						
+						$orderBy[] = $db->nameQuote($orderOn).' '.$orderDir;
+						break;
 					}
 				}
 			}
 			
+			// tmp table and joins for view_count requirements
 			if( $viewCount ) {
 				$tmpCountsTable = $db->nameQuote('views_counts');
 				$joins['vdate'] = 'INNER JOIN '.$tmpCountsTable
@@ -273,7 +297,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 					."\n".'FROM '.$db->nameQuote('views')
 					.( empty($whereCounts) ? '' : "\n".'WHERE '.implode("\n".'  AND ', $whereCounts) )
 					."\n".'GROUP BY '.$db->nameQuote('video_id');
-				$db->setQuery( $countsQuery );
+				$db->setQuery($countsQuery);
 				$db->Query();
 			}
 			
@@ -767,7 +791,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 	 * Commits the instance to the db,
 	 * updates the cached instance,
 	 * clears the search cache if we've added a new instance
-	 *  (the newly created instance may match any of the searches we previously executed)
+	 * (the newly created instance may match any of the searches we previously executed)
 	 * 
 	 * @param int $id  Unique identifer
 	 * @return boolean $primary  Indication of the success of the commit
@@ -917,7 +941,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 			
 			// if all ok process tags if there are any
 			if( $ok ) {
-				$tags = $r->getTags();
+				$tags = array_keys( $r->getTags() );
 				if( !empty($tags) ) {
 					$quotedTagValues = array();
 					foreach( $tags as $tagId ) {
@@ -1439,7 +1463,7 @@ class ApothTvVideoVideo extends JObject
 	 * Get a thumbnail image url for this video
 	 * 
 	 * @param int  $thumbNum  Thumbnail number
-	 * @return string   The complete url of a video thumbnail image
+	 * @return string  The complete url of a video thumbnail image
 	 */
 	function getThumbnail( $thumbNum = null )
 	{
@@ -1544,23 +1568,23 @@ class ApothTvVideoVideo extends JObject
 		// set up return info
 		switch( $this->_core['status'] ) {
 		case( ARC_TV_APPROVED ):
-			$info['colour'] =  'green';
-			$info['status'] =  'Approved';
+			$info['colour']  = 'green';
+			$info['status']  = 'Approved';
 			$info['comment'] = $curComment;
 			break;
 		case( ARC_TV_INCOMPLETE ):
-			$info['colour'] =  'clear';
-			$info['status'] =  'Incomplete';
+			$info['colour']  = 'clear';
+			$info['status']  = 'Incomplete';
 			$info['comment'] = 'This video has not yet been submitted for moderation.';
 			break;
 		case( ARC_TV_PENDING ):
-			$info['colour'] =  'amber';
-			$info['status'] =  'Pending Moderation';
+			$info['colour']  = 'amber';
+			$info['status']  = 'Pending Moderation';
 			$info['comment'] = 'This video has been uploaded and is awaiting moderation. Please check back soon for any updates!';
 			break;
 		case( ARC_TV_REJECTED ):
-			$info['colour'] =  'red';
-			$info['status'] =  'Rejected';
+			$info['colour']  = 'red';
+			$info['status']  = 'Rejected';
 			$info['comment'] = $curComment;
 			break;
 		}

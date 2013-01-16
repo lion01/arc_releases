@@ -42,7 +42,7 @@ class ApothAuth_TV
 					."\n".'FROM '.$dbTmpName.' AS v'
 					."\n".'~LIMITINGJOIN~'
 					."\n".'LIMIT 1';
-				$query = ApotheosisLibAcl::limitQuery( $query, 'tv.videos', 'v', 'id', false, $actionId);
+				$query = ApotheosisLibAcl::limitQuery( $query, 'tv.videos', 'v', 'id', false, $actionId );
 				$db->setQuery( $query );
 				$r = $db->loadResult();
 				$retVal = !empty($r);
@@ -54,6 +54,7 @@ class ApothAuth_TV
 			$retVal = true;
 			break;
 		}
+		
 		return $retVal;
 	}
 	
@@ -70,7 +71,7 @@ class ApothAuth_TV
 	 * @param $joinSlug string  The optional text to replace with the limiting JOINs. Defaults to '~LIMITINGJOIN~'
 	 * @return string   The original query with additional JOIN clauses to limit the results.
 	 */
-	function limitQuery($givenQuery, $limitOn, $inTable = false, $inCol = false, $uId = false, $actionId = false, $joinSlug = '~LIMITINGJOIN~' )
+	function limitQuery( $givenQuery, $limitOn, $inTable = false, $inCol = false, $uId = false, $actionId = false, $joinSlug = '~LIMITINGJOIN~' )
 	{
 		$db = &JFactory::getDBO();
 		$user = &ApotheosisLib::getUser( $uId );
@@ -135,6 +136,7 @@ class ApothAuth_TV
 		$db->Query();
 		
 		ApotheosisLibDbTmp::setPopulated( $tableName );
+		
 		return $tableName;
 	}
 	
@@ -154,7 +156,8 @@ class ApothAuth_TV
 		$ownerId = ApotheosisLibAcl::getRoleId( 'tv_owner' );
 		
 		$db = &JFactory::getDBO();
-		$db2 = self::getVidDBO();
+		$facInfo = ApothFactory::getFactoryInfo( 'tv.video' );
+		$db2 = &$facInfo['className']::getVidDBO();
 		
 		$coreParams = &JComponentHelper::getParams( 'com_arc_core' );
 		$siteId = $coreParams->get( 'site_id' );
@@ -167,14 +170,15 @@ class ApothAuth_TV
 			."\n".'LIMIT 1';
 		$db2->setQuery( $query );
 		$r = $db2->loadAssocList();
-		if( !empty( $r ) ) {
+		
+		if( !empty($r) ) {
 			$roles[] = $ownerId;
 		}
 		
 		if( !empty($roles) ) {
 			$insertQuery = 'INSERT INTO '.$tableName
 				."\n".' VALUES ( '.implode(' ), ( ', $roles).' )';
-			$db->setQuery($insertQuery);
+			$db->setQuery( $insertQuery );
 			$db->Query();
 		}
 	}
@@ -196,7 +200,8 @@ class ApothAuth_TV
 		$ownerId = ApotheosisLibAcl::getRoleId( 'tv_owner' );
 		
 		$db = &JFactory::getDBO();
-		$db2 = self::getVidDBO();
+		$facInfo = ApothFactory::getFactoryInfo( 'tv.video' );
+		$db2 = &$facInfo['className']::getVidDBO();
 		$values = array();
 		
 		$coreParams = &JComponentHelper::getParams( 'com_arc_core' );
@@ -213,7 +218,7 @@ class ApothAuth_TV
 			."\n".'  )';
 		$db2->setQuery( $query );
 		$idList = $db2->loadResultArray();
-		if( !is_array( $idList ) ) { $idList = array(); }
+		if( !is_array($idList) ) { $idList = array(); }
 		
 		$dbModeratorId = $db->Quote( $moderatorId );
 		foreach( $idList as $id ) {
@@ -227,7 +232,7 @@ class ApothAuth_TV
 			."\n".'  AND '.$db2->nameQuote( 'person_id' ).' = '.$db2->Quote( $personId );
 		$db2->setQuery( $query );
 		$idList = $db2->loadResultArray();
-		if( !is_array( $idList ) ) { $idList = array(); }
+		if( !is_array($idList) ) { $idList = array(); }
 		
 		$dbOwnerId = $db->Quote( $ownerId );
 		foreach( $idList as $id ) {
@@ -235,38 +240,12 @@ class ApothAuth_TV
 		}
 		
 		// insert the vidid / role pairs
-		if( !empty( $values ) ) {
+		if( !empty($values) ) {
 			$query = 'INSERT INTO '.$db->nameQuote( $tableName )
 				."\n".'VALUES '.implode( ', ', $values );
 			$db->setQuery( $query );
 			$db->Query();
 		}
-	}
-	
-	
-	/**
-	 * Create a Joomla! singleton database object for the video database
-	 * 
-	 * @return object  Database object
-	 */
-	function &getVidDBO()
-	{
-		static $vidDB = null;
-		
-		// get a referenced database object of the remote video database if needed
-		if( is_null($vidDB) ) {
-			$params = &JComponentHelper::getParams( 'com_arc_tv' );
-			$options = array();
-			$options['host'] =     $params->get( 'host' );
-			$options['prefix'] =   $params->get( 'prefix' );
-			$options['driver'] =   $params->get( 'driver' );
-			$options['user'] =     $params->get( 'user' );
-			$options['password'] = $params->get( 'password' );
-			$options['database'] = $params->get( 'database' );
-			$vidDB = &JDatabase::getInstance( $options );
-		}
-		
-		return $vidDB;
 	}
 }
 ?>

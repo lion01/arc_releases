@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE install PUBLIC "-//Joomla! 1.6//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
 <install version="1.5" type="template">       
-	<name>eRef</name>
+	<name>Arc_Basic</name>
 	<creationDate>30 March 2012</creationDate>
 	<author>becca</author>
 	<authorEmail>becca@pun.net</authorEmail>
@@ -9,7 +9,7 @@
 	<copyright>Copyright (C) punnet</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<version>1.5</version>
-	<description>eRef template</description>
+	<description>Arc basic template</description>
 	<files>
 		<folder>css</folder>
 		<folder>images</folder>

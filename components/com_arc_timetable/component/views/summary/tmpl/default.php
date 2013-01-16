@@ -21,13 +21,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 				<div class="search_row">
 					<div class="search_field">
 						<label for="start_date">Start Date:</label><br />
-						<?php echo JHTML::_( 'arc.date', 'start_date' ); ?>
+						<?php echo JHTML::_( 'arc.dateField', 'start_date' ); ?>
 					</div>
 				</div>
 				<div class="search_row">
 					<div class="search_field">
 						<label for="end_date">End Date:</label><br />
-						<?php echo JHTML::_( 'arc.date', 'end_date' ); ?>
+						<?php echo JHTML::_( 'arc.dateField', 'end_date' ); ?>
 					</div>
 				</div>
 <!--

@@ -1,0 +1,1 @@
+<?php echo JHTML::_( 'arc.breadcrumbs', ARC_REPORT_CRUMB_TRAIL, false ); ?>

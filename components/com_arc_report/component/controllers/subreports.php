@@ -31,11 +31,14 @@ class ReportControllerSubreports extends ReportController
 		plgSystemArc_log::startTimer( 'report controllerSubreports display' );
 		$model = $this->getModel( 'subreports' );
 		$view = &$this->getView ( 'subreports', 'html' );
+		$navModel = $this->getModel( 'nav' );
 		$navView = &$this->getView ( 'nav', 'html' );
 		
 		$activity = JRequest::getVar( 'activity', 'view');
 		
+		$navModel->setCycle( JRequest::getVar( 'cycle', null ) );
 		$model->setCycle( JRequest::getVar( 'cycle', null ) );
+		$navModel->setActivity( $activity );
 		$model->setActivity( $activity );
 		
 		
@@ -47,8 +50,8 @@ class ReportControllerSubreports extends ReportController
 		if( !empty( $searchGroups ) ) { $requirements['groups'] = $searchGroups; }
 		if( !empty( $searchPeople ) ) { $requirements['people'] = $searchPeople; }
 		
-		$model->setFilterValues( $requirements );
-		$model->setSearch();
+		$navModel->setFilterValues( $requirements, $fCrumbs );
+		$model->setSearch( $navModel->getFilterValues() );
 		
 		if( ($model->getSubreportCount() == 1) ) {
 			$r = $model->getNextSubreport();
@@ -61,17 +64,22 @@ class ReportControllerSubreports extends ReportController
 			}
 		}
 		
-		// Set up the breadcrumbs to be managed by the model
-		$fCrumbs = ApothFactory::_( 'core.breadcrumb', $this->getVar( 'fCrumbs' ) );
+		// Set up the breadcrumbs
+		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
 		$model->resetBreadcrumbs( $fCrumbs );
-		$this->saveVar( 'fCrumbs', $fCrumbs, ApothFactory::getIncFile( 'core.breadcrumb' ) );
+		$navModel->resetFilterCrumbs( $fCrumbs );
 		
 		// finally display
-		$navView->display();
+		$view->nav = &$navView;
 		$view->setModel( $model, true );
 		$view->display();
 		
-		$this->saveModel();
+		$this->saveModel( 'subreports' );
+		$this->saveModel( 'nav' );
 		plgSystemArc_log::stopTimer( 'report controllerSubreports display' );
 	}
 	
@@ -80,7 +88,9 @@ class ReportControllerSubreports extends ReportController
 		plgSystemArc_log::startTimer( 'report controllerSubreports showpage' );
 		$model = $this->getModel( 'subreports' );
 		$view = &$this->getView ( 'subreports', jRequest::getVar( 'format', 'html' ) );
+		$navModel = $this->getModel( 'nav' );
 		
+		$model->setSearch( $navModel->getFilterValues() );
 		$ok = $model->setPage( JRequest::getVar( 'pageId', 0 ) );
 		
 		if( $ok ) {
@@ -90,6 +100,7 @@ class ReportControllerSubreports extends ReportController
 		else {
 			echo '~~End~~';
 		}
+		$this->saveModel( 'subreports' );
 		plgSystemArc_log::stopTimer( 'report controllerSubreports showpage' );
 	}
 	

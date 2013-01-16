@@ -18,10 +18,6 @@ require_once( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_arc_core'.DS.'librarie
 // Give us access to the root admin controller for this component
 require_once( JPATH_COMPONENT_ADMINISTRATOR.DS.'controller.php' );
 
-// Give us access to any objects for this component
-require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_factory.php' );
-require_once( JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.DS.'objects.php' );
-
 // Require specific controller if requested
 $controllerEnd = JRequest::getWord( 'view' );
 $path = JPATH_COMPONENT_ADMINISTRATOR.DS.'controllers'.DS.$controllerEnd.'.php';

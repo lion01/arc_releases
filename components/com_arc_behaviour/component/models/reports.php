@@ -27,8 +27,8 @@ class BehaviourModelReports extends JModel
 			$requirements['groups'] = ApotheosisData::_( 'course.descendants', $requirements['groups'] );
 		}
 		
-		$fRpt = ApothFactory::_( 'behaviour.Report' );
-		$this->rpt = $fRpt->getInstance( 'main' );
+		$this->fRpt = ApothFactory::_( 'behaviour.Report' );
+		$this->rpt = $this->fRpt->getInstance( 'main' );
 		$this->rpt->init( $requirements, $series );
 	}
 	

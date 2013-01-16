@@ -22,6 +22,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class ApothFactory_Report_Field extends ApothFactory
 {
+	var $configIds;
+	
+	/**
+	 * To comply with automated saving of factories
+	 * we must explicitly sleep any class vars in child factories
+	 */
+	function __sleep()
+	{
+		$parentVars = parent::__sleep();
+		$myVars = array( 'configIds' );
+		$allVars = array_merge( $parentVars, $myVars );
+	
+		return $allVars;
+	}
+	
 	function &getDummy( $id )
 	{
 		if( $id >= 0 ) {
@@ -76,9 +91,7 @@ class ApothFactory_Report_Field extends ApothFactory
 						continue;
 					}
 					foreach( $val as $k=>$v ) {
-						if( !is_array( $val ) ) {
-							$val[$k] = $db->Quote( $v );
-						}
+						$val[$k] = $db->Quote( $v );
 					}
 					$assignPart = ' IN ('.implode( ', ',$val ).')';
 				}
@@ -229,11 +242,29 @@ class ApothFactory_Report_Field extends ApothFactory
 			.( empty($orderBy) ? '' : "\n ORDER BY ".implode(', ', $orderBy) );
 		$db->setQuery( $query );
 		$raw = $db->loadAssocList();
-//		debugQuery( $db, $raw );
+//		dumpQuery( $db, $raw );
 		
 		if( !is_null( $groupId ) ) {
 			$db->setQuery( 'DROP TABLE '.$dbAnc );
 			$db->query();
+		}
+		
+		// Handle any config lookup ids
+		foreach( $raw as $i=>$row ) {
+			if( substr( $row['data'], 0, 7 ) == 'lookup:' ) {
+				$lookups[$i] = substr( $row['data'], 7 );
+			}
+		}
+		if( !empty( $lookups ) ) {
+			$query = 'SELECT fc.id, fc.data'
+				."\n".'FROM '.$db->nameQuote( '#__apoth_rpt_field_config' ).' AS fc'
+				."\n".'WHERE id IN ('.implode( ', ', $lookups ).')';
+			$db->setQuery( $query );
+			$lookupData = $db->loadAssocList( 'id' );
+			
+			foreach( $lookups as $i=>$l ) {
+				$raw[$i]['data'] = $lookupData[$l]['data'];
+			}
 		}
 		
 		$this->configIds = array();
@@ -420,11 +451,19 @@ class ApothReportField extends JObject
 		$this->_context['groupId'] = $groupId;
 	}
 	
-	function setConfig()
+	function setConfig( $overrides = array() )
 	{
 		$fField = ApothFactory::_( 'report.field' );
 		$this->_config = $fField->loadConfig( $this->_context['cycleId'], $this->_context['layoutId'], $this->_context['sectionId'], $this->_id, $this->_context['groupId'] );
-//		var_dump_pre( $this->_config, 'field config' );
+		foreach( $overrides as $k=>$v ) {
+			$this->_config[$k] = $v;
+		}
+//		dump( $this->_config, 'field config' );
+	}
+	
+	function getConfig( $key )
+	{
+		return ( isset($this->_config[$key]) ? $this->_config[$key] : null );
 	}
 	
 	/**

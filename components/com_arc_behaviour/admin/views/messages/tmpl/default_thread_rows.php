@@ -13,11 +13,12 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $msgObjects = $this->model->getThreadMessages( $this->thread->getMessageIds() );
-foreach( $msgObjects as $msgObj ) :
-	$incObj = $this->model->getIncObject( $msgObj->getDatum('incident') );
-	$actObj = $this->model->getActObject( $msgObj->getDatum('action') );
+foreach( $msgObjects as $msgObj ):
+	$incObj = &$this->fInc->getInstance( $msgObj->getDatum('incident') );
+	$tagObj = &$this->fTag->getInstance( $incObj->getTag() );
+	$actObj = &$this->fAct->getInstance( $msgObj->getDatum('action') );
 	$msgId = $msgObj->getId();
-	$arcDotLink = ( ($msgId == $this->thread->getFirstMessageId() && is_object($incObj)) ) ? JHTML::_('arc.dot', strtolower($incObj->colour)) : '';
+	$arcDotLink = ( ($msgId == $this->thread->getFirstMessageId() && is_object($incObj)) ) ? JHTML::_('arc.dot', strtolower($tagObj->getLabel())) : '';
 	$actNum = $msgObj->getDatum( 'action_number' );
 	$actNumText = ( ($actNum == '') || ($actNum == 0) ) ? '' : ' ('.$actNum.')';
 	?>
@@ -34,10 +35,10 @@ foreach( $msgObjects as $msgObj ) :
 		<td align="center"><?php echo ApotheosisData::_( 'people.displayName', $msgObj->getDatum('student_id') ); ?></td>
 		<td align="center"><?php echo ApotheosisData::_( 'course.name', $msgObj->getDatum('group_id') ); ?></td>
 		<td align="center"><?php echo $msgObj->getDatum( 'room' ); ?></td>
-		<td align="center"><?php echo (is_object($incObj) ? $incObj->label : ''); ?></td>
+		<td align="center"><?php echo (is_object($incObj) ? $incObj->getLabel() : ''); ?></td>
 		<td align="center"><?php echo $msgObj->getDatum( 'incident_text' ); ?></td>
 		<td align="center"><?php echo $msgObj->getDatum( 'outline' ).$msgObj->getDatum( 'comment' ); ?></td>
-		<td align="center"><?php echo (is_object($actObj) ? $actObj->label.$actNumText: '' ); ?></td>
+		<td align="center"><?php echo (is_object($actObj) ? $actObj->getLabel().$actNumText : '' ); ?></td>
 		<td align="center"><?php echo $msgObj->getDatum( 'action_text' ); ?></td>
 	</tr>
 	<?php $this->curIndex++;

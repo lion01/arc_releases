@@ -18,11 +18,11 @@ echo JHTML::_( 'arc.searchStart' ); ?>
 		<div class="search_row">
 			<div class="search_field">
 				<label for="start_date">Start Date:</label><br />
-				<?php echo JHTML::_( 'arc.date', 'start_date', date('Y-m-d') );?>
+				<?php echo JHTML::_( 'arc.dateField', 'start_date', date('Y-m-d') );?>
 			</div>
 			<div class="search_field">
 				<label for="end_date">End Date:</label><br />
-				<?php echo JHTML::_( 'arc.date', 'end_date', date('Y-m-d')  );?>
+				<?php echo JHTML::_( 'arc.dateField', 'end_date', date('Y-m-d')  );?>
 			</div>
 			<div class="search_field">
 				<label for="subject">Subject:</label><br />

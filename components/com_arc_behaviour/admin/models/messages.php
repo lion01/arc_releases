@@ -15,8 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // Give us access to the joomla model class
 jimport( 'joomla.application.component.model' );
 
-// include front-end message factories
-require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_factory.php' );
+// include front-end message helper
 require_once( JPATH_SITE.DS.'components'.DS.'com_arc_behaviour'.DS.'helpers'.DS.'message.php' );
 
 /**
@@ -357,56 +356,6 @@ class BehaviourAdminModelMessages extends JModel
 		}
 		
 		return $threadMessages;
-	}
-	
-	/**
-	 * Get the incident related details as an object
-	 * 
-	 * @param int $incId  Incident ID
-	 * @return object  Object containing incident related details 
-	 */
-	function &getIncObject( $incId )
-	{
-		static $incObjs = array();
-		
-		if( !isset($incObjs[$incId]) ) {
-			$db = JFactory::getDBO();
-			
-			$query = 'SELECT '.$db->nameQuote('bhv').'.'.$db->nameQuote('id').', '.$db->nameQuote('bhv').'.'.$db->nameQuote('label').', '.$db->nameQuote('par').'.'.$db->nameQuote('label').' AS '.$db->nameQuote('colour')
-				."\n".'FROM '.$db->nameQuote('#__apoth_bhv_inc_types').' AS '.$db->nameQuote('bhv')
-				."\n".'INNER JOIN '.$db->nameQuote('#__apoth_bhv_inc_types').' AS '.$db->nameQuote('par')
-				."\n".'   ON '.$db->nameQuote('par').'.'.$db->nameQuote('id').' = '.$db->nameQuote('bhv').'.'.$db->nameQuote('parent')
-				."\n".'WHERE '.$db->nameQuote('bhv').'.'.$db->nameQuote('id').' = '.$db->Quote($incId);
-			
-			$db->setQuery( $query );
-			$incObjs[$incId] = $db->loadObject();
-		}
-		
-		return $incObjs[$incId];
-	}
-	
-	/**
-	 * Get the action related details as an object
-	 * 
-	 * @param int $actId  Action ID
-	 * @return object  Object containing action related details 
-	 */
-	function &getActObject( $actId )
-	{
-		static $actObjs = array();
-		
-		if( !isset($actObjs[$actId]) ) {
-			$db = JFactory::getDBO();
-			
-			$query = 'SELECT '.$db->nameQuote('id').', '.$db->nameQuote('label')
-				."\n".'FROM '.$db->nameQuote('#__apoth_bhv_actions')
-				."\n".'WHERE '.$db->nameQuote('id').' = '.$db->Quote($actId);
-			
-			$db->setQuery( $query );
-			$actObjs[$actId] = $db->loadObject();
-		}
-		
-		return $actObjs[$actId];
 	}
 	
 	/**

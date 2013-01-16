@@ -459,6 +459,8 @@ class ApotheosisData_Timetable extends ApotheosisData
 	 */
 	function enrolments( $requirements, $limPeople = null, $limGroups = null )
 	{
+//		global $doDump;
+//		if( $doDump ) { dump( func_get_args(), 'args to get enrolments' ); }
 //		var_dump_pre($requirements, 'requirements for studentEnrolments');
 		if( !array($requirements) || empty($requirements) ) {
 			return array();
@@ -565,6 +567,7 @@ class ApotheosisData_Timetable extends ApotheosisData
 		
 		$db->setQuery( $query );
 		$r = $db->loadAssocList();
+//		if( $doDump ) { dumpQuery( $db, $r ); }
 //		debugQuery($db, $r);
 		
 		return $r;
@@ -788,30 +791,51 @@ class ApotheosisData_Timetable extends ApotheosisData
 	
 	function teachers( $gId = null )
 	{
-		return $this->_members( $gId, ApotheosisLibAcl::getRoleId( 'group_supervisor_teacher' ) );
+		return $this->members( $gId, ApotheosisLibAcl::getRoleId( 'group_supervisor_teacher' ) );
 	}
 	
 	function students( $gId = null )
 	{
-		return $this->_members( $gId, ApotheosisLibAcl::getRoleId( 'group_participant_student' ) );
+		return $this->members( $gId, ApotheosisLibAcl::getRoleId( 'group_participant_student' ) );
 	}
 	
-	function _members( $gId, $rId )
+	function members( $gId, $rId )
 	{
 		static $checked = array();
 		
-		if( !isset($checked[$gId][$rId]) ) {
+		if( !is_null($gId) ) {
+			if( empty( $gId ) ) {
+				return array();
+			}
+			if( !is_array( $gId ) ) {
+				$gId = array( $gId );
+			}
+		}
+		
+		$gIdHash = md5( serialize($gId) );
+		
+		if( !isset($checked[$gIdHash][$rId]) ) {
 			$db = &JFactory::getDBO();
+			if( is_null( $gId ) ) {
+				$clause = '';
+			}
+			else {
+				foreach( $gId as $k=>$v ) {
+					$gId[$k] = $db->Quote( $v );
+				}
+				$clause = "\n".'  AND gm.group_id IN ( '.implode( ', ', $gId ).' )';
+			}
+			
 			$query = 'SELECT DISTINCT person_id'
 				."\n".'FROM #__apoth_tt_group_members AS gm'
 				."\n".'WHERE gm.role = '.$rId
 				."\n".'  AND '.ApotheosisLibDb::dateCheckSql( 'gm.valid_from', 'gm.valid_to', date('Y-m-d H:i:s'), date('Y-m-d H:i:s') )
-				.( is_null($gId) ? '' : "\n".'  AND gm.group_id = '.$db->Quote( $gId ) );
+				.$clause;
 			$db->setQuery( $query );
-			$checked[$gId][$rId] = $db->loadResultArray();
-			if( !is_array($checked[$gId][$rId]) ) { $checked[$gId][$rId] = array(); }
+			$checked[$gIdHash][$rId] = $db->loadResultArray();
+			if( !is_array($checked[$gIdHash][$rId]) ) { $checked[$gIdHash][$rId] = array(); }
 		}
-		return $checked[$gId][$rId];
+		return $checked[$gIdHash][$rId];
 	}
 
 }

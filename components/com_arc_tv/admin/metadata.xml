@@ -69,6 +69,7 @@ vidId=~tv.videoId~</params>
 				<params>view=video
 task=updateStatus
 vidId=~tv.videoId~
+idCheck=~js.idcheck.replace~
 format=raw</params>
 			</action>
 			<action>

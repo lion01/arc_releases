@@ -12,6 +12,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+$this->nav->displayNav();
 ?>
 <style>
 div.cycle {
@@ -49,7 +50,7 @@ div.cycle table td {
 <div id="arc_main_narrow">
 
 <?php
-echo JHTML::_( 'arc.breadcrumbs', ARC_REPORT_CRUMB_TRAIL );
+$this->nav->displayBreadcrumbs();
 
 while( $this->cycle = $this->get( 'NextCycle' ) ) {
 	$this->written = &$this->allWritten[$this->cycle->getId()];

@@ -24,7 +24,7 @@ class ApotheosisData_Message extends ApotheosisData
 {
 	function info()
 	{
-		return 'Course component installed';
+		return 'Message component installed';
 	}
 	
 	function tagId( $category, $label )
@@ -130,7 +130,7 @@ class ApotheosisData_Message extends ApotheosisData
 		
 		$retVal = array();
 		foreach( $msgIds as $msgId ) {
-			$retVal[$msgId] = $r[$msgId]['id'];
+			$retVal[$msgId] = ( isset( $r[$msgId] ) ? $r[$msgId]['id'] : -1 );
 		}
 		return $retVal;
 	}

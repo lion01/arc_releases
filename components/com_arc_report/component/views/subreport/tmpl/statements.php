@@ -33,7 +33,6 @@ textarea {
 }
 .activity_overlay div {
 	background: lightgrey;
-	border: 4px inset;
 	width: 100px;
 	margin: 50px auto;
 	padding: 1em;

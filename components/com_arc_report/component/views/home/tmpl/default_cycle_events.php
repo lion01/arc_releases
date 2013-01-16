@@ -22,7 +22,7 @@ while( $this->event = $this->get( 'NextEvent' ) ) {
 	<?php echo htmlspecialchars( $this->event->getDatum( 'title' ) ); ?></td>
 	<?php if( $link ) { echo '</a>'; } ?>
 	<td>&nbsp;</td>
-	<td><?php echo $this->event->getDueDays();?> days (on <?php echo htmlspecialchars( $this->event->getDueDate() ); ?>)</td>
+	<td><?php echo $this->event->getDueDays();?> days (on <?php echo JHTML::_( 'arc.date', $this->event->getDueDate() ); ?>)</td>
 	</tr>
 	<?php
 }

@@ -28,6 +28,7 @@ JHTML::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_arc_homepage'.DS.'helpe
 // They could easily have beeen in this file as the groups of functions below are,
 // but having them in separate files makes navigation / edits easier
 // and makes separate class definitions a requirement.
+require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_controller.php' );
 require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_factory.php' );
 require_once( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_library_shared_acl.php' );
 require_once( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_library_shared_array.php' );
@@ -1543,6 +1544,20 @@ function var_dump_pre( $mixed = null, $text = null, $depth = 3, $children = 128,
 	ini_set('xdebug.var_display_max_depth', 3 );
 	ini_set('xdebug.var_display_max_children', 128 );
 	ini_set('xdebug.var_display_max_data', 512 );
+}
+
+function dumpQuery( $db, $result = 'no result set specified' )
+{
+	if( !is_object($db) ) {
+		dump( false, 'no database given<br />' );
+	}
+	else {
+		dump( $db->getQuery(), 'query' );
+		dump( $db->getErrorMsg(), 'error' );
+		dump( mysql_info(), 'info' );
+		dump( $db->getAffectedRows(), 'affected' );
+	}
+	dump( $result, 'result' );
 }
 
 function debugQuery( $db, $result = 'no result set specified' )

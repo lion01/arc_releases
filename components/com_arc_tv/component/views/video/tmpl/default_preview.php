@@ -13,7 +13,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // determine if we are showing status dot overlyas on the previews
-if( isset($this->showOverlay) && $this->showOverlay ) {
+if( (isset($this->showOverlay) && $this->showOverlay) || (isset($this->showSidebarOverlay) && $this->showSidebarOverlay) ) {
 	$curStatus = $this->curPreview->getStatusInfo();
 	$overlayHtml = '<div class="preview_overlay">'.JHTML::_( 'arc.dot', $curStatus['colour'], $curStatus['status'] ).'</div>';
 }
@@ -22,7 +22,7 @@ else {
 }
 
 // determine which preview link to use: manage for moderation search, video page otherwise
-if( isset($this->previewLinkMod) && $this->previewLinkMod ) {
+if( (isset($this->previewLinkMod) && $this->previewLinkMod) || (isset($this->sidebarPreviewLinkMod) && $this->sidebarPreviewLinkMod) ) {
 	$previewLink = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>$this->curPreview->getId()) );
 }
 else {

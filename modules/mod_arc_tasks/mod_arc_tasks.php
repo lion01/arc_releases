@@ -23,7 +23,7 @@ $tasks = array();
 $data = array( 'new'=>true );
 $eref = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_inter', array( 'message.scopes'=>'form', 'message.forms'=>'behaviour.start.edit', 'message.data'=>json_encode($data) ) );
 if( $eref != false ) ( 
-	  $tasks['newRef'] = array('text'=>'eRef', 'url'=>$eref, 'target'=>'popup')
+	  $tasks['newRef'] = array('text'=>'Referral', 'url'=>$eref, 'target'=>'popup')
 );
 //	/* eg of another type */ $tasks['google'] = array('text'=>'Google', 'url'=>'http;//google.com', 'target'=>'blank')
 if( !empty( $tasks ) ) {

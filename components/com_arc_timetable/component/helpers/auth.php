@@ -222,20 +222,16 @@ class ApothAuth_Timetable
 		$db = &JFactory::getDBO();
 		$user = &ApotheosisLib::getUser( $uId );
 		
-		$insertQuery = 'INSERT IGNORE INTO '.$tableName // *** titikaka fail (need to use new acl)
+		$insertQuery = 'INSERT IGNORE INTO '.$tableName
 			."\n".'SELECT DISTINCT gm.person_id AS id'
 			."\n".', IF( ca.id = ca.ancestor'
+			."\n".', my_g.role'
 			."\n".', CASE'
-			."\n".'   WHEN my_g.is_admin   = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_supervisor_admin' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_teacher = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_supervisor_teacher' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_student = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_participant_student' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_watcher = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_participant_watcher' ) // *** titikaka fail
-			."\n".'  END'
-			."\n".', CASE'
-			."\n".'   WHEN my_g.is_admin   = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_admin' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_teacher = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_teacher' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_student = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_student' ) // *** titikaka fail
-			."\n".'   WHEN my_g.is_watcher = 1 THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_watcher' ) // *** titikaka fail
+			."\n".'   WHEN my_g.role = '.ApotheosisLibAcl::getRoleId( 'group_supervisor_admin' )   .' THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_admin' ) 
+			."\n".'   WHEN my_g.role = '.ApotheosisLibAcl::getRoleId( 'group_supervisor_teacher' ) .' THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_teacher' )
+			."\n".'   WHEN my_g.role = '.ApotheosisLibAcl::getRoleId( 'group_participant_student' ).' THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_student' )
+			."\n".'   WHEN my_g.role = '.ApotheosisLibAcl::getRoleId( 'group_participant_watcher' ).' THEN '.ApotheosisLibAcl::getRoleId( 'group_ancestor_watcher' )
+			."\n".'   ELSE my_g.role'
 			."\n".'  END'
 			."\n".'  ) AS `role`'
 			."\n".'FROM #__apoth_tt_group_members AS my_g'

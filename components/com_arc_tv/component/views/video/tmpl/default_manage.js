@@ -633,7 +633,8 @@ function submitForm( task, element )
 	}
 	
 	// add video id to the input string array
-	inputString.push( 'video_id=' + vidIdInput.getValue() );
+	var vidId = vidIdInput.getValue();
+	inputString.push( 'video_id=' + vidId );
 	
 	// reassemble the input string
 	inputString = inputString.join( '&' );
@@ -664,8 +665,15 @@ function submitForm( task, element )
 			updateIdValues( response.id );
 			vidStatusInput.setProperty( 'value', response.status );
 			
-			// update the status div
-			updateStatusDiv();
+			// if we just successfully moderated a video, update the sidebar div
+			if( ((task == 'approve') || (task == 'reject')) && (response.next_id != vidId) ) {
+				// ajax in a fresh status div without checking for ID
+				updateStatusDiv( false );
+			}
+			else {
+				// ajax in a fresh status div but check for ID
+				updateStatusDiv( true );
+			}
 		},
 		'onFailure': function() {
 			// remove ajax spinner
@@ -676,22 +684,52 @@ function submitForm( task, element )
 
 /**
  * Ajax in a new status div
+ * 
+ * @param idCheck boolean  Should we perform an idCheck for pagination persistence?
  */
-function updateStatusDiv()
+function updateStatusDiv( idCheck )
 {
 	// Get the status div
 	var statusDiv = $( 'manage_status_div' );
 	
 	// Set the query string
 	var updateQueryString = $( 'status_url' ).getValue();
+	updateQueryString = updateQueryString.replace( 'js.idcheck.replace', (idCheck ? '1' : '0') );
 	
 	// set the post data
 	var inputString = 'video_id=' + vidIdInput.getValue();
 	
 	// Ajax in the updated status div
-	var raw = new Ajax( updateQueryString, {
+	var updateStatusAjax = new Ajax( updateQueryString, {
 		'data': inputString,
 		'update': statusDiv
+	});
+	
+	// If we aren't going to check IDs then we must be moderating,
+	// so Ajax in a new sidebar after the status div
+	if( !idCheck ) {
+		updateStatusAjax.addEvent( 'onSuccess', function() {
+			updateSidebarDiv();
+		});
+	}
+	
+	updateStatusAjax.request();
+}
+
+/**
+ * Ajax in a new sidebar div
+ */
+function updateSidebarDiv()
+{
+	// Get the sidebar div
+	var sidebarDiv = $( 'sidebar_div' );
+	
+	// Set the query string
+	var sidebarQueryString = $( 'sidebar_url' ).getValue();
+	
+	// Ajax in the updated status div
+	new Ajax( sidebarQueryString, {
+		'update': sidebarDiv
 	}).request();
 }
 

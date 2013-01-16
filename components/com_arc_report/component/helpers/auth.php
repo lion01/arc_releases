@@ -20,8 +20,23 @@ class ApothAuth_Report
 		$user = &ApotheosisLib::getUser( $uId );
 		
 		switch( $ident ) {
-		case( 'cycle' ):
 		case( 'subreport' ):
+			if( $given == '~SUBREPORT~' ) {
+				$retVal = true;
+			}
+			else {
+				$assignPart = ' = '.$db->Quote($given);
+				$query = 'SELECT s.id'
+					."\n".'FROM #__apoth_rpt_subreports AS s'
+					."\n".'~LIMITINGJOIN~'
+					."\n".'WHERE s.id '.$assignPart;
+				$db->setQuery( ApotheosisLibAcl::limitQuery($query, 'report.subreports', 's', 'id', $uId, $actionId) );
+				$r = $db->loadResult();
+				$retVal = !empty($r);
+			}
+			break;
+			
+		case( 'cycle' ):
 		case( 'listpage' ):
 		case( 'commit' ):
 		case( 'status' ):

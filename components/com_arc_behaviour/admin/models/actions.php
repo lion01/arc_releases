@@ -15,9 +15,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // Give us access to the joomla model class
 jimport( 'joomla.application.component.model' );
 
-// include front-end message factories
-require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_factory.php' );
-
 /**
  * Behaviour Manager Actions Model
  *

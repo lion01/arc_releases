@@ -22,27 +22,37 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class JHTMLArc
 {
-	function breadcrumbs( $trail )
+	function breadcrumbs( $trail, $wrapper = true )
 	{
 		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
 		$ids = $fCrumbs->getInstances( array( 'trail'=>$trail ) );
 		$count = count( $ids );
 		$i = 0;
+		$script = '';
 		
-		$rv = '<div id="breadcrumbs_wrapper"><div id="breadcrumbs">';
+		$rv = ( $wrapper ? '<div id="breadcrumbs_wrapper">' : '' ).'<div id="breadcrumbs">';
 		foreach( $ids as $id ) {
 			$crumb = $fCrumbs->getInstance( $id );
-			$style = ( ($s = $crumb->getData( 'style' )) == '' ? '' : ' style="'.$s.'"' );
-			$link = ApotheosisLibAcl::getUserLinkAllowed( $crumb->getData( 'action' ), $crumb->getData( 'dependancies' ) );
+			$style = ( ($s = $crumb->getDatum( 'style' )) == '' ? '' : ' style="'.$s.'"' );
+			$url = $crumb->getURL();
 			$first = ($i == 0);
 			$last = (++$i == $count);
+			
+			$callback = $crumb->getDatum( 'jscallback' );
 			
 			$rv .= '<div class="breadcrumb'
 				.($first ? ' first': '' )
 				.($last  ? ' last' : '' )
 				.'"><span'.$style.'>';
-			if( !$last && $link ) {
-				$rv .= '<a href="'.$link.'">'.$crumb->getLabel().'</a>';
+			if( !$last && $url ) {
+				$rv .= '<a href="'.htmlspecialchars( $url ).'" id="crumblink'.$i.'">'.$crumb->getLabel().'</a>';
+				if( !empty( $callback ) ) {
+					$script .= "$('crumblink".$i."').addEvent( 'click', ".$callback." );\r\n";
+				}
 			}
 			else {
 				$rv .= $crumb->getLabel();
@@ -50,10 +60,14 @@ class JHTMLArc
 			$rv .= '</span></div>';
 			
 			if( !$last ) {
-				$rv .= '<div class="breadcrumb_divider"></div>';
+				$rv .= '<div class="breadcrumb_divider"><span></span></div>';
 			}
 		}
-		$rv .= '</div></div>';
+		$rv .= ( $wrapper ? '</div>' : '' );
+		if( !empty( $script ) ) {
+			$rv .= '<script>'.$script.'</script>';
+		}
+		$rv .= '</div>';
 		return $rv;
 	}
 	
@@ -116,6 +130,20 @@ class JHTMLArc
 		$fullText = htmlspecialchars( implode(', ', $fullArray) );
 		$shortText = htmlspecialchars( implode(', ', $shortTextArray) );
 		return '<span class="arcTip" title="'.$title.' :: '.$fullText.'">'.$shortText.'</span>';
+	}
+	
+	/**
+	 * Formats the given date in a user-friendly way
+	 * *** Could be enhanced to pick up and use prefered date fromat from current user's profile
+	 * 
+	 * @param string|int|null $date  A strtodate-parsable date, a timestamp, or null to use the current time
+	 */
+	function date( $date = null )
+	{
+		$d = new DateTime( $date );
+		
+//		return $d->format( 'Y-m-d H:i:s' ); // ISO standard style
+		return $d->format( 'D M jS H:i' );
 	}
 	
 	/**
@@ -284,7 +312,7 @@ class JHTMLArc
 	 * @param string $default  Default input value
 	 * @return string $retVal  The HTML to display the required input
 	 */
-	function date( $name, $default = null )
+	function dateField( $name, $default = null )
 	{
 		$default = ( !is_null($default) ? $default : date('Y-m-d') );
 		$oldVal = JRequest::getVar( $name, $default );

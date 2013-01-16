@@ -1,0 +1,114 @@
+@CHARSET "ISO-8859-1";
+
+#filter_wrapper {
+	float: right;
+	width: 0px; /* so when the filters slide out we don't push the content aside */
+}
+#filter {
+	position: relative;
+	width: 200px;
+	z-index: 100;
+}
+
+
+#filter_toggle {
+	position: absolute;
+	display: none;
+	left: -30px;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+}
+
+#filter_toggle a {
+	height: 30px;
+	width: 28px;
+	display: inline-block;
+	color: #4b4b4b;
+	text-decoration: none;
+	text-align: center;
+	padding: 0px !important;
+	border-radius: 5px 0px 0px 5px !important;
+}
+
+#filter_toggle a span:before {
+	font-family: "EntypoRegular";
+	font-size: 37px;
+	line-height: 22px;
+}
+#filter_toggle a.open span:before {
+	content: "\00EE";
+}
+#filter_toggle a.closed span:before {
+	content: "\00EB";
+}
+
+
+#filter_terms {
+	width: 188px;
+	background: #ededed;
+	border: 1px solid #bbbbbb;
+	border-radius: 0px 0px 0px 5px;
+	padding: 5px;
+}
+
+#filter_reset {
+	display: block;
+	width: 100%;
+	text-align: right;
+	margin-bottom: 3px;
+}
+
+#filter_terms .filter_heading {
+	overflow: hidden;
+	height: 20px;
+	line-height: 20px;
+	vertical-align: middle;
+	background: #dddddd;
+	border: 1px solid #bbbbbb;
+	border-radius: 5px 5px 5px 5px;
+	padding: 3px;
+	margin-top: -1px;
+}
+#filter_terms .filter_heading a {
+	display: block;
+	width: 100%;
+	text-decoration: none;
+	font-weight: bold;
+	color: black;
+}
+#filter_terms .filter_heading span {
+	display: inline-block;
+	float: right;
+}
+#filter_terms .filter_heading span:after {
+	font-family: "EntypoRegular";
+	font-size: 37px;
+	line-height: 10px;
+	color: black;
+}
+#filter_head_subject span:after { content: "i"; }
+#filter_head_group   span:after { content: 'k'; }
+#filter_head_student span:after { content: '+'; }
+#filter_head_status  span:after { content: '7'; }
+
+#filter_terms .filter_list {
+	padding-bottom: 3px;
+}
+#filter_terms .filter_list .filter_opt {
+	padding: 4px 4px 0px;
+}
+#filter_terms .filter_list .filter_opt input {
+	margin-right: 3px;
+}
+
+#filter_terms .filter_loading {
+	display: none;
+	background: darkgrey;
+	text-align: center;
+}
+#filter_terms .filter_loading div {
+	margin: auto;
+	background: lightgrey;
+	width: 100px;
+}

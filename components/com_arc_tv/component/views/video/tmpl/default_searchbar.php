@@ -16,13 +16,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<form method="post" action="<?php echo ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_search', array() ); ?>">
 		<div id="mod_button_div">
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv', array() ) ) ): ?>
-			<a id="vidhome_button"  class="btn" href="<?php echo $link; ?>">TV home</a>
+			<a id="vidhome_button" class="btn" href="<?php echo $link; ?>">TV home</a>
 			<?php endif; ?>
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_myvids', array() ) ) ): ?>
-			<a id="myvids_button"   class="btn" href="<?php echo $link; ?>">My Videos</a>
+			<a id="myvids_button" class="btn" href="<?php echo $link; ?>">My Videos</a>
 			<?php endif; ?>
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>'' ) ) ) ): ?>
-			<a id="upload_button"   class="btn" href="<?php echo $link; ?>">Upload</a>
+			<a id="upload_button" class="btn" href="<?php echo $link; ?>">Upload</a>
 			<?php endif; ?>
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_moderate', array() ) ) ): ?>
 			<a id="moderate_button" class="btn" href="<?php echo $link ?>">Moderate</a>

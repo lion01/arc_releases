@@ -123,8 +123,7 @@ class MessageControllerHub extends MessageController
 		}
 		else {
 			$l = ApotheosisLib::getActionLinkByName( 'apoth_msg_hub', array('message.tags'=>$model->getFolder(), 'message.scopes'=>'list') );
-			global $mainframe;
-			$mainframe->redirect( $l.'#thread_'.$tId );
+			$this->saveAndRedirect( $l.'#thread_'.$tId );
 		}
 	}
 	
@@ -138,8 +137,7 @@ class MessageControllerHub extends MessageController
 		$this->saveModel();
 		
 		$l = ApotheosisLib::getActionLinkByName( 'apoth_msg_hub', array('message.tags'=>$model->getFolder(), 'message.scopes'=>'list') );
-		global $mainframe;
-		$mainframe->redirect( $l.'#msg_'.JRequest::getVar('msgId') ); // last 2 params optional
+		$this->saveAndRedirect( $l.'#msg_'.JRequest::getVar('msgId') ); // last 2 params optional
 	}
 	
 	function replyToMessage()

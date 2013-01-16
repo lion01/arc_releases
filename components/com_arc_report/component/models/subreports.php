@@ -23,9 +23,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class ReportModelSubreports extends JModel
 {
+	var $_requirementsUsed = array();
+	
 	/**
 	 * Set up the active cycle
-	 * Sets $this->_cycle
+	 * Sets $this->_cycleId
 	 * @param int $id  The cycle id to set as current
 	 */
 	function setCycle( $id )
@@ -57,11 +59,11 @@ class ReportModelSubreports extends JModel
 	}
 	
 	/**
-	 * Set up the filter values
-	 * Sets $this->_requirements
+	 * Set up the search results
+	 * Sets $this->_subreports (paginator) and its data
 	 * @param string $activity  The activity in progress ('write'|'check'|'view')
 	 */
-	function setFilterValues( $requirements )
+	function setSearch( $filters = array() )
 	{
 		$u = ApotheosisLib::getUser();
 		$personId = $u->person_id;
@@ -82,44 +84,43 @@ class ReportModelSubreports extends JModel
 		default:
 			$role = 0;
 		}
-		$this->_requirements = $requirements;
-		$this->_requirements['cycle'] = $this->_cycleId;
-		$this->_requirements['person'] = $personId;
-		$this->_requirements['role'] = $role;
+		
+		$requirements = $filters;
+		$requirements['cycle'] = $this->_cycleId;
+		$requirements['role'] = $role;
+		$requirements['role_person'] = $personId;
+		if( $requirements !== $this->_requirementsUsed ) {
+			$this->_requirementsUsed = $requirements;
+			$this->_subreports = &ApothPagination::_( 'report.subreport', $this->_subreports );
+			$this->_subreports->setData( $requirements, array( 'group_name', 'reportee_name' ) );
+		}
 	}
 	
-	function setSearch()
-	{
-		$this->_subreports = &ApothPagination::_( 'report.subreport', $this->_subreports );
-		$this->_subreports->setData( $this->_requirements, array( 'group_name', 'reportee_name' ) );
-	}
-	
+	/**
+	 * Set the breadcrumb to get back to this page
+	 * pay no attention to filters here as they are dealt with in the nav model
+	 * 
+	 * @param unknown_type $fCrumbs
+	 */
 	function resetBreadcrumbs( &$fCrumbs )
 	{
-		$this->_fCrumbs = &$fCrumbs;
-		
 		$c = $this->getCycle();
 		$name = $c->getDatum( 'name' );
 		$dep = array( 'report.cycle'=>$c->getId() );
 		// Set the base breadcrumb for the list
-		if( !isset( $this->_baseCrumb ) ) {
-			switch( $this->_activity ) {
-			case( 'view' ):
-				$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'View '.$name, array( 'action'=>'apoth_report_view_list', 'dependancies'=>$dep ) );
-				break;
-			
-			case( 'write' ):
-				$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Write '.$name, array( 'action'=>'apoth_report_write_list', 'dependancies'=>$dep ) );
-				break;
-			
-			case( 'check' ):
-				$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Check '.$name, array( 'action'=>'apoth_report_check_list', 'dependancies'=>$dep ) );
-				break;
-			}
-		}
+		switch( $this->_activity ) {
+		case( 'view' ):
+			$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'View '.$name, ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_view_list', $dep ) );
+			break;
 		
-		// Set any crumbs for filter conditions
-		// **** TODO - once there is a clearer idea of how filter terms come through.
+		case( 'write' ):
+			$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Write '.$name, ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_write_list', $dep ) );
+			break;
+		
+		case( 'check' ):
+			$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Check '.$name, ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_check_list', $dep ) );
+			break;
+		}
 	}
 	
 	function setPage( $pageId )

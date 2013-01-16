@@ -12,9 +12,15 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<div id="sidebar_div">
+<?php if(!$this->sidebarContentsOnly): ?>
+	<div id="sidebar_div">
+<?php endif; ?>
 	<span class="section_title"><?php echo $this->sidebarDivTitle; ?></span><br />
-	<?php while( ($this->curPreview = &$this->get('NextSidebar')) !== false ) {
-		echo $this->loadTemplate( 'preview' );
-	} ?>
-</div>
+	<?php
+		while( ($this->curPreview = &$this->get('NextSidebar')) !== false ) {
+			echo $this->loadTemplate( 'preview' );
+		}
+	?>
+<?php if(!$this->sidebarContentsOnly): ?>
+	</div>
+<?php endif; ?>

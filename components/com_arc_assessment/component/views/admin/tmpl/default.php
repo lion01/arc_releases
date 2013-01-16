@@ -63,11 +63,11 @@ JRequest::setVar( 'admin_groups', serialize($this->assGroups) );
 	</div>
 	<div class="input_div">
 		<label for="valid_from">Valid from:</label>
-		<?php echo JHTML::_( 'arc.date', 'valid_from', date('Y-m-d') );?>
+		<?php echo JHTML::_( 'arc.dateField', 'valid_from', date('Y-m-d') );?>
 	</div>
 	<div class="input_div">
 		<label for="valid_to">Valid to:</label>
-		<?php echo JHTML::_( 'arc.date', 'valid_to', date('Y-m-d') );?>
+		<?php echo JHTML::_( 'arc.dateField', 'valid_to', date('Y-m-d') );?>
 	</div>
 	<div class="input_div">
 		<label for="color">Colour:</label>

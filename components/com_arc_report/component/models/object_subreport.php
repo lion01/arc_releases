@@ -67,7 +67,7 @@ class ApothFactory_Report_Subreport extends ApothFactory
 		return $r;
 	}
 	
-	function &getInstances( $requirements, $init = true )
+	function &getInstances( $requirements, $init = true, $orders = null )
 	{
 		$sId = $this->_getSearchId( $requirements );
 		$ids = $this->_getInstances($sId);
@@ -77,16 +77,14 @@ class ApothFactory_Report_Subreport extends ApothFactory
 		if( is_null($ids) ) {
 			$db = &JFactory::getDBO();
 			
-			$where = array();
+			$where = $join = array();
 			foreach( $requirements as $col=>$val ) {
 				if( is_array($val) ) {
 					if( empty($val) ) {
 						continue;
 					}
 					foreach( $val as $k=>$v ) {
-						if( !is_array( $val ) ) {
-							$val[$k] = $db->Quote( $v );
-						}
+						$val[$k] = $db->Quote( $v );
 					}
 					$assignPart = ' IN ('.implode( ', ',$val ).')';
 				}
@@ -102,8 +100,27 @@ class ApothFactory_Report_Subreport extends ApothFactory
 					$where[] = 's.cycle_id'.$assignPart;
 					break;
 				
+				case( 'person' ):
+					$where[] = '(s.author_id'.$assignPart.' OR s.reportee_id'.$assignPart.')';
+					break;
+				
 				case( 'author' ):
 					$where[] = 's.author_id'.$assignPart;
+					break;
+				
+				case( 'reportee' ):
+					$where[] = 's.reportee_id'.$assignPart;
+					break;
+				
+				case( 'subject' ):
+					$dbCA = $db->nameQuote( 'ca' );
+					$join[] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses_ancestry' ).' AS '.$dbCA
+						."\n".'   ON '.$dbCA.'.id = s.rpt_group_id';
+					$where[] = $dbCA.'.'.$db->nameQuote( 'ancestor' ).$assignPart;
+					break;
+				
+				case( 'group' ):
+					$where[] = 's.rpt_group_id'.$assignPart;
 					break;
 				
 				case( 'status' ):
@@ -111,8 +128,8 @@ class ApothFactory_Report_Subreport extends ApothFactory
 					break;
 				
 				case( 'role' ):
-					if( isset( $requirements['person'] ) ) {
-						$personId = $requirements['person'];
+					if( isset( $requirements['role_person'] ) ) {
+						$personId = $requirements['role_person'];
 					}
 					else {
 						$u = ApotheosisLib::getUser();
@@ -122,8 +139,36 @@ class ApothFactory_Report_Subreport extends ApothFactory
 					$rptTable = ApotheosisLibAcl::getUserTable( 'report.subreports' );
 					$join['role'] = 'INNER JOIN '.$db->nameQUote( $rptTable ).' AS r'
 						."\n".'   ON r.id = s.id';
-					$where['role'] = 'r.role'.$assingPart;
+					$where['role'] = 'r.role'.$assignPart;
 					break;
+				}
+			}
+			
+			// now set up any 'ORDER BY' clause
+			if( !is_null( $orders ) ) {
+				foreach( $orders as $orderOn=>$orderDir ) {
+					if( $orderDir == 'a' ) {
+						$orderDir = 'ASC';
+					}
+					elseif( $orderDir == 'd' ) {
+						$orderDir = 'DESC';
+					}
+					
+					switch( $orderOn ) {
+					case( 'group_name' ):
+						$dbC = $db->nameQuote( 'c' );
+						$join['groups'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses' ).' AS '.$dbC
+							."\n".'    ON '.$dbC.'.id = s.rpt_group_id';
+						$orderBy[] = $dbP.'.fullname '.$orderDir;
+						
+					case( 'reportee_name' ):
+						$dbP = $db->nameQuote( 'p' );
+						$join['reportees'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_ppl_people' ).' AS '.$dbP
+							."\n".'    ON '.$dbP.'.id = s.reportee_id';
+						$orderBy[] = $dbP.'.surname '.$orderDir;
+						$orderBy[] = $dbP.'.firstname '.$orderDir;
+						break;
+					}
 				}
 			}
 			
@@ -192,6 +237,7 @@ class ApothFactory_Report_Subreport extends ApothFactory
 		// store any status comment
 		$c = $r->getAndClearStatusComment();
 		if( !is_null( $c ) ) {
+			// This performs an update to the row which the trigger on rpt_subreports has created
 			$query = 'CREATE TEMPORARY TABLE tmp_rt AS'
 				."\n".'SELECT `subreport_id`, `person_id`, MAX( `time` ) AS `time`'
 				."\n".'FROM `jos_apoth_rpt_subreport_status_log`'
@@ -351,7 +397,7 @@ class ApothReportSubreport extends JObject
 		}
 	}
 	
-	function render( $part, $format, $pdfObj = null )
+	function render( $part, $format, $pdfObj = null, $disabled = false )
 	{
 		// get the section to use for this subreport
 		if( !isset( $this->_sectionId ) ) {
@@ -363,7 +409,7 @@ class ApothReportSubreport extends JObject
 		// get and return that section's rendering of this report
 		switch( strtolower( $format ) ) {
 		case( 'html' ):
-			return $section->renderHTML( $this, $part );
+			return $section->renderHTML( $this, $part, $disabled );
 			break;
 		
 		case( 'pdf' ):
@@ -403,7 +449,7 @@ class ApothReportSubreport extends JObject
 		$req = array( 'cycle'=>$this->_core['cycle_id'], 'group'=>$this->_core['rpt_group_id'], 'subreport'=>true );
 		$order = array( 'specificity'=>'DESC' );
 		$candidates = $fSec->getInstances( $req, false, $order );
-		$this->_sectionId = reset( $candidates );
+		$this->_sectionId = ( is_array( $candidates ) ? reset( $candidates ) : null );
 	}
 	
 	/**

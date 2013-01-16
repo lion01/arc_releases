@@ -24,6 +24,7 @@ $td = $this->thread->getDetailsShown();
 $ids = ( $td ? $this->thread->getMessageIds() : array( $this->thread->getFirstMessageId() ) );
 $first = true;
 foreach( $ids as $id ) {
+	unset( $this->message );
 	$this->message = $this->fMsg->getInstance( $id );
 	$this->author = ApotheosisLib::getUser( ApotheosisLib::getJUserId( $this->message->getAuthor() ) );
 	$this->authorName = ApotheosisLib::nameCase( 'teacher', $this->author->title, $this->author->firstname, $this->author->middlenames, $this->author->surname );
@@ -45,7 +46,7 @@ foreach( $ids as $id ) {
 			<td><?php echo $this->incident; ?></td>
 			<td><?php echo ApotheosisData::_( 'course.name', $this->message->getDatum( 'group_id' ) ); ?>
 			<td><?php echo $this->authorName; ?></td>
-			<td><?php echo $this->message->getDate(); ?></td>
+			<td><?php echo JHTML::_( 'arc.date', $this->message->getDate() ); ?></td>
 			<td><?php echo $detailLink ?></td>
 		</tr>
 		<?php
@@ -64,7 +65,7 @@ foreach( $ids as $id ) {
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td><?php echo $this->authorName; ?></td>
-			<td><?php echo $this->message->getDate(); ?></td>
+			<td><?php echo JHTML::_( 'arc.date' , $this->message->getDate() ); ?></td>
 			<td><?php echo $detailLink ?></td>
 		</tr>
 		<?php

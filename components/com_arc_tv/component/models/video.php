@@ -24,32 +24,65 @@ require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'ap
  */
 class TvModelVideo extends ApothModel
 {
+	/**
+	 * TV model vars
+	 */
+	var $_dimensions = null;
+	var $_searchTerms = array();
+	var $_searchedTag = array();
+	var $_searchedIds = array();
+	var $_showOverlay = false;
+	var $_showSidebarOverlay = false;
+	var $_previewLinkMod = false;
+	var $_sidebarPreviewLinkMod = false;
+	var $_tagCloud = array();
+	var $_sidebarTitle = '';
+	var $_savedSidebarTitle = null;
+	var $_savedCriteria = null;
+	var $_curVideo = null;
+	var $_recommendedVideoPager = null; 
+	var $_sidebarVideoPager     = null; 
+	var $_searchedVideoPager    = null; 
+	
+	/**
+	 * TV model constructor
+	 */
 	function __construct()
 	{
 		parent::__construct();
 		
-		$this->fVideo = &ApothFactory::_( 'tv.video' );
-		$this->_params = &JComponentHelper::getParams( 'com_arc_tv' );
-		$this->fVideo->setParam( 'video_scripts', $this->_params->get('video_scripts') );
 		$this->_coreParams = &JComponentHelper::getParams( 'com_arc_core' );
-		$this->_dimensions = null;
-		$this->_searchTerms = array();
-		$this->_searchedTag = array();
-		$this->_searchedIds = array();
-		$this->_showOverlay = false;
-		$this->_previewLinkMod = false;
+		$this->_params     = &JComponentHelper::getParams( 'com_arc_tv' );
+		$this->fVideo      = &ApothFactory::_( 'tv.video' );
+		$this->fVideo->setParam( 'video_scripts', $this->_params->get('video_scripts') );
+		$this->fVideo->setPersistent( 'searches' );
+		$this->fVideo->setPersistent( 'searchParams' );
 	}
 	
-	function __sleep(){
-		return parent::getPersistent();
-	}
+// 	/**
+// 	 * Extending parent Arc model __sleep() here to minify some variables
+// 	 * 
+// 	 * @see ApothModel::__sleep()
+// 	 */
+// 	function __sleep()
+// 	{
+// 		return parent::__sleep();
+// 	}
 	
+	/**
+	 * Upon __wakeup() we need to un-minify some vars
+	 * or set vars that were originally set in constructor
+	 */
 	function __wakeup()
 	{
-		$this->fVideo =                ApothFactory::_( 'tv.video', $this->fVideo );
-		$this->recommendedVideoPager = ApothPagination::_( 'tv.video.recommended' );
-		$this->sidebarVideoPager =     ApothPagination::_( 'tv.video.sidebar' );
-		$this->searchedVideoPager =    ApothPagination::_( 'tv.video.searched' );
+		parent::__wakeup();
+		
+		// setup same vars as the constructor did
+		$this->_coreParams = &JComponentHelper::getParams( 'com_arc_core' );
+		$this->_params     = &JComponentHelper::getParams( 'com_arc_tv' );
+		$this->fVideo      = &ApothFactory::_( 'tv.video' );
+		$this->fVideo->setPersistent( 'searches' );
+		$this->fVideo->setPersistent( 'searchParams' );
 	}
 	
 	
@@ -60,6 +93,7 @@ class TvModelVideo extends ApothModel
 	 * 
 	 * @return mixed The requested parameters
 	 */
+	function getAllowRatings()  { return (bool)$this->_params->get( 'video_ratings' ); }
 	function getVotw()          { return  (int)$this->_params->get( 'votw' ); }
 	function getRecSize()       { return  (int)$this->_params->get( 'rec_size' ); }
 	function getSidebarSize()   { return  (int)$this->_params->get( 'sidebar_size' ); }
@@ -67,7 +101,6 @@ class TvModelVideo extends ApothModel
 	function getTagCloudSize()  { return  (int)$this->_params->get( 'tagcloud_size' ); }
 	function getTagCloudScale() { return  (int)$this->_params->get( 'tagcloud_scale' ); }
 	function getViewedDays()    { return  (int)$this->_params->get( 'viewed_days' ); }
-	function getAllowRatings()  { return (bool)$this->_params->get( 'video_ratings' ); }
 	function getSiteId()        { return  (int)$this->_coreParams->get( 'site_id' ); }
 	
 	
@@ -178,6 +211,21 @@ class TvModelVideo extends ApothModel
 	 */
 	function setSidebar( $criteria )
 	{
+		// do we need to extend persistence of the 'searched' paginator
+		if( $this->savePaginationCheck('searched') ) {
+			// prepare sidebar overlays and manage links
+			if( $this->_savedCriteria == 'searched_my' ) {
+				$this->_showSidebarOverlay = true;
+			}
+			if( $this->_savedCriteria == 'searched_mod' ) {
+				$this->_showSidebarOverlay = true;
+				$this->_sidebarPreviewLinkMod = true;
+			}
+			
+			// we need to intercept the criteria to base the sidebar on
+			$criteria = 'searched_recent';
+		}
+		
 		$this->_setPagedVideos( 'sidebar', $criteria );
 	}
 	
@@ -249,7 +297,7 @@ class TvModelVideo extends ApothModel
 	function &_getNextPagedVideo( $type )
 	{
 		if( !isset($this->_{$type}) ) {
-			$this->_{$type} = $this->{$type.'VideoPager'}->getPagedInstances();
+			$this->_{$type} = $this->{'_'.$type.'VideoPager'}->getPagedInstances();
 		}
 		
 		$next = each( $this->_{$type} );
@@ -272,6 +320,9 @@ class TvModelVideo extends ApothModel
 	 */
 	function _setPagedVideos( $type, $criteria )
 	{
+		// by default don't save the paginator
+		$savePagination = false;
+		
 		// set the pagination size
 		switch( $type ) {
 		case( 'recommended' ):
@@ -331,12 +382,20 @@ class TvModelVideo extends ApothModel
 				
 			case( 'searched_mod' ):
 				$requirements['status'] = ARC_TV_PENDING;
+				$order = array( 'submitted_date'=>'a' );
+				$savePagination = true;
+				$this->_savedSidebarTitle = 'Videos for moderation...';
+				$this->_savedCriteria = $criteria;
 				break;
 			
 			case( 'searched_my' ):
 				$u = ApotheosisLib::getUser();
 				$pId = $u->person_id;
 				$requirements['owner'] = $pId;
+				$order = array( 'creation_date'=>'d' );
+				$savePagination = true;
+				$this->_savedSidebarTitle = 'My videos...';
+				$this->_savedCriteria = $criteria;
 				break;
 			
 			case( 'searched_ids' ):
@@ -345,17 +404,23 @@ class TvModelVideo extends ApothModel
 				break;
 			
 			case( 'searched_recent' ):
-				// **** probably look to see if we have search data from awakened model
-				// **** if so use it or fallback to most viewed
-				$requirements['status'] = ARC_TV_APPROVED;
-				$requirements['id'] = array( 19, 29, 39, 49, 59, 89 ); // **** need more info on this
-				$this->_sidebarTitle = 'Searched videos...';
+				$this->_sidebarVideoPager = &$this->_searchedVideoPager;
+				$this->_sidebarTitle = $this->_savedSidebarTitle;
 				break;
 		}
 		
-		$this->{$type.'VideoPager'} = ApothPagination::_( 'tv.video.'.$type );
-		$this->{$type.'VideoPager'}->setData( $requirements, $order );
-		$this->{$type.'VideoPager'}->setPageSize( $pageSize );
+		// check to see if relevant pagination object is already set (persistent)
+		// if not then create it now
+		if( !isset($this->{'_'.$type.'VideoPager'}) ) {
+			$this->{'_'.$type.'VideoPager'} = &ApothPagination::_( 'tv.video.'.$type );
+			$this->{'_'.$type.'VideoPager'}->setData( $requirements, $order );
+			$this->{'_'.$type.'VideoPager'}->setPageSize( $pageSize );
+		}
+		
+		// save the pagination object if required
+		if( $savePagination ) {
+			$this->_savePagination( $type );
+		}
 	}
 	
 	/**
@@ -372,8 +437,8 @@ class TvModelVideo extends ApothModel
 		$searchStrings = array();
 		foreach( $vidIds as $vidId ) {
 			$vidObj = &$this->fVideo->getInstance( $vidId );
-			$title = $vidObj->getDatum('title');
-			$desc = $vidObj->getDatum('desc');
+			$title = $vidObj->getDatum( 'title' );
+			$desc = $vidObj->getDatum( 'desc' );
 			$tags = $vidObj->getTags();
 			$tagList = array();
 			foreach( $tags as $info ) {
@@ -398,7 +463,23 @@ class TvModelVideo extends ApothModel
 	 */
 	function getPageCount( $type )
 	{
-		return $this->{$type.'VideoPager'}->getPageCount();
+		return $this->{'_'.$type.'VideoPager'}->getPageCount();
+	}
+	
+	/**
+	 * Retrieve the IDs of the videos in the named paginator
+	 * 
+	 * @param string $type  Which paginator do we want the video IDs from
+	 * @return array $retVal  The video IDs from the named paginator
+	 */
+	function getPageIds( $type )
+	{
+		$retVal = array();
+		if( isset($this->{'_'.$type.'VideoPager'}) ) {
+			$retVal = $this->{'_'.$type.'VideoPager'}->getAllInstances( false );
+		}
+		
+		return $retVal;
 	}
 	
 	/**
@@ -416,7 +497,7 @@ class TvModelVideo extends ApothModel
 	 */
 	function setTagCloud()
 	{
-		//  get tag cloud
+		// get tag cloud
 		$tagCloud = &$this->fVideo->getTagCloud( $this->getTagCloudSize() );
 		
 		// determine scaling
@@ -488,11 +569,13 @@ class TvModelVideo extends ApothModel
 	/**
 	 * Delete the files for the specified video
 	 * 
-	 * @param string $vidId  The ID of the video whose source files we wish to remove
 	 * @return array  Associative array of success indicator and message
 	 */
-	function delVidFiles( $vidId )
+	function delVidFiles()
 	{
+		// get the video ID in question
+		$vidId = $this->_curVideo->getId();
+		
 		// Remote URL
 		$url = $this->_params->get('video_scripts').'/delete_files.php';
 		
@@ -581,6 +664,16 @@ class TvModelVideo extends ApothModel
 	}
 	
 	/**
+	 * Get are we showing mini status icon overlays status in the sidebar
+	 *
+	 * @return boolean  True if showing, false if not
+	 */
+	function getShowSidebarOverlay()
+	{
+		return $this->_showSidebarOverlay;
+	}
+	
+	/**
 	 * Get are we using mod link for preview status
 	 * 
 	 * @return boolean  True if moderation link, false if regular video page link
@@ -593,11 +686,21 @@ class TvModelVideo extends ApothModel
 	/**
 	 * Set are we using mod link for preview status
 	 * 
-	 * @param boolean $show  True if moderation link, false if regular video page link
+	 * @param boolean $linkMod  True if moderation link, false if regular video page link
 	 */
-	function setPreviewLinkMod( $modLink )
+	function setPreviewLinkMod( $linkMod )
 	{
-		$this->_previewLinkMod = $modLink;
+		$this->_previewLinkMod = $linkMod;
+	}
+	
+	/**
+	 * Get are we using mod link for preview status in the sidebar
+	 *
+	 * @return boolean  True if moderation link, false if regular video page link
+	 */
+	function getSidebarPreviewLinkMod()
+	{
+		return $this->_sidebarPreviewLinkMod;
 	}
 	
 	/**
@@ -664,6 +767,65 @@ class TvModelVideo extends ApothModel
 		$sent = ApotheosisData::_( 'people.sendEmail', $from, $pId, $emailSubject, $emailBody );
 		
 		return $sent;
+	}
+	
+	/**
+	 * Do we need to maintain persistence of the given pagination type?
+	 * Likely to be called by controller when any page load does not include setSideBar()
+	 * which usually performs this check
+	 * 
+	 * @param string $type  What type of paginator are we checking?
+	 * @param boolean $idCheck  Should we perform the ID check?
+	 * @return boolean $retVal  Did we need to extend persistence of the given paginator
+	 */
+	function savePaginationCheck( $type, $idCheck = true )
+	{
+		$retVal = false;
+		
+		// make comparisons here to simplify the final check
+		$sidebarTitle = isset( $this->_savedSidebarTitle ); // saved sidebar title
+		$paginator = isset( $this->{'_'.$type.'VideoPager'} ); // saved pagination object
+		$curVideo = isset( $this->_curVideo ); // we are looking at a video page
+		if( $sidebarTitle && $paginator && $curVideo && $idCheck ) { // only check IDs if we need to and can actually do it
+			$id = ( array_search($this->_curVideo->getId(), $this->{'_'.$type.'VideoPager'}->getAllInstances(false)) !== false ); // the video we are looking at is in the saved search
+		}
+		else {
+			$id = true; // don't check if the ID of the current video is in the saved paginator
+		}
+		
+		// should we persist the named paginator?
+		if( $sidebarTitle && $paginator && $curVideo && $id) {
+			$this->_savePagination( $type );
+			$retVal = true;
+		}
+		
+		return $retVal;
+	}
+	
+	/**
+	 * Save the specified pagination object
+	 *
+	 * @param string $type  Which paginator to save
+	 */
+	function _savePagination( $type )
+	{
+		$this->setPersistent( '_'.$type.'VideoPager', 'paginator' );
+		$this->setPersistent( '_savedSidebarTitle' );
+		$this->setPersistent( '_savedCriteria' );
+	
+	}
+	
+	/**
+	 * Clear the named paginator and saved sidebar title
+	 * 
+	 * @param string $type  What type of paginator do we want to clear
+	 */
+	function clearPagination( $type )
+	{
+		$this->{'_'.$type.'VideoPager'} = null; // this triggers pagination destructor
+		unset( $this->{'_'.$type.'VideoPager'} );
+		unset( $this->_savedSidebarTitle );
+		unset( $this->_savedCriteria );
 	}
 	
 	/**
@@ -755,15 +917,14 @@ class TvModelVideo extends ApothModel
 			if( !is_null($data['tags']) ) {
 				// check to see if we need to save any new tags
 				if( !is_null($data['tags_new']) && is_array($data['tags_new']) ) {
-					// remove any new tags which aren't actually going to be used and clean up valid new tags
+					// remove any new tags which aren't actually going to be used
 					foreach( $data['tags_new'] as $k=>$tag ) {
-						$tag = strtolower( $tag ); // **** further cleaning needed (punctuation etc)
+						$tag = strtolower( $tag );
 						if( array_search($k, $data['tags']) === false ) {
 							unset( $data['tags_new'][$k] );
 						}
 						elseif( (($existingId = array_search($tag, $data['tags_new'])) !== false ) && ($existingId != $k) ) {
 							unset( $data['tags_new'][$k] );
-							unset( $data['tags'][array_search($k, $data['tags'])] );
 						}
 						else {
 							$data['tags_new'][$k] = $tag;
@@ -772,18 +933,29 @@ class TvModelVideo extends ApothModel
 					
 					// proceed with dealing with new tags only if we have any left
 					if( !empty($data['tags_new']) ) {
-						// save new tags and get their IDs
-						$newTagIds = $this->fVideo->getWordIds( $data['tags_new'], true );
+						// clean the remaining new tags
+						$data['tags_new'] = implode( ' ', $data['tags_new'] );
+						$data['tags_new'] = $this->cleanUpInput( $data['tags_new'] );
+						$data['tags_new'] = array_unique( $data['tags_new'] );
 						
-						// replace temp IDs in the data with the new permanent ID
-						foreach( $data['tags'] as $k=>$tagId ) {
-							// update new tag IDs
-							if( $tagId < 0 ) {
-								$data['tags'][$k] = $newTagIds[$data['tags_new'][$tagId]];
-							}
+						// save new tags and get their IDs
+						$data['tags_new'] = $this->fVideo->getWordIds( $data['tags_new'], true );
+					}
+					
+					// clean out the negetive word IDs in the $data['tags'] array
+					foreach( $data['tags'] as $k=>$wordId ) {
+						if( $wordId < 0 ) {
+							unset( $data['tags'][$k] );
 						}
 					}
+					
+					// merge the 2 arrays
+					$data['tags'] = array_merge( $data['tags'], $data['tags_new'] ) ;
 				}
+				
+				// for the purposes of saving the tags we need to approximate the expected structure
+				// of the tags in video object
+				$data['tags'] = array_flip( $data['tags'] );
 			}
 			else {
 				$data['tags'] = array();

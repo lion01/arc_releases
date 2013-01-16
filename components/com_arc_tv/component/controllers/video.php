@@ -22,16 +22,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class TvControllerVideo extends TvController
 {
+	/**
+	 * TV controller constructor
+	 */
 	function __construct()
 	{
 		parent::__construct();
 		$this->registerTask( 'save draft', 'save' );
 		$this->registerTask( 'approve', 'approval' );
 		$this->registerTask( 'reject', 'approval' );
-		
-		$this->model = &$this->getModel( 'video' );
-		$this->view =  &$this->getView( 'video', JRequest::getVar('format', 'html') );
-		$this->view->setModel( $this->model, true );
 	}
 	
 	/**
@@ -40,20 +39,28 @@ class TvControllerVideo extends TvController
 	 */
 	function display()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
+		
 		// video of the week
-		$this->model->setVideo( $this->model->getVotw() );
+		$model->setVideo( $model->getVotw() );
 		
 		// wrapper has recommended for you
-		$this->model->setRecommended( 'user' );
+		$model->setRecommended( 'user' );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' );
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->home();
+		$view->home();
 	}
 	
 	/**
@@ -62,23 +69,28 @@ class TvControllerVideo extends TvController
 	 */
 	function video()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
 		// selected video
-		$this->model->setVideo( JRequest::getVar('vidId') );
+		$model->setVideo( JRequest::getVar('vidId') );
 		
 		// increment the views of this video
-		$this->model->addVidView();
+		$model->addVidView();
 		
 		// wrapper has recommended for you
-		$this->model->setRecommended( 'user' );
+		$model->setRecommended( 'user' );
 		
 		// sidebar is related
-		$this->model->setSidebar( 'related' );
+		$model->setSidebar( 'related' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->video();
+		$view->video();
 	}
 	
 	/**
@@ -87,28 +99,35 @@ class TvControllerVideo extends TvController
 	 */
 	function search()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
+		
 		// retrieve cleaned search terms
-		$searchTerms = $this->model->cleanUpInput( JRequest::getVar('search') );
+		$searchTerms = $model->cleanUpInput( JRequest::getVar('search') );
 		
 		// check we have some valid search terms
 		if( !empty($searchTerms) ) {
-			$this->model->setSearched( $searchTerms );
+			$model->setSearched( $searchTerms );
 			
 			// search can have recommended for you if no results found
-			$this->model->setRecommended( 'user' );
+			$model->setRecommended( 'user' );
 			
 			// sidebar is most viewed
-			$this->model->setSidebar( 'viewed' );
+			$model->setSidebar( 'viewed' );
 			
 			// tag cloud
-			$this->model->setTagCloud();
+			$model->setTagCloud();
 			
 			// display
-			$this->view->search( 'Search results...' );
+			$view->search( 'Search results...' );
 		}
 		else {
-			global $mainframe;
-			$mainframe->enqueueMessage( 'Please enter valid search terms', 'notice' );
+			$this->enqueueMessage( 'Please enter valid search terms', 'notice' );
 			$this->display();
 		}
 	}
@@ -119,6 +138,14 @@ class TvControllerVideo extends TvController
 	 */
 	function tag()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
+		
 		// tag being searched on
 		$tag = JRequest::getVar( 'tag' );
 		
@@ -126,16 +153,16 @@ class TvControllerVideo extends TvController
 		$searchedTag = array( $tag );
 		
 		// set the searched tag
-		$this->model->setSearchedTag( $searchedTag );
+		$model->setSearchedTag( $searchedTag );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' );
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->search( 'Videos containing the tag \''.$tag.'\'...' );
+		$view->search( 'Videos containing the tag \''.$tag.'\'...' );
 	}
 	
 	/**
@@ -144,26 +171,34 @@ class TvControllerVideo extends TvController
 	 */
 	function moderate()
 	{
-		// set the showing of mini status icon preview overlays
-		$this->model->setShowOverlay( true );
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
 		
-		// set the video preview link to be the manage page, not the video page
-		$this->model->setPreviewLinkMod( true );
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
 		
 		// set moderation as the search type
-		$this->model->setSearchedMod();
+		$model->setSearchedMod();
+		
+		// set the showing of mini status icon preview overlays
+		$model->setShowOverlay( true );
+		
+		// set the video preview link to be the manage page, not the video page
+		$model->setPreviewLinkMod( true );
 		
 		// search can have recommended for you if no results found
-		$this->model->setRecommended( 'user' );
+		$model->setRecommended( 'user' );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' ); // **** recent searches stuff needs to be an option here when we have a moderate button to go to moderation queue
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->search( 'Videos for moderation...' );
+		$view->search( 'Videos for moderation...' );
 	}
 	
 	/**
@@ -172,23 +207,31 @@ class TvControllerVideo extends TvController
 	 */
 	function myVids()
 	{
-		// set the showing of mini status icon preview overlays
-		$this->model->setShowOverlay( true );
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
 		
 		// set myVids as the search type
-		$this->model->setSearchedMy();
+		$model->setSearchedMy();
+		
+		// set the showing of mini status icon preview overlays
+		$model->setShowOverlay( true );
 		
 		// search can have recommended for you if no results found
-		$this->model->setRecommended( 'user' );
+		$model->setRecommended( 'user' );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' ); // **** recent searches stuff needs to be an option here
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->search( 'My videos...' );
+		$view->search( 'My videos...' );
 	}
 	
 	/**
@@ -197,28 +240,36 @@ class TvControllerVideo extends TvController
 	 */
 	function idsSearch()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// clear any saved searches
+		$model->clearPagination( 'searched' );
+		
 		// get the user ID
 		$siteIdTuple = JRequest::getVar( 'userid' );
 		
 		// determine user name
 		$userNameInfo = explode( '_', $siteIdTuple );
-		$userName = $this->model->getDisplayName( $userNameInfo[0], $userNameInfo[1] );
+		$userName = $model->getDisplayName( $userNameInfo[0], $userNameInfo[1] );
 		
 		// get IDs from the session
 		$session = &JSession::getInstance( 'none', array() );
 		$ids = $session->get( $siteIdTuple, array(), 'userVidIds' );
 		
 		// set user video IDs as the search type
-		$this->model->setSearchedIds( $ids );
+		$model->setSearchedIds( $ids );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' ); // **** recent searches stuff needs to be an option here
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->search( 'Videos owned by '.$userName );
+		$view->search( 'Videos owned by '.$userName );
 	}
 	
 	/**
@@ -227,27 +278,42 @@ class TvControllerVideo extends TvController
 	 */
 	function manage()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
 		// selected video
-		$this->model->setVideo( JRequest::getVar('vidId', null) );
+		$model->setVideo( JRequest::getVar('vidId', null) );
 		
 		// sidebar is most viewed
-		$this->model->setSidebar( 'viewed' ); // **** recent searches stuff needs to be an option here when we have a moderate button to go to moderation queue
+		$model->setSidebar( 'viewed' );
 		
 		// tag cloud
-		$this->model->setTagCloud();
+		$model->setTagCloud();
 		
 		// display
-		$this->view->manage();
+		$view->manage();
 	}
 	
 	/**
-	 * Show the "upload a file" form (which gets rendered in an frame)
+	 * Show the "upload a file" form (which gets rendered in an iFrame)
 	 */
 	function vidFiles()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
 		// selected video
-		$this->model->setVideo( JRequest::getVar('vidId', null) );
-		$this->view->frameFile();
+		$model->setVideo( JRequest::getVar('vidId') );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
+		
+		// display the "upload a file" form (in an iFrame)
+		$view->frameFile();
 	}
 	
 	/**
@@ -256,11 +322,18 @@ class TvControllerVideo extends TvController
 	 */
 	function delVidFiles()
 	{
+		// prepare the model
+		$model = &$this->getModel( 'video' );
+		
 		// what video are we working with
 		$vidId = JRequest::getVar( 'vidId' );
+		$model->setVideo( $vidId );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
 		
 		// attempt to delete the source video files and set appropriate results / messages
-		$delVid = $this->model->delVidFiles( $vidId );
+		$delVid = $model->delVidFiles();
 		
 		if( $delVid['success'] ) {
 			$result['success'] = true;
@@ -281,11 +354,8 @@ class TvControllerVideo extends TvController
 			echo json_encode( $result );
 		}
 		else {
-			global $mainframe;
-			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array( 'tv.videoId'=>$vidId ) );
-			
-			$mainframe->enqueueMessage( $result['message'], $result['type'] );
-			$mainframe->redirect( $link );
+			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>$vidId) );
+			$this->setRedirect( $link, $result['message'], $result['type'] );
 		}
 	}
 	
@@ -295,13 +365,19 @@ class TvControllerVideo extends TvController
 	 */
 	function rateVideo()
 	{
+		// prepare the model
+		$model = &$this->getModel( 'video' );
+		
 		// what video are we working with
 		$vidId = JRequest::getVar( 'vidId' );
-		$this->model->setVideo( $vidId );
+		$model->setVideo( $vidId );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
 		
 		// attempt to rate the video and set appropriate results / messages
 		$rating = JRequest::getVar( 'rating' );
-		$rateVid = $this->model->rateVideo( $rating );
+		$rateVid = $model->rateVideo( $rating );
 		
 		if( $rateVid['success'] ) {
 			$result['success'] = true;
@@ -324,11 +400,8 @@ class TvControllerVideo extends TvController
 			echo json_encode( $result );
 		}
 		else {
-			global $mainframe;
-			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array( 'tv.videoId'=>$vidId ) );
-			
-			$mainframe->enqueueMessage( $result['message'], $result['type'] );
-			$mainframe->redirect( $link );
+			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array('tv.videoId'=>$vidId) );
+			$this->setRedirect( $link, $result['message'], $result['type'] );
 		}
 	}
 	
@@ -340,16 +413,22 @@ class TvControllerVideo extends TvController
 	 */
 	function save( $submit = false )
 	{
+		// prepare the model
+		$model = &$this->getModel( 'video' );
+		
 		// what video are we working with
 		$vidId = JRequest::getVar( 'video_id', null );
 		$initStatus = JRequest::getVar( 'video_status' );
-		$this->model->setVideo( $vidId );
+		$model->setVideo( $vidId );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
 		
 		// determine which pane we are viewing
-		$meta =     JRequest::getVar( 'manage_meta_pane' );
-		$credits =  JRequest::getVar( 'manage_credits_pane' );
-		$filters =  JRequest::getVar( 'manage_filters_pane' );
-		$types = array();
+		$meta    = JRequest::getVar( 'manage_meta_pane' );
+		$credits = JRequest::getVar( 'manage_credits_pane' );
+		$filters = JRequest::getVar( 'manage_filters_pane' );
+		$types   = array();
 		
 		// process the video meta data
 		if( $meta ) {
@@ -390,11 +469,11 @@ class TvControllerVideo extends TvController
 		$data['status'] = ( $submit ? ARC_TV_PENDING : ARC_TV_INCOMPLETE );
 		
 		// Call the model save method
-		$newVidId = $this->model->save( $types, $data );
+		$newVidId = $model->save( $types, $data );
 		
 		if( $newVidId ) {
 			// Get any other secondary errors
-			$errors = $this->model->getErrMsg();
+			$errors = $model->getErrMsg();
 			$successMessage = ( $submit ? 'Video data successfully saved and submitted for moderation.' : 'Video data successfully saved.' );
 			array_unshift( $errors, $successMessage );
 			
@@ -404,7 +483,7 @@ class TvControllerVideo extends TvController
 			$vidId = $newVidId;
 		}
 		else {
-			$result['message'] = reset( $this->model->getErrMsg() );
+			$result['message'] = reset( $model->getErrMsg() );
 			$result['type'] = 'warning';
 			$result['status'] = $initStatus;
 		}
@@ -418,10 +497,8 @@ class TvControllerVideo extends TvController
 			echo json_encode( $result );
 		}
 		else {
-			global $mainframe;
-			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array( 'tv.videoId'=>$vidId ) );
-			$mainframe->enqueueMessage( $result['message'], $result['type'] );
-			$mainframe->redirect( $link );
+			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>$vidId) );
+			$this->setRedirect( $link, $result['message'], $result['type'] );
 		}
 	}
 	
@@ -441,9 +518,15 @@ class TvControllerVideo extends TvController
 	 */
 	function approval()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		
 		// what video are we working with
-		$vidId = JRequest::getVar( 'video_id', null );
-		$this->model->setVideo( $vidId );
+		$vidId = JRequest::getVar( 'video_id' );
+		$model->setVideo( $vidId );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
 		
 		// approve or reject?
 		$approval = strtolower( JRequest::getVar('task') );
@@ -454,21 +537,25 @@ class TvControllerVideo extends TvController
 		$data['comments'] = JRequest::getVar( 'manage_comments_input' );
 		
 		// call the model save method
-		$vidId = $this->model->save( $types, $data );
+		$savedVidId = $model->save( $types, $data );
 		
 		// if the approve status was correctly set and we saved the new status correctly
 		// we need to tell the video encoder
 		$encMessage = '';
-		if( ($approval == 'approve') && $vidId ) {
-			$remote = $this->model->approveVideo( $vidId );
+		if( ($approval == 'approve') && $savedVidId ) {
+			$remote = $model->approveVideo( $savedVidId );
 			if( $remote['success'] ) {
 				$encMessage = ' The video encoder will now finish the remaining formats.';
 			}
 		}
 		
-		if( $vidId ) {
+		if( $savedVidId ) {
+			// get the ID of the next moderatable video
+			$curModIds = $model->getPageIds( 'searched' );
+			$nextModVidId = !empty( $curModIds ) ? reset($curModIds) : $vidId;
+			
 			// email the owner of the video with the outcome of the moderation
-			$sentEmail = $this->model->sendModEmail();
+			$sentEmail = $model->sendModEmail();
 			if( $sentEmail === true ) {
 				$emailMessage = ' Email notification sent to video owner.';
 			}
@@ -484,16 +571,20 @@ class TvControllerVideo extends TvController
 				$approvalState = 'rejected';
 			}
 			
-			$result['success'] = true;
 			$result['message'] = 'Video has been '.$approvalState.'.'.$emailMessage.$encMessage;
 			$result['type'] = 'message';
+			$result['status'] = $data['status'];
 		}
 		else {
-			$result['success'] = false;
+			// next moderatable video ID will the same one as before
+			$nextModVidId = $vidId;
+			
 			$result['message'] = 'We were unable to '.$approval.' the video at this time. Please try again.';
 			$result['type'] = 'warning';
+			$result['status'] = ARC_TV_PENDING;
 		}
-		$result['id'] = $vidId;
+		$result['id'] = $savedVidId;
+		$result['next_id'] = $nextModVidId;
 		
 		// what page format
 		$format = JRequest::getVar( 'format', 'html' );
@@ -503,11 +594,8 @@ class TvControllerVideo extends TvController
 			echo json_encode( $result );
 		}
 		else {
-			global $mainframe;
-			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_moderate', array() );
-				
-			$mainframe->enqueueMessage( $result['message'], $result['type'] );
-			$mainframe->redirect( $link );
+			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>$nextModVidId) );
+			$this->setRedirect( $link, $result['message'], $result['type'] );
 		}
 	}
 	
@@ -516,11 +604,19 @@ class TvControllerVideo extends TvController
 	 */
 	function panel()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
 		// video of the week
-		$this->model->setVideo( $this->model->getVotw() );
+		$model->setVideo( $model->getVotw() );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched' );
 		
 		// display
-		$this->view->panel();
+		$view->panel();
 	}
 	
 	/**
@@ -528,11 +624,45 @@ class TvControllerVideo extends TvController
 	 */
 	function updateStatus()
 	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
 		// set the video whose current status we need to update
-		$this->model->setVideo( JRequest::getVar('video_id') );
+		$model->setVideo( JRequest::getVar('video_id') );
+		
+		// are we checking IDs as part of the pagination check?
+		$idCheck = (bool)JRequest::getvar( 'idCheck' );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched', $idCheck );
 		
 		// display
-		$this->view->updateStatus();
+		$view->updateStatus();
+	}
+	
+	/**
+	 * Prepare a sidebar div to be displayed via Ajax
+	 */
+	function sidebar()
+	{
+		// prepare the model and view
+		$model = &$this->getModel( 'video' );
+		$view  = &$this->getView( 'video', JRequest::getVar('format', 'html') );
+		$view->setModel( $model, true );
+		
+		// set the video whose current status we need to update
+		$model->setVideo( JRequest::getVar('video_id') );
+		
+		// sidebar is persisted search
+		$model->setSidebar( 'searched_recent' );
+		
+		// extend persistence of 'searched' paginator if appropriate
+		$model->savePaginationCheck( 'searched', false );
+		
+		// display
+		$view->sidebar();
 	}
 }
 ?>

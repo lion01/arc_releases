@@ -68,11 +68,11 @@ echo JHTML::_( 'arc.searchStart' ); ?>
 				<div class="search_row">
 					<div class="search_field">
 						<label for="start_date" class="arcTip" title="The earliest date to include in the search">Start Date:</label><br />
-						<?php echo JHTML::_( 'arc.date', 'start_date', ApotheosisLib::getEarlyDate() );?>
+						<?php echo JHTML::_( 'arc.dateField', 'start_date', ApotheosisLib::getEarlyDate() );?>
 					</div>
 					<div class="search_field">
 						<label for="end_date" class="arcTip" title="The latest date to include in the search">End Date:</label><br />
-						<?php echo JHTML::_( 'arc.date', 'end_date', date('Y-m-d')  );?>
+						<?php echo JHTML::_( 'arc.dateField', 'end_date', date('Y-m-d')  );?>
 					</div>
 				</div>
 				<div class="search_row">

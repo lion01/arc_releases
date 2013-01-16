@@ -24,11 +24,27 @@ jimport( 'joomla.application.component.view' );
  */
 class ReportViewNav extends JView
 {
-	function display()
+	function __construct( $config = array() )
+	{
+		parent::__construct( $config );
+		$this->scriptPath = JURI::base().'components'.DS.'com_arc_report'.DS.'views'.DS.'nav'.DS.'tmpl'.DS;
+	}
+	
+	function displayNav()
 	{
 		$this->view = JRequest::getVar( $view, null );
 		
-		parent::display();
+		parent::display( 'nav' );
+	}
+	
+	function displayFilters()
+	{
+		parent::display( 'filters' );
+	}
+	
+	function displayBreadcrumbs()
+	{
+		parent::display( 'breadcrumbs' );
 	}
 	
 }

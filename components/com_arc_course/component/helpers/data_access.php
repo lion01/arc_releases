@@ -56,6 +56,79 @@ class ApotheosisData_Course extends ApotheosisData
 		return 'Course component installed';
 	}
 	
+	function groups( $gIds )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( array('id'=>$gIds), true );
+		return $groups;
+	}
+	
+	function ancestors( $gIds, $limittTo = null )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$requirements = array('ancestor_of'=>$gIds);
+		if( !is_null( $limitTo ) ) {
+			$requirements['id'] = $limitTo;
+		}
+		
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( $requirements, true );
+		return $groups;
+	}
+	
+	function descendants( $gIds, $limitTo = null )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$requirements = array('descendant_of'=>$gIds);
+		if( !is_null( $limitTo ) ) {
+			$requirements['id'] = $limitTo;
+		}
+		
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( $requirements, true );
+		return $groups;
+	}
+	
+	function parents( $gIds )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( array('parent_of'=>$gIds), true );
+		return $groups;
+	}
+	
+	function children( $gIds, $limitTo = null )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$requirements = array('child_of'=>$gIds);
+		if( !is_null( $limitTo ) ) {
+			$requirements['id'] = $limitTo;
+		}
+		
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( $requirements, true );
+		return $groups;
+	}
+	
+	/**
+	 * "Subjects" are defined as being the highest level groups below a root node
+	 * 
+	 * @param array $gIds  The groups whos subjects are sought
+	 */
+	function subjects( $gIds )
+	{
+		if( empty($gIds ) ) { return array(); }
+		$fGroup = ApothFactory::_( 'course.group' );
+		$ancestors = $fGroup->getInstances( array('ancestor_of'=>$gIds), false );
+		$roots = $fGroup->getInstances( array('root'=>true, 'ancestor_of'=>$gIds), false );
+		$roots = array_intersect( $ancestors, $roots );
+		
+		return $this->children( $roots, $ancestors );;
+	}
+	
+	
+	
 	/**
 	 * Find the id of the twin groups for a pseudo-group (or the original ids if not pseudo)
 	 * *** Think the whole notion of twinned groups borrowing their enrolments on a real group was a bad one
@@ -134,59 +207,32 @@ class ApotheosisData_Course extends ApotheosisData
 	
 	function name( $gId )
 	{
-		if( !isset($this->_name[$gId]) ) {
-			$db = &JFactory::getDBO();
-			$query = 'SELECT fullname'
-				."\n".'FROM #__apoth_cm_courses'
-				."\n".'WHERE id = '.$db->Quote($gId);
-			$db->setQuery($query);
-			
-			$this->_name[$gId] = $db->loadResult();
-		}
-		
-		return $this->_name[$gId];
+		if( empty($gId ) ) { return null; }
+		$fGroup = ApothFactory::_( 'course.group' );
+		$g = $fGroup->getInstance( $gId );
+		return $g->getDatum( 'fullname' );
 	}
 	
 	function names( $gIds )
 	{
-		if( is_array($gIds) && !empty($gIds) ) {
-			$db = &JFactory::getDBO();
-			foreach( $gIds as $k=>$gId ) {
-				$gIds[$k] = $db->Quote( $gId );
-			}
-			$gIds = implode( ',', $gIds );
-			
-			$query = 'SELECT id, fullname'
-				."\n".'FROM #__apoth_cm_courses'
-				."\n".'WHERE id IN ('.$gIds.')';
-			$db->setQuery( $query );
-			$this->_name = $db->loadAssocList( 'id' );
-			
-			if( !is_array($this->_name) ) {
-				$this->_name = array();
-			}
-			
-			foreach( $this->_name as $gId=>$array ) {
-				$this->_name[$gId] = $array['fullname'];
-			}
+		if( empty($gIds ) ) { return array(); }
+		$fGroup = ApothFactory::_( 'course.group' );
+		$groups = $fGroup->getInstances( array('id'=>$gIds), true );
+		
+		$names = array();
+		foreach( $groups as $group ) {
+			$g = $fGroup->getInstance( $group );
+			$names[$group] = $g->getDatum( 'fullname' );
 		}
 		
-		return $this->_name;
+		return $names;
 	}
 	
 	function short( $gId )
 	{
-		static $checked = array();
-		
-		if( !isset( $checked[$gId] ) ) {
-			$db = &JFactory::getDBO();
-			$query = 'SELECT shortname'
-				."\n".' FROM jos_apoth_cm_courses'
-				."\n".' WHERE id = '.$db->Quote($gId);
-			$db->setQuery($query);
-			$checked[$gId] = $db->loadResult();
-		}
-		return $checked[$gId];
+		$fGroup = ApothFactory::_( 'course.group' );
+		$g = $fGroup->getInstance( $gId );
+		return $g->getDatum( 'shortname' );
 	}
 	
 	function type( $gId )
@@ -219,38 +265,6 @@ class ApotheosisData_Course extends ApotheosisData
 			$checked[$gId] = $db->loadResult();
 		}
 		return $checked[$gId];
-	}
-	
-	function descendants( $gId, $from = null, $to = null )
-	{
-		if( is_null($from) ) { $from = date('Y-m-d H:i:s'); }
-		if( is_null($to)   ) { $to   = date('Y-m-d H:i:s'); }
-		static $checked = array();
-		$db = &JFactory::getDBO();
-		
-		if( is_array($gId) ) {
-			foreach( $gId as $k=>$v ) {
-				$gId[$k] = $db->Quote( $v );
-			}
-			$assignPart = ' IN ('.implode( ', ', $gId ).')';
-			$ident = md5(implode('', $gId));
-		}
-		else {
-			$assignPart = ' = '.$db->Quote( $gId );
-			$ident = $gId;
-		}
-		if( !isset( $checked[$ident] ) ) {
-			$query = 'SELECT DISTINCT ca.id'
-				."\n".'FROM jos_apoth_cm_courses_ancestry AS ca'
-				."\n".'INNER JOIN jos_apoth_cm_courses AS c'
-				."\n".'   ON c.id = ca.id'
-				."\n".'~LIMITINGJOIN~'
-				."\n".'WHERE ca.ancestor '.$assignPart
-				."\n".'  AND '.ApotheosisLibDb::dateCheckSql( 'c.start_date', 'c.end_date', $from, $to );
-			$db->setQuery( ApotheosisLibAcl::limitQuery($query, 'timetable.groups', 'ca') );
-			$checked[$ident] = $db->loadResultArray();
-		}
-		return $checked[$ident];
 	}
 }
 ?>

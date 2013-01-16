@@ -18,28 +18,36 @@ if( ($this->mainView == 'video') || (($this->mainView == 'search') && ($this->se
 }
 ?>
 <div id="homepage_left_div">
-	<?php
-		switch( $this->mainView ) {
-		case( 'video' ):
-			echo $this->loadTemplate( 'video' );
-			break;
-			
-		case( 'search' ):
-			$this->showOverlay = $this->get( 'ShowOverlay' );
-			$this->previewLinkMod = $this->get( 'PreviewLinkMod' );
-			echo $this->loadTemplate( 'search' );
-			$this->showOverlay = false;
-			$this->previewLinkMod = false;
-			break;
-			
-		case( 'manage' ):
-			echo $this->loadTemplate( 'manage' );
-			break;
-		}
-	?>
+<?php
+	switch( $this->mainView ) {
+	case( 'video' ):
+		echo $this->loadTemplate( 'video' );
+		break;
+		
+	case( 'search' ):
+		$this->showOverlay = $this->get( 'ShowOverlay' );
+		$this->previewLinkMod = $this->get( 'PreviewLinkMod' );
+		echo $this->loadTemplate( 'search' );
+		$this->showOverlay = false;
+		$this->previewLinkMod = false;
+		break;
+		
+	case( 'manage' ):
+		echo $this->loadTemplate( 'manage' );
+		break;
+	}
+?>
 </div>
 <div id="homepage_right_div">
-	<?php echo $this->loadTemplate( 'searchbar' ); ?>
-	<?php echo $this->loadTemplate( 'sidebar' ); ?>
-	<?php echo $this->loadTemplate( 'tagcloud' ); ?>
+<?php
+	echo $this->loadTemplate( 'searchbar' );
+	
+	$this->showSidebarOverlay = $this->get( 'ShowSidebarOverlay' );
+	$this->sidebarPreviewLinkMod = $this->get( 'SidebarPreviewLinkMod' );
+	echo $this->loadTemplate( 'sidebar' );
+	$this->showSidebarOverlay = false;
+	$this->sidebarPreviewLinkMod = false;
+	
+	echo $this->loadTemplate( 'tagcloud' );
+?>
 </div>

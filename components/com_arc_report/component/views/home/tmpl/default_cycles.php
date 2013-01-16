@@ -12,6 +12,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+$this->nav->displayNav();
 ?>
 <div id="arc_main_narrow">
 <table>

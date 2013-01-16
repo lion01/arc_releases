@@ -52,6 +52,9 @@ class BehaviourAdminViewMessages extends JView
 		JToolBarHelper::custom( 'remove', 'delete', 'delete', 'Rescind', true );
 		
 		// Retrieve data for display in templates
+		$this->fInc = ApothFactory::_( 'behaviour.IncidentType' );
+		$this->fTag = ApothFactory::_( 'message.Tag' );
+		$this->fAct = ApothFactory::_( 'behaviour.Action' );
 		$this->model = &$this->getModel();
 		$this->search = $this->get( 'SearchTerm' );
 		$this->sender = $this->get( 'SenderTerm' );
@@ -133,6 +136,9 @@ class BehaviourAdminViewMessages extends JView
 		JToolBarHelper::cancel();
 		
 		// Retrieve data for display in templates
+		$this->fInc = ApothFactory::_( 'behaviour.IncidentType' );
+		$this->fTag = ApothFactory::_( 'message.Tag' );
+		$this->fAct = ApothFactory::_( 'behaviour.Action' );
 		$this->model = &$this->getModel();
 		$this->thread = &$this->get( 'Thread' );
 		$this->rescindMsgIds = $this->get( 'RescindMsgIds' );

@@ -78,9 +78,7 @@ class ApothFactory_Report_Section extends ApothFactory
 						continue;
 					}
 					foreach( $val as $k=>$v ) {
-						if( !is_array( $val ) ) {
-							$val[$k] = $db->Quote( $v );
-						}
+						$val[$k] = $db->Quote( $v );
 					}
 					$assignPart = ' IN ('.implode( ', ',$val ).')';
 				}
@@ -234,7 +232,7 @@ class ApothReportSection extends JObject
 	}
 	
 	
-	function renderHTML( $report, $part )
+	function renderHTML( $report, $part, $disabled = false )
 	{
 		// find out what fields this section has for the given $part
 		$fCyc = ApothFactory::_( 'report.cycle' );
@@ -251,7 +249,9 @@ class ApothReportSection extends JObject
 		
 		if( $part == 'brief' ) {
 			$fields2 = $fField->getInstances( array( 'section'=>$this->_id, 'part'=>'brief_2', 'format'=>'html' ), true, array( 'section_order'=>'ASC' ) );
-			$fields = array_merge( $fields, array( 'changePart' ), $fields2 );
+			if( !empty( $fields2 ) ) {
+				$fields = array_merge( $fields, array( 'changePart' ), $fields2 );
+			}
 		}
 		
 		$out = '<div class="part p_'.$p.'" style="height: ~BOTTOMHOLDER~px">'; // this is where all the html will be buffered
@@ -262,20 +262,33 @@ class ApothReportSection extends JObject
 			$rptData = $report->getFieldDatum( $fId );
 			$field = &$fField->getInstance( $fId );
 			if( $fId == 'changePart' ) {
-				$out = str_replace( '~BOTTOMHOLDER~', $maxBottom, $out )
-					.'</div><div class="part p_more_wrapper"><div class="more_loader">'.JHTML::_( 'arc.loading' ).'</div></div>'
-					.'<div class="part p_brief_2" style="height: ~BOTTOMHOLDER~px">';
+				$out = str_replace( '~BOTTOMHOLDER~', $maxBottom, $out ).'</div>';
+				
+				$moreFields = $fField->getInstances( array( 'section'=>$this->_id, 'part'=>'more', 'format'=>'html' ), true, array( 'section_order'=>'ASC' ) );
+				if( !empty( $moreFields ) ) {
+					$out .= '<div class="part p_more_wrapper"><div class="more_loader">'.JHTML::_( 'arc.loading' ).'</div></div>';
+				}
+				
+				$out .= '<div class="part p_brief_2" style="height: ~BOTTOMHOLDER~px">';
 				$maxBottom = 0;
 			}
 			elseif( !is_null( $field ) ) {
 				$field->setContext( $cycleId, $layoutId, $sectionId, $groupId );
-				$field->setConfig();
+				if( $disabled ) {
+					$field->setConfig( array( 'disabled'=>true ) );
+				}
+				else {
+					$field->setConfig();
+				}
 				$field->setReportData( $report );
 				
-				$maxBottom = max( $maxBottom, $field->getHTMLBottom() );
-				plgSystemArc_log::startTimer( 'report object_section renderHTML fieldRender' );
-				$out .= $field->renderHTML( $rptData );
-				plgSystemArc_log::stopTimer( 'report object_section renderHTML fieldRender' );
+				$wd = $field->getConfig( 'web_displayed' );
+				if( is_null( $wd ) == ($wd == 0) ) {
+					$maxBottom = max( $maxBottom, $field->getHTMLBottom() );
+					plgSystemArc_log::startTimer( 'report object_section renderHTML fieldRender' );
+					$out .= $field->renderHTML( $rptData );
+					plgSystemArc_log::stopTimer( 'report object_section renderHTML fieldRender' );
+				}
 			}
 			plgSystemArc_log::stopTimer( 'report object_section renderHTML fieldloop' );
 		}

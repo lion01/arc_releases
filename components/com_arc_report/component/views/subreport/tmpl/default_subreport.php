@@ -16,12 +16,12 @@ $id = $this->subreport->getId();
 $status = $this->subreport->getDatum( 'status_id' );
 
 if( $status == ARC_REPORT_STATUS_SUBMITTED ) {
-	$linkApprove  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_APPROVED ) );
+	$linkApprove  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_approve', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_APPROVED ) );
 	$linkReject   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_feedback', array( 'report.subreport'=>$id ) );
 }
 $linkSave     = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_INCOMPLETE ) );
-$linkSubmit   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_SUBMITTED ) );
-$linkPreview  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>0, 'report.status'=>'' ) );
+$linkSubmit   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_submit', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_SUBMITTED ) );
+$linkPreview  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>0, 'report.status'=>ARC_REPORT_STATUS_INCOMPLETE ) );
 $linkPreview2 = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_print_preview', array( 'report.subreport'=>$id ) );
 
 if( ApotheosisLib::getActionId() != ApotheosisLib::getActionIdByName( 'apoth_report_'.$this->get( 'Activity' ).'_subreport' ) ) {
@@ -32,7 +32,7 @@ if( ApotheosisLib::getActionId() != ApotheosisLib::getActionIdByName( 'apoth_rep
 <form id="sub_<?php echo $id; ?>_form" method="post" action="#">
 <div id="sub_<?php echo $id; ?>" class="subreport">
 
-<?php echo $this->subreport->render( 'brief', 'HTML' ); ?>
+<?php echo $this->subreport->render( 'brief', 'HTML', null, !$linkSave ); ?>
 
 <div class="subreport_status">
 <?php
@@ -68,7 +68,7 @@ case( ARC_REPORT_STATUS_APPROVED ):
 
 <div class="subreport_controls">
 	<?php if( $linkApprove ) : ?><a class="btn control"        href="<?php echo $linkApprove; ?>">Approve</a><?php endif; ?>
-	<?php if( $linkReject  ) : ?><a class="btn control reject" href="<?php echo $linkReject ; ?>" target="blank" rel="{handler: 'iframe', size: {x: 640, y: 300}}">Reject</a><?php endif; ?>
+	<?php if( $linkReject  ) : ?><a class="btn control reject" href="<?php echo $linkReject ; ?>" target="blank" rel="{handler: 'iframe', size: {x: 640, y: 350}}">Reject</a><?php endif; ?>
 	<?php if( $linkSave    ) : ?><a class="btn control"        href="<?php echo $linkSave   ; ?>">Save Draft</a><?php endif; ?>
 	<?php if( $linkSubmit  ) : ?><a class="btn control"        href="<?php echo $linkSubmit ; ?>">Submit</a><?php endif; ?>
 	<?php if( $linkPreview && $linkPreview2 ) : ?><a class="btn control preview" href="<?php echo $linkPreview; ?>" target="blank" rel="{handler: 'iframe', size: {x: 640, y: 480}}" >Preview</a> <input type="hidden" value="<?php echo $linkPreview2; ?>" />	<?php endif; ?>

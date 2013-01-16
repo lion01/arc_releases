@@ -1,0 +1,55 @@
+@CHARSET "ISO-8859-1";
+
+#breadcrumbs_wrapper {
+	overflow: auto;
+	padding: 0px 0px 10px 10px;
+}
+
+#breadcrumbs {
+	float: left;
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+	background-color:#ededed;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #bbb;
+	display:inline-block;
+	font-family:arial;
+	font-size:13px;
+	padding:1px 10px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px rgba(255, 255, 255, 0.67);
+}
+
+div.breadcrumb,
+div.breadcrumb_divider {
+	float: left;
+	height: 1.3em;
+	margin: 5px 0px;
+	
+}
+
+div.breadcrumb.first {
+	margin-left: 2px;
+}
+
+div.breadcrumb.last {
+	margin-right: 2px;
+}
+
+div.breadcrumb {
+}
+
+div.breadcrumb_divider {
+	width: 18px;
+	text-align: center;
+}
+
+div.breadcrumb_divider span:before {
+	content: ">";
+}

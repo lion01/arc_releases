@@ -17,6 +17,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class ApothFactory_Message_Message extends ApothFactory
 {
+	var $_date;
+	
+	/**
+	 * To comply with automated saving of factories
+	 * we must explicitly sleep any class vars in child factories
+	 */
+	function __sleep()
+	{
+		$parentVars = parent::__sleep();
+		$myVars = array( '_date' );
+		$allVars = array_merge( $parentVars, $myVars );
+	
+		return $allVars;
+	}
+	
 	function initialise()
 	{
 		$this->setDate();

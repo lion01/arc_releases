@@ -23,12 +23,14 @@ foreach( $this->scripts as $script ) {
 		.( ( isset( $pathInfo['extension'] ) && !empty( $pathInfo['extension'] ) ) ? '.'.$pathInfo['extension'] : '' );
 	JHTML::script( $fileName, $pathInfo['dirname'].DS );
 }
+
+$this->nav->displayNav();
 ?>
 
 <div id="arc_main_narrow">
 
 <?php
-echo JHTML::_( 'arc.breadcrumbs', ARC_REPORT_CRUMB_TRAIL );
+$this->nav->displayBreadcrumbs();
 echo JHTML::_( 'arc.hidden', 'ajax_page_url',   ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_list_ajax_page', array( 'report.listpage'=>0 ) ), 'id="ajax_page_url"' )."\r\n";
 echo JHTML::_( 'arc.hidden', 'ajax_single_url', ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_list_ajax_single', array( 'report.subreport'=>'~SUBREPORT~' ) ), 'id="ajax_single_url"' )."\r\n";
 echo JHTML::_( 'arc.hidden', 'ajax_more_url',   ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_more', array( 'report.subreport'=>'~SUBREPORT~' ) ), 'id="ajax_more_url"' )."\r\n";

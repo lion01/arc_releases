@@ -304,6 +304,45 @@ class ApotheosisData_People extends ApotheosisData
 		return $checked[(int)$legal][$use][$pId];
 	}
 	
+	/**
+	 * Quick and dirty chop out of "people" method below to get personName data for many people at once
+	 * 
+	 * @param unknown_type $pIds
+	 */
+	function displayNames( $pIds, $use = 'pupil' )
+	{
+		$db = &JFactory::getDBO();
+		
+		if( empty( $pIds ) ) {
+			return array();
+		}
+		
+		foreach( $pIds as $k=>$v ) {
+			$pIds[$k] = $db->quote( $v );
+		}
+		
+		// having worked out the extra clauses needed, load the data for this list
+		$query = 'SELECT DISTINCT p.id, p.title, COALESCE( p.preferred_firstname, p.firstname ) AS firstname, p.middlenames, COALESCE( p.preferred_surname, p.surname ) AS surname'
+			."\n".'FROM #__apoth_ppl_people AS p'
+			."\nWHERE id IN (".implode( ', ', $pIds ).' )'
+			."\n".'ORDER BY p.surname, p.firstname';
+		$db->setQuery($query);
+		$tmp = $db->loadObjectList( 'id' );
+		
+		$retVal = array();
+		// Use the raw data and add displayable names to it then push it to the stack
+		foreach( $tmp as $k=>$v ) {
+			$data = array( 'id'=>$v->id, 
+				'title'=>$v->title, 
+				'firstname'=>$v->firstname,
+				'middlenames'=>$v->middlenames,
+				'surname'=>$v->surname );
+			$retVal[$k] = ApotheosisLib::getPersonName( $data, $type, false, $withTutor );
+		}
+		
+		return $retVal;
+	}
+	
 	function gender( $pId )
 	{
 		$p = $this->person( $pId );
@@ -376,7 +415,6 @@ class ApotheosisData_People extends ApotheosisData
 		if( is_null($limPeople) ) { $limPeople = 'people.arc_people'; }
 		
 		$db = &JFactory::getDBO();
-		$joins = array( '~LIMITINGJOIN~' );
 		$separator = new stdClass();
 		$separator->id = '';
 		$separator->displayName = '';
@@ -387,7 +425,8 @@ class ApotheosisData_People extends ApotheosisData
 		// get the data relevant to each list and combine according to compound elements ('AND', 'OR')
 		foreach( $listNames as $opId=>$listName ) {
 			$wheres = array();
-			$joins = array();
+			$joins = array( '~LIMITINGJOIN~' );
+//			$joins = array(); // **** broken - remove
 			$listNameParts = explode( '.', $listName );
 			switch( $listNameParts[0] ) {
 			case( 'current' ):
@@ -605,6 +644,7 @@ class ApotheosisData_People extends ApotheosisData
 		
 		return $retVal;
 	}
+	
 	
 	/**
 	 * Retrieve an object containing personal data about a given person

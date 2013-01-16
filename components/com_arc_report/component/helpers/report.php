@@ -152,8 +152,13 @@ class ApothReportField_Report_Statements extends ApothReportField
 	function renderHTML( $value )
 	{
 		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
-		$html = '<textarea name="f_'.$this->_id.'" class="report_statement_text" style="top 0px; left: 0px; width: '.($this->_core['web_width'] - 45).'px; height: '.($this->_core['web_height'] - 10).'px"'.(empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '').'>'.$value.'</textarea>';
-		if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_statement', array( 'report.subreport'=>$this->_rptData['id'], 'report.field'=>$this->getId() ) ) ) {
+		$html = '<textarea name="f_'.$this->_id.'"'
+			.' class="report_statement_text"'
+			.' style="top 0px; left: 0px; width: '.($this->_core['web_width'] - 45).'px; height: '.($this->_core['web_height'] - 10).'px"'
+			.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
+			.( empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '' )
+			.'>'.$value.'</textarea>';
+		if( !$this->_config['disabled'] && ( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_statement', array( 'report.subreport'=>$this->_rptData['id'], 'report.field'=>$this->getId() ) ) ) ) {
 			$html .= '<a href="'.$link.'" class="report_statement_bank modal btn" target="blank" rel="{handler:\'iframe\', size:{x:640,y:480}}"><span class="inline_icon"></span><span class="bank_text">bank</span></a>';
 		}
 		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
@@ -305,7 +310,12 @@ class ApothReportField_Report_Textarea extends ApothReportField
 	function renderHTML( $value )
 	{
 		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
-		$html = '<textarea name="f_'.$this->_id.'" class="report_textarea" style="top 0px; left: 0px; width: '.$this->_core['web_width'].'px; height: '.$this->_core['web_height'].'px"'.(empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '').'>'.$value.'</textarea>';
+		$html = '<textarea name="f_'.$this->_id.'"'
+			.' class="report_textarea"'
+			.' style="top 0px; left: 0px; width: '.$this->_core['web_width'].'px; height: '.$this->_core['web_height'].'px"'
+			.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
+			.( empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '' )
+			.'>'.$value.'</textarea>';
 		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
@@ -355,7 +365,9 @@ class ApothReportField_Report_Radiolist extends ApothReportField
 				$name = 'f_'.$this->_core['id'];
 				$id = $name.'_'.$k;
 				if( $this->_config['controls'] !== false ) {
-					$html .= "\n\t".'<input type="radio" name="'.$name.'" id="'.$id.'" value="'.$k.'" '.( $k == $value ? 'checked="checked" ' : '' ).'/>';
+					$html .= "\n\t".'<input type="radio" name="'.$name.'" id="'.$id.'" value="'.$k.'" '
+						.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
+						.( $k == $value ? 'checked="checked" ' : '' ).'/>';
 				}
 				if( $this->_config['labels'] !== false ) {
 					$html .= "\n\t".'<label for="'.$id.'">'.$v.'</label>';

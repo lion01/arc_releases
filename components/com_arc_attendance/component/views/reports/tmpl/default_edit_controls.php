@@ -28,11 +28,11 @@ if( $this->firstPass ) : $this->firstPass = false;
 		<div>
 			<span>
 				<label for="edit_start_date">Within the date range:</label>
-				<?php echo JHTML::_( 'arc.date', 'edit_start_date', JRequest::getVar('edit_start_date', JRequest::getVar('start_date')) ); ?>
+				<?php echo JHTML::_( 'arc.dateField', 'edit_start_date', JRequest::getVar('edit_start_date', JRequest::getVar('start_date')) ); ?>
 			</span>
 			<span>
 				<label for="edit_end_date">to:</label>
-				<?php echo JHTML::_( 'arc.date', 'edit_end_date', JRequest::getVar('edit_end_date', JRequest::getVar('end_date')) ); ?>
+				<?php echo JHTML::_( 'arc.dateField', 'edit_end_date', JRequest::getVar('edit_end_date', JRequest::getVar('end_date')) ); ?>
 			</span>
 			<input type="hidden" name="sheetId" value="<?php echo $this->sheetId; ?>" />
 			<input type="submit" name="submit" value="Apply" />

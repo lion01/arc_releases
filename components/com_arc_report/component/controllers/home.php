@@ -32,15 +32,18 @@ class ReportControllerHome extends ReportController
 		$view = &$this->getView ( 'home', 'html' );
 		$navView = &$this->getView ( 'nav', 'html' );
 		
-		$fCrumbs = ApothFactory::_( 'core.breadcrumb', $this->getVar( 'fCrumbs' ) );
+		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
 		$fCrumbs->sweepTrail( ARC_REPORT_CRUMB_TRAIL );
-		$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Report', array( 'action'=>'apoth_report_home', 'style'=>'font-weight: bold;' ) );
-		$this->saveVar( 'fCrumbs', $fCrumbs, ApothFactory::getIncFile( 'core.breadcrumb' ) );
+		$fCrumbs->addBreadCrumb( ARC_REPORT_CRUMB_TRAIL, 'Report', ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_home', array( 'view'=>'home' ) ), array( 'style'=>'font-weight: bold;' ) );
 		
 		$model->setCycles();
 		$model->setEvents();
 		
-		$navView->display();
+		$view->nav = &$navView;
 		$view->setModel( $model, true );
 		$view->display();
 	}

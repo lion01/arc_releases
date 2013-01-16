@@ -1,22 +1,5 @@
 @CHARSET "ISO-8859-1";
 
-#filter {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 5px;
-}
-#filter_toggle {
-	position: absolute;
-	left: -20px;
-	width: 25x;
-	height: 30px;
-	background: lightgreen;
-	border-radius: 5px 0px 0px 5px;
-	line-height: 30px;
-	valign: middle;
-}
-
 #subreports {
 	border: 2px solid darkgrey;
 	border-radius: 5px;

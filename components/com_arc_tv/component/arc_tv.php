@@ -16,10 +16,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_library.php' ); 
 require_once( JPATH_COMPONENT.DS.'controller.php' );
 
-// Component constants
-define( 'ARC_TV_APPROVED',   1 );
-define( 'ARC_TV_REJECTED',   2 );
-define( 'ARC_TV_PENDING',    3 );
+// TV component constants
+define( 'ARC_TV_APPROVED'  , 1 );
+define( 'ARC_TV_REJECTED'  , 2 );
+define( 'ARC_TV_PENDING'   , 3 );
 define( 'ARC_TV_INCOMPLETE', 4 );
 
 // Require specific controller if requested
@@ -35,7 +35,7 @@ if( $controllerEnd = JRequest::getWord('view', 'video') ) {
 
 // Create the controller
 $classname = 'TvController'.ucfirst( $controllerEnd );
-$controller = new $classname( );
+$controller = new $classname();
 
 // Perform the Request task
 $controller->execute( JRequest::getCmd('task') );

@@ -61,9 +61,10 @@ class ReportModelWritecheck extends JModel
 		$u = ApotheosisLib::getUser();
 		$personId = $u->person_id;
 		$writeRole = ApotheosisLibAcl::getRoleId( 'any_report_author' );
+		$groups = ApotheosisData::_( 'report.groups', array( 'person_id'=>$personId, 'role_id'=>$writeRole ) );
 		
 		foreach( $this->_cycles as $cId ) {
-			$req = array( 'cycle'=>$cId, 'person'=>$personId, 'role'=>$writeRole );
+			$req = array( 'cycle'=>$cId, 'group'=>$groups );
 			$this->_progress['write'][$cId]['total']        = count( $fSub->getInstances( $req ) );
 			
 			$req['status'] = ARC_REPORT_STATUS_NASCENT;
@@ -90,9 +91,10 @@ class ReportModelWritecheck extends JModel
 		$u = ApotheosisLib::getUser();
 		$personId = $u->person_id;
 		$checkRole = ApotheosisLibAcl::getRoleId( 'any_report_checker' );
+		$groups = ApotheosisData::_( 'report.groups', array( 'person_id'=>$personId, 'role_id'=>$checkRole ) );
 		
 		foreach( $this->_cycles as $cId ) {
-			$req = array( 'cycle'=>$cId, 'person'=>$personId, 'role'=>$checkRole );
+			$req = array( 'cycle'=>$cId, 'group'=>$groups );
 			$this->_progress['check'][$cId]['total']        = count( $fSub->getInstances( $req ) );
 			
 			$req['status'] = ARC_REPORT_STATUS_SUBMITTED;
