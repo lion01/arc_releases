@@ -116,7 +116,7 @@ class BehaviourAdminModelMessages extends JModel
 	{
 		$threadIds = $this->_loadPagedThreads();
 		
-		$fThread = ApothFactory::_( 'behaviour.Thread' );
+		$fThread = ApothFactory::_( 'message.Thread' );
 		
 		$this->_pagedThreads = array();
 		foreach( $threadIds as $threadId ) {
@@ -214,7 +214,7 @@ class BehaviourAdminModelMessages extends JModel
 	
 	function setMessage( $messageId )
 	{
-		$fMsg = ApothFactory::_( 'behaviour.Message' );
+		$fMsg = ApothFactory::_( 'message.Message' );
 		
 		$this->_message = &$fMsg->getInstance( $messageId );
 	}
@@ -307,7 +307,7 @@ class BehaviourAdminModelMessages extends JModel
 	 */
 	function setThread( $thrId )
 	{
-		$fThread = ApothFactory::_( 'behaviour.Thread' );
+		$fThread = ApothFactory::_( 'message.Thread' );
 		
 		$this->_thread = &$fThread->getInstance( $thrId );
 	}
@@ -350,7 +350,7 @@ class BehaviourAdminModelMessages extends JModel
 	 */
 	function &getThreadMessages( $msgIds )
 	{
-		$fMsg = ApothFactory::_( 'behaviour.Message' );
+		$fMsg = ApothFactory::_( 'message.Message' );
 			
 		foreach( $msgIds as $msgId ) {
 			$threadMessages[] = &$fMsg->getInstance( $msgId );

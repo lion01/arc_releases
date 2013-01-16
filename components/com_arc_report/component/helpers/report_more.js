@@ -41,7 +41,7 @@ function vivifyFieldMore( t )
 		var newText = t.getProperty( 'otherText' );
 		if( typeof( newText ) != 'null' ) {
 			var oldText = t.getText();
-			t.text = newText;
+			t.setText( newText );
 			t.setProperty( 'otherText', oldText );
 		}
 		

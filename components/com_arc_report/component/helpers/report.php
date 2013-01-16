@@ -275,6 +275,18 @@ class ApothReportField_Report_priorStatements extends ApothReportField_Report_St
 			}
 		}
 		
+		// depending on config, a set of static statements may need to be appended
+		if( !isset( $this->_config['useStatic'] ) ) { $this->_config['useStatic'] = 'no'; }
+		switch( $this->_config['useStatic'] ) {
+		case( 'maybe' ):
+			if( !empty( $statements ) ) {
+				break;
+			}
+		case( 'yes' ):
+			$statements = array_merge( $statements, parent::getStatements( $report, $doMerge ) );
+			break;
+		}
+		
 		return $statements;
 	}
 	
