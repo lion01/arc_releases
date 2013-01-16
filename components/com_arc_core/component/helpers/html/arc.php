@@ -128,9 +128,10 @@ class JHTMLArc
 	 * @param string $textProp  The name of the object variable for the option text
 	 * @param mixed $oldVal  The key that is selected (accepts an array or a string)
 	 * @param boolean $add  shall we extend the js to allow addition of new values
+	 * @param str $regex  regex to apply to values added by combo_add functionality
 	 * @return string  The HTML for the combo select list
 	 */
-	function combo( $name, $params, $data, $valProp, $textProp, $oldVal = null, $add = null )
+	function combo( $name, $params, $data, $valProp, $textProp, $oldVal = null, $add = null, $regex = '' )
 	{
 		JHTML::stylesheet( 'combo.css', JURI::root().'components'.DS.'com_arc_core'.DS.'helpers'.DS.'html'.DS );
 		JHTML::script( 'combo.js', JURI::root().'components'.DS.'com_arc_core'.DS.'helpers'.DS.'html'.DS, true );
@@ -138,6 +139,23 @@ class JHTMLArc
 		if( !is_null($add) ) {
 			JHTML::script( 'combo_add.js', JURI::root().'components'.DS.'com_arc_core'.DS.'helpers'.DS.'html'.DS, true );
 			$class = 'arc_combo_add';
+			
+			// do we need to add a regex to the page
+			if( $regex != '' ) {
+				$document = &JFactory::getDocument();
+				
+				// have we already created a JS hash to hold regexes?
+				static $regexHash = false;
+				if( !$regexHash ) {
+					$regexHash = true;
+					$makeHash = 'var comboRegexes = new Hash();';
+					$document->addScriptDeclaration( $makeHash );
+				}
+				
+				$addRegex = 'comboRegexes.set( \''.$name.'\', /'.$regex.'/g );';
+				
+				$document->addScriptDeclaration( $addRegex );
+			}
 		}
 		
 		$name = (isset($params['multiple']) ? $name.'[]' : $name);

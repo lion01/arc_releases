@@ -153,7 +153,7 @@ class ApotheosisData_Message extends ApotheosisData
 			$item = null;
 		}
 		
-		$retVal = '';
+		$retVal = true;
 		if( !is_null($item) ) {
 			$c = self::_getMessageHelper( $item->getHandler() );
 			
@@ -559,8 +559,23 @@ class ApotheosisData_Message extends ApotheosisData
 	}
 	
 	
+	function tweetEnabled()
+	{
+		$params = JComponentHelper::getParams( 'com_arc_message' );
+		$p1 = $params->get( 'consKey' );
+		$p2 = $params->get( 'consSecret' );
+		$p3 = $params->get( 'token' );
+		$p4 = $params->get( 'tokenSecret' );
+		return ( !empty( $p1 )
+		      && !empty( $p2 )
+		      && !empty( $p3 )
+		      && !empty( $p4 )
+		      );
+	}
+	
 	function tweet( $msg )
 	{
+		$ok = true;
 		try {
 			$params = JComponentHelper::getParams( 'com_arc_message' );
 			$oauth = new OAuth( $params->get( 'consKey' ), $params->get( 'consSecret' ), OAUTH_SIG_METHOD_HMACSHA1, OAUTH_AUTH_TYPE_FORM );
@@ -581,7 +596,9 @@ class ApotheosisData_Message extends ApotheosisData
 		catch( OAuthException $E ) {
 			echo 'There was a problem tweeting this message. Please contact IT support and tell them what is written below.<br />';
 			echo $E->getMessage();
+			$ok = false;
 		}
+		return $ok;
 	}
 	
 }

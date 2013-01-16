@@ -184,23 +184,38 @@ class MessageControllerHub extends MessageController
 	
 	function saveDraft()
 	{
-		$this->_send( 'draft' );
+		$statuses = $this->_send( 'draft' );
 		
 		global $mainframe;
-		$mainframe->enqueueMessage( 'saved' );
+		if( $statuses['bad'] == 0 && $statuses['good'] == 0 ) {
+			$mainframe->enqueueMessage( 'no messages defined' );
+		}
+		else {
+			if( $statuses['good'] > 0 ) {
+				$mainframe->enqueueMessage( $statuses['good'].' message'.($statuses['good'] > 1 ? 's' : '' ).' saved' );
+			}
+			if( $statuses['bad'] > 0 ) {
+				$mainframe->enqueueMessage( $statuses['bad'].' message'.($statuses['bad'] > 1 ? 's' : '' ).' failed to save', 'error' );
+			}
+		}
 		$this->display();
 	}
 	
 	function send()
 	{
-		$ok = $this->_send( 'send' );
+		$statuses = $this->_send( 'send' );
 		
 		global $mainframe;
-		if( $ok === true ) {
-			$mainframe->enqueueMessage( 'sent' );
+		if( $statuses['bad'] == 0 && $statuses['good'] == 0 ) {
+			$mainframe->enqueueMessage( 'no messages defined' );
 		}
 		else {
-			$mainframe->enqueueMessage( $ok, 'error' );
+			if( $statuses['good'] > 0 ) {
+				$mainframe->enqueueMessage( $statuses['good'].' message'.($statuses['good'] > 1 ? 's' : '' ).' sent' );
+			}
+			if( $statuses['bad'] > 0 ) {
+				$mainframe->enqueueMessage( $statuses['bad'].' message'.($statuses['bad'] > 1 ? 's' : '' ).' failed to send', 'error' );
+			}
 		}
 		$this->display();
 	}
@@ -242,10 +257,12 @@ class MessageControllerHub extends MessageController
 			return 'Problem with date';
 		}
 		
+		$count = array( 'good'=>0, 'bad'=>0 );
 		$split = JRequest::getVar('split_on');
 		// send the one and only message we need to
 		if( empty($split) ) {
-			$model->sendMessage( $data, $method );
+			$success = $model->sendMessage( $data, $method );
+			$count[( $success ? 'good' : 'bad' )]++;
 		}
 		// go through the values in the split field and send a message per value
 		else {
@@ -256,7 +273,8 @@ class MessageControllerHub extends MessageController
 			foreach( $opts as $opt ) {
 				$data['data'][$split] = $opt;
 				if( !empty($opt) ) {
-					$model->sendMessage( $data, $method );
+					$success = $model->sendMessage( $data, $method );
+					$count[( $success ? 'good' : 'bad' )]++;
 				}
 			}
 		}
@@ -265,7 +283,7 @@ class MessageControllerHub extends MessageController
 		if( !empty($form) ) {
 			JRequest::setVar( 'form', str_replace('.edit', '.view', $form) );
 		}
-		return true;
+		return $count;
 	}
 	
 	/*

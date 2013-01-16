@@ -56,6 +56,9 @@ window.addEvent( 'domready', function() {
 		});
 	}
 	
+	// form submission (hide buttons to prevent multiple submissions
+	$('add_inc_form').addEvent( 'submit', disableButtons )
+	
 	// Group selection
 	var grpSlider = new Fx.Slide( $('grp_list'), {
 		'duration': 500,
@@ -110,4 +113,10 @@ function monitorGroups()
 		});
 	}
 	
+}
+
+function disableButtons()
+{
+	$('msg_sec3').setStyle( 'display', 'none' );
+	$('msg_sec4').setStyle( 'display', 'block' );
 }

@@ -16,6 +16,10 @@
 			<option value="90">3 Months</option>
 			<option value="365">1 Year</option>
 		</param>
+		<param name="video_ratings"   type="radio" default="0" label="Allow video ratings" description="Should users be allowed to rate videos">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
 	</params>
 	<params group="search_params">
 		<param name="title_weight" type="text" size="5"   label="Title weight"       description="Search weighting for words in video titles" />
@@ -109,5 +113,13 @@
 		<param name="user"     type="text"     size="60" label="User"     description="External video database username" />
 		<param name="password" type="password" size="60" label="Password" description="External video database password" />
 		<param name="database" type="text"     size="60" label="Database" description="External video database name" />
+	</params>
+		<params group="email_params">
+		<param name="email_approved_title" type="text"     size="50" label="Approved title"     description="Email title to send when a video has been approved"                                                                                                                                     default="Your video has been approved!" />
+		<param name="email_approved_body"  type="textarea" cols="40" label="Approved body"      description="Email body to send when a video has been approved.&lt;br /&gt;&lt;br /&gt;Keywords:&lt;br /&gt;~LINK~ - Direct link to video&lt;br /&gt;~COMMENT~ - any comments made by the moderator" default="Hello,&#13;&#10;&#13;&#10;Thank you for uploading to Arc TV.&#13;&#10;&#13;&#10;The moderators have now approved your video and it is live on the website: ~LINK~&#13;&#10;&#13;&#10;The Arc TV Moderators" />
+		<param name="email_rejected_title" type="text"     size="50" label="Rejected title"     description="Email title to send when a video has been rejected"                                                                                                                                     default="Your video has been rejected" />
+		<param name="email_rejected_body"  type="textarea" cols="40" label="Approved body"      description="Email body to send when a video has been rejected.&lt;br /&gt;&lt;br /&gt;Keywords:&lt;br /&gt;~LINK~ - Direct link to video&lt;br /&gt;~COMMENT~ - any comments made by the moderator" default="Hello,&#13;&#10;&#13;&#10;Thanks for uploading to Arc TV.&#13;&#10;&#13;&#10;Unfortunately your video has not been approved at this time because:&#13;&#10;&#13;&#10;~COMMENT~&#13;&#10;&#13;&#10;You can edit the film and then resubmit it: ~LINK~&#13;&#10;&#13;&#10;If you have any other questions do let us know.&#13;&#10;&#13;&#10;The Arc TV Moderators" />
+		<param name="email_from_name"      type="text"     size="50" label="Email from name"    description="Email to set as the 'From:' name"                                                                                                                                                       default="Arc TV Moderators" />
+		<param name="email_from_address"   type="text"     size="50" label="Email from address" description="Email to set as the 'From:' address"                                                                                                                                                    default="no-reply@arc.pun.net" />
 	</params>
 </config>

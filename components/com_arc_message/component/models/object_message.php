@@ -271,18 +271,37 @@ class ApothFactory_Message_Message extends ApothFactory
 		$isNew = ( $id < 0 );
 		$u = &ApotheosisLib::getUser();
 		
+		// check data is valid before writing it
+		if( !$r->getDataValid() ) {
+			return false;
+		}
+		
 		// Set up core data
 		$applies = $r->getDate();
 		$applies = ( is_null($applies) ? 'NULL' : $db->Quote($applies) );
 		if( $isNew ) {
 			$now = $r->getCreated();
 			$dbNow = $db->Quote( $now );
+			// check this isn't a duplicate of an existing message
+			$query = 'SELECT '.$db->nameQuote('id')
+				."\n".'FROM '.$db->nameQuote( '#__apoth_msg_messages' )
+				."\n".'WHERE '.$db->nameQuote('author').' = '.$db->Quote( $r->getAuthor() )
+				."\n".'  AND '.$db->nameQuote('data_hash').' = '.$db->Quote( $r->getDataHash() )
+				."\n".'LIMIT 1';
+			$db->setQuery( $query );
+			$dupe = $db->loadResult();
+			
+			if( !empty( $dupe ) ) {
+				return false;
+			}
+			// having established this is a new message, set up the insert query
 			$query = 'INSERT INTO '.$db->nameQuote( '#__apoth_msg_messages' )
 				."\n".'SET '
 				."\n  ".$db->nameQuote('handler').' = '.$db->Quote($r->getHandler())
 				."\n, ".$db->nameQuote('author').' = '.$db->Quote($r->getAuthor())
 				."\n, ".$db->nameQuote('created').' = '.$dbNow
-				."\n, ".$db->nameQuote('applies_on').' = '.$applies;
+				."\n, ".$db->nameQuote('applies_on').' = '.$applies
+				."\n, ".$db->nameQuote('data_hash').' = '.$db->Quote($r->getDataHash());
 		}
 		else {
 			$now = date('Y-m-d H:i:s', (strtotime($this->_date)));
@@ -295,6 +314,7 @@ class ApothFactory_Message_Message extends ApothFactory
 				."\n, ".$db->nameQuote('applies_on').' = '.$applies
 				."\n, ".$db->nameQuote('last_modified').' = '.$dbNow
 				."\n, ".$db->nameQuote('last_modified_by').' = '.$db->Quote($u->person_id)
+				."\n, ".$db->nameQuote('data_hash').' = '.$db->Quote($r->getDataHash())
 				."\n".' WHERE '.$db->nameQuote('id').' = '.$db->Quote($id);
 		}
 		$then = $db->Quote( date('Y-m-d H:i:s', (strtotime($now) - 1)) );
@@ -587,14 +607,15 @@ class ApothMessage extends JObject
 		return $this->_date;
 	}
 	
-	function setId($val)      { $this->_core['id']         = $val; }
-	function setHandler($val) { $this->_core['handler']    = preg_replace( '~[^a-zA-Z0-9_]~', '', $val ); }
-	function setAuthor($val)  { $this->_core['author']     = $val; }
-	function setCreated($val) { $this->_core['created']    = $val; }
-	function setDate($val)    { $this->_core['applies_on'] = $val; }
+	function setId($val)      { unset( $this->_dataHash ); $this->_core['id']         = $val; }
+	function setHandler($val) { unset( $this->_dataHash ); $this->_core['handler']    = preg_replace( '~[^a-zA-Z0-9_]~', '', $val ); }
+	function setAuthor($val)  { unset( $this->_dataHash ); $this->_core['author']     = $val; }
+	function setCreated($val) { unset( $this->_dataHash ); $this->_core['created']    = $val; }
+	function setDate($val)    { unset( $this->_dataHash ); $this->_core['applies_on'] = $val; }
 	
 	function setTags( $general = array(), $personal = array() )
 	{
+		unset( $this->_dataHash );
 		if( !is_array( $general  ) ) { $general  = array(); }
 		if( !is_array( $personal ) ) { $personal = array(); }
 		$general  = array_unique( $general );
@@ -664,6 +685,7 @@ class ApothMessage extends JObject
 	
 	function setRecipients( $data )
 	{
+		unset( $this->_dataHash );
 		$this->_recipients = $data;
 	}
 	
@@ -727,6 +749,19 @@ class ApothMessage extends JObject
 		$this->setRecipients( $r );
 	}
 	
+	function getDataHash()
+	{
+		if( !isset( $this->_dataHash ) ) {
+			$this->_dataHash = ApotheosisData::_( 'message.helperData', 'getDataHash', 'message', $this->getId() );
+		}
+		return $this->_dataHash;
+	}
+	
+	function getDataValid()
+	{
+		return ApotheosisData::_( 'message.helperData', 'getDataValid', 'message', $this->getId() );
+	}
+	
 	function getData()
 	{
 		return ( is_array($this->_data) ? $this->_data : array() );
@@ -739,6 +774,7 @@ class ApothMessage extends JObject
 	
 	function setDatum( $field, $val )
 	{
+		unset( $this->_dataHash );
 		$this->_data[$field] = $val;
 	}
 	

@@ -60,14 +60,15 @@ class TvModelVideo extends ApothModel
 	 * 
 	 * @return mixed The requested parameters
 	 */
-	function getVotw()          { return (int)$this->_params->get( 'votw' ); }
-	function getRecSize()       { return (int)$this->_params->get( 'rec_size' ); }
-	function getSidebarSize()   { return (int)$this->_params->get( 'sidebar_size' ); }
-	function getSearchedSize()  { return (int)$this->_params->get( 'searched_size' ); }
-	function getTagCloudSize()  { return (int)$this->_params->get( 'tagcloud_size' ); }
-	function getTagCloudScale() { return (int)$this->_params->get( 'tagcloud_scale' ); }
-	function getViewedDays()    { return (int)$this->_params->get( 'viewed_days' ); }
-	function getSiteId()        { return (int)$this->_coreParams->get( 'site_id' ); }
+	function getVotw()          { return  (int)$this->_params->get( 'votw' ); }
+	function getRecSize()       { return  (int)$this->_params->get( 'rec_size' ); }
+	function getSidebarSize()   { return  (int)$this->_params->get( 'sidebar_size' ); }
+	function getSearchedSize()  { return  (int)$this->_params->get( 'searched_size' ); }
+	function getTagCloudSize()  { return  (int)$this->_params->get( 'tagcloud_size' ); }
+	function getTagCloudScale() { return  (int)$this->_params->get( 'tagcloud_scale' ); }
+	function getViewedDays()    { return  (int)$this->_params->get( 'viewed_days' ); }
+	function getAllowRatings()  { return (bool)$this->_params->get( 'video_ratings' ); }
+	function getSiteId()        { return  (int)$this->_coreParams->get( 'site_id' ); }
 	
 	
 	// #####  Manipulate videos  #####
@@ -123,7 +124,7 @@ class TvModelVideo extends ApothModel
 	}
 	
 	/**
-	 * Get the IDs of videos owned by the specified person
+	 * Get the IDs of videos owned by the specified people
 	 * 
 	 * @param array $peopleList  Array containing site and person IDs
 	 * @return array $retVal  Array of the video IDs owned by the people supplied indexed on site ID then person ID
@@ -383,8 +384,8 @@ class TvModelVideo extends ApothModel
 		}
 		
 		$searchString = implode( ' ', $searchStrings );
-		preg_match_all( '~(?<=^|\W)\w+(\'s)?(?=$|\W)~', $searchString, $searchTerms );
-		$searchTerms = array_unique( $searchTerms[0] );
+		$searchTerms = $this->cleanUpInput( $searchString );
+		$searchTerms = array_unique( $searchTerms );
 		
 		return array( $searchTerms, $vidIds );
 	}
@@ -600,6 +601,72 @@ class TvModelVideo extends ApothModel
 	}
 	
 	/**
+	 * Clean up input strings ready for processing
+	 * 
+	 * @param str $inputString  Input string to clean up
+	 * @return array  Array of words from input string
+	 */
+	function cleanUpInput( $inputString )
+	{
+		// this regex should match that found in the default_manage template
+		preg_match_all( '~(^|\W)(\w+(\'s)?)(?=$|\W)~', $inputString, $targetArray );
+		
+		return $targetArray[2];
+	}
+	
+	/**
+	 * Rate the current video
+	 * 
+	 * @param int $rating  The rating to set
+	 * @return array $retVal  Success indicator and optionally the new global and user ratings
+	 */
+	function rateVideo( $rating )
+	{
+		$u = &ApotheosisLib::getUser();
+		return $this->_curVideo->setUserRating( $rating, $this->getSiteId(), $u->person_id );
+	}
+	
+	/**
+	 * Email the owner of the video with the outcome of the moderation
+	 * 
+	 * @return bool|object $sent  True if email sent, object otherwise
+	 */
+	function sendModEmail()
+	{
+		// get the status of the current video
+		$outcome = $this->_curVideo->getStatusInfo();
+		
+		// from
+		$fromAddress = $this->_params->get( 'email_from_address' );
+		$fromName = $this->_params->get( 'email_from_name' );
+		$from = array( $fromAddress, $fromName );
+		
+		// to
+		$pId = $this->_curVideo->getDatum( 'person_id' );
+		
+		// subject and body
+		switch( strtolower($outcome['status']) ) {
+		case( 'approved' ):
+			$emailSubject = $this->_params->get( 'email_approved_title' );
+			$emailBody = $this->_params->get( 'email_approved_body' );
+			break;
+		case( 'rejected' ):
+			$emailSubject = $this->_params->get( 'email_rejected_title' );
+			$emailBody = $this->_params->get( 'email_rejected_body' );
+			break;
+		}
+		
+		// keyword substitution
+		$link = JURI::base().ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array('tv.videoId'=>$this->_curVideo->getId()) );
+		$emailBody = str_replace( '~LINK~', $link, $emailBody );
+		$emailBody = str_replace( '~COMMENT~', $outcome['comment'], $emailBody );
+		
+		$sent = ApotheosisData::_( 'people.sendEmail', $from, $pId, $emailSubject, $emailBody );
+		
+		return $sent;
+	}
+	
+	/**
 	 * Save the data for the current video by processing the info colleced by the controller
 	 * 
 	 * @param array $types  What data subsets are we saving
@@ -625,8 +692,7 @@ class TvModelVideo extends ApothModel
 			// check we have some title text to index
 			if( $data['title'] != '' ) {
 				// get only real words
-				preg_match_all( '~(?<=^|\W)\w+(\'s)?(?=$|\W)~', $data['title'], $titleWords );
-				$titleWords = $titleWords[0];
+				$titleWords = $this->cleanUpInput( $data['title'] );
 				
 				// process title words, make lowercase and check for duplicates
 				foreach( $titleWords as $k=>$word ) {
@@ -658,8 +724,7 @@ class TvModelVideo extends ApothModel
 			// check we have some description text to index
 			if( $data['desc'] != '' ) {
 				// get only real words
-				preg_match_all( '~(?<=^|\W)\w+(\'s)?(?=$|\W)~', $data['desc'], $descWords );
-				$descWords = $descWords[0];
+				$descWords = $this->cleanUpInput( $data['desc'] );
 				
 				// process description words, make lowercase and check for duplicates
 				foreach( $descWords as $k=>$word ) {

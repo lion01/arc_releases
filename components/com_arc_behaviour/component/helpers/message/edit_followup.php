@@ -11,8 +11,10 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+JHTML::script( 'edit_followup.js', $this->scriptDir, true );
 ?>
-<form method="post" name="add_inc_form">
+<form method="post" name="add_inc_form" id="add_inc_form">
 <input type="hidden" name="msg_id"     value="<?php echo $this->message->getId(); ?>" />
 <input type="hidden" name="msg_handler" value="behaviour" />
 <input type="hidden" name="msg_author" value="<?php echo $this->message->getAuthor(); ?>" />
@@ -36,6 +38,13 @@ foreach( $this->message->getTagIds(false) as $tag ) {
 <?php echo JHTML::_( 'arc_behaviour.action', 'msg_data[action]', 'msg_data[action_text]', $this->incType->getId(), $this->message->getDatum('action'), $this->message->getDatum('action_text') ); ?><br />
 </div>
 
-<input class="btn" type="submit" name="task" value="Save Draft" />
-<input class="btn" type="submit" name="task" value="Send" />
+<div id="msg_sec3">
+	<input class="btn" type="submit" name="task" value="Save Draft" />
+	<input class="btn" type="submit" name="task" value="Send" />
+</div>
+
+<div id="msg_sec4" style="display: none">
+<p>Saving...</p>
+</div>
+
 </form>

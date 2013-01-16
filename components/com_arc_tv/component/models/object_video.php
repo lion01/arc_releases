@@ -269,7 +269,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 					."\n".'   ON '.$tmpCountsTable.'.'.$db->nameQuote('video_id').' = '.$db->nameQuote('vid').'.'.$db->nameQuote('id');
 				
 				$countsQuery = 'CREATE TEMPORARY TABLE '.$tmpCountsTable.' AS'
-					."\n".'SELECT '.$db->nameQuote('video_id').', COUNT( DISTINCT '.$db->nameQuote( 'person_id' ).' ) AS '.$db->nameQuote('view_count')
+					."\n".'SELECT '.$db->nameQuote('video_id').', COUNT( DISTINCT '.$db->nameQuote( 'site_id' ).', '.$db->nameQuote( 'person_id' ).' ) AS '.$db->nameQuote('view_count')
 					."\n".'FROM '.$db->nameQuote('views')
 					.( empty($whereCounts) ? '' : "\n".'WHERE '.implode("\n".'  AND ', $whereCounts) )
 					."\n".'GROUP BY '.$db->nameQuote('video_id');
@@ -432,6 +432,89 @@ class ApothFactory_Tv_Video extends ApothFactory
 	}
 	
 	/**
+	 * Get the upload date of the specified video
+	 *
+	 * @param int $id  The ID of the video whose upload date we want
+	 * @return string  Upload date
+	 */
+	function getInstanceUploadDate( $id )
+	{
+		$db = &self::getVidDBO();
+		$query = 'SELECT '.$db->nameQuote('date')
+		."\n".'FROM '.$db->nameQuote('video_status_log')
+		."\n".'WHERE '.$db->nameQuote('video_id').' = '.$db->Quote($id)
+		."\n".'ORDER BY '.$db->nameQuote('date').' ASC'
+		."\n".'LIMIT 1';
+		$db->setQuery( $query );
+	
+		return $db->loadResult();
+	}
+	
+	/**
+	 * Retrieve the global average rating for the specified video
+	 * 
+	 * @param str $id  ID of the video
+	 * @return float $retval  Average global rating for the specified video (2 decimal places), 0 if no ratings
+	 */
+	function getInstanceGlobalRating( $id )
+	{
+		$db = &self::getVidDBO();
+		$query = 'SELECT ROUND( AVG('.$db->nameQuote('rating').'), 2 )'
+			."\n".' FROM '.$db->nameQuote('video_ratings')
+			."\n".' WHERE '.$db->nameQuote('video_id').' = '.$db->Quote($id);
+		$db->setQuery($query);
+		$raw = $db->loadResult();
+		
+		$retVal = is_null( $raw ) ? 0 : $raw;
+		
+		return $retVal;
+	}
+	
+	/**
+	 * Retrieve the current user rating for the specified video
+	 * 
+	 * @param str $id  ID of the video
+	 * @param int $siteId  Site ID of the current user
+	 * @param str $personId  Arc ID of the current user
+	 * @return int $retval  User rating for the specified video, 0 if not rated
+	 */
+	function getInstanceUserRating( $id, $siteId, $personId )
+	{
+		$db = &self::getVidDBO();
+		$query = 'SELECT '.$db->nameQuote('rating')
+			."\n".'FROM '.$db->nameQuote('video_ratings')
+			."\n".'WHERE '.$db->nameQuote('video_id').' = '.$db->Quote($id)
+			."\n".'  AND '.$db->nameQuote('site_id').' = '.$db->Quote($siteId)
+			."\n".'  AND '.$db->nameQuote('person_id').' = '.$db->Quote($personId);
+		$db->setQuery($query);
+		$raw = $db->loadResult();
+		
+		$retVal = is_null( $raw ) ? 0 : $raw;
+		
+		return $retVal;
+	}
+	
+	/**
+	 * Set the current user rating for this video
+	 * 
+	 * @param str $id  ID of the video
+	 * @param int $siteId  Site ID of the current user
+	 * @param str $personId  Arc ID of the current user
+	 * @param int $rating  Rating for this video
+	 * @return boolean  Did we successfully set the video rating?
+	 */
+	function setInstanceUserRating( $id, $siteId, $personId, $rating )
+	{
+		$db = &self::getVidDBO();
+		$query = 'REPLACE INTO '.$db->nameQuote('video_ratings')
+			."\n".'VALUES ('.$db->Quote($id).', '.$db->Quote($siteId).', '.$db->Quote($personId).', '.$db->Quote($rating).')';
+		$db->setQuery($query);
+		$db->query();
+		
+		return ( $db->getErrorMsg() == '' );
+	}
+	
+	/**
 	 * Retrieve all the tags
 	 *
 	 * @return array $tags  An array of all tags indexed on word id
@@ -563,26 +646,50 @@ class ApothFactory_Tv_Video extends ApothFactory
 	 * 
 	 * @param int $siteId  The site ID for the current user
 	 * @param string $pId  The person ID for the current user
-	 * @return array  Array of video ID, most viewed first
+	 * @return array $retval  Array of video IDs, highest rated first then most viewed if needed.
 	 */
 	function getUserFaves( $siteId, $pId )
 	{
-	// **** initially, 'recommended for you' for a person will be a 'related' search
-	// **** based on the the top 10 videos the person has viewed, we get that top 10 here.
-	// **** ultimately it will be besed on the top x videos that they have rated
-	
 		$db = &self::getVidDBO();
-		$query = 'SELECT '.$db->nameQuote('video_id').', COUNT(*) AS '.$db->nameQuote('video_views')
-			."\n".'FROM '.$db->nameQuote('views')
-			."\n".'WHERE '.$db->nameQuote('site_id').' = '.$db->Quote( $siteId )
-			."\n".'  AND '.$db->nameQuote('person_id').' = '.$db->Quote( $pId )
-			."\n".'GROUP BY '.$db->nameQuote('video_id')
-			."\n".'ORDER BY '.$db->nameQuote('video_views').' DESC'
+		
+		// highest rated
+		$query = 'SELECT '.$db->nameQuote('video_id')
+			."\n".'FROM '.$db->nameQuote('video_ratings')
+			."\n".'WHERE '.$db->nameQuote('site_id').' = '.$db->Quote($siteId)
+			."\n".'  AND '.$db->nameQuote('person_id').' = '.$db->Quote($pId)
+			."\n".'  AND '.$db->nameQuote('rating').' IN ('.$db->Quote(3).', '.$db->Quote(4).', '.$db->Quote(5).')'
+			."\n".'ORDER BY '.$db->nameQuote('rating').' DESC, '.$db->nameQuote('rated_on').' DESC'
 			."\n".'LIMIT 10';
 		$db->setQuery($query);
-		$rawViews = $db->loadAssocList('video_id');
+		$rated = array_keys( $db->loadAssocList('video_id') );
 		
-		return array_keys( $rawViews );
+		// if we have less than 10 results from ratings 
+		// then make up to 10 with most viewed
+		if( ($count = count($rated)) < 10 ) {
+			$quotedRated = array();
+			foreach( $rated as $id ) {
+				$quotedRated[] = $db->Quote($id);
+			}
+			$quotedRated = implode( ', ', $quotedRated );
+			
+			$query = 'SELECT '.$db->nameQuote('video_id').', COUNT(*) AS '.$db->nameQuote('video_views')
+				."\n".'FROM '.$db->nameQuote('views')
+				."\n".'WHERE '.$db->nameQuote('site_id').' = '.$db->Quote($siteId)
+				."\n".'  AND '.$db->nameQuote('person_id').' = '.$db->Quote($pId)
+				."\n".'  AND '.$db->nameQuote('video_id').' NOT IN ('.$quotedRated.')'
+				."\n".'GROUP BY '.$db->nameQuote('video_id')
+				."\n".'ORDER BY '.$db->nameQuote('video_views').' DESC'
+				."\n".'LIMIT '.(10 - $count);
+			$db->setQuery($query);
+			$viewed = array_keys( $db->loadAssocList('video_id') );
+			
+			$retVal = array_merge( $rated, $viewed );
+		}
+		else {
+			$retVal = $rated;
+		}
+		
+		return $retVal;
 	}
 	
 	/**
@@ -599,7 +706,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 			."\n".'FROM '.$db->nameQuote('video_status_log')
 			."\n".'WHERE '.$db->nameQuote('video_id').' = '.$db->Quote($id)
 			.( $withComment ? "\n".'  AND '.$db->nameQuote('comment').' IS NOT NULL' : '' )
-			."\n".'ORDER BY '.$db->nameQuote( 'date' ).' DESC';
+			."\n".'ORDER BY '.$db->nameQuote('date').' DESC';
 		$db->setQuery( $query );
 		$statusLog = $db->loadAssocList();
 		
@@ -611,38 +718,16 @@ class ApothFactory_Tv_Video extends ApothFactory
 	 *
 	 * @param string $id  The ID the video
 	 * @param string $siteId  The site ID for the current installation
-	 * @param string $person  The ARC ID of the person viewing the video
-	 *
-	 * @return mixed  A database resource if successful, otherwise false
+	 * @param string $personId  The ARC ID of the person viewing the video
 	 */
-	function addVidView( $id, $siteId, $person )
+	function addVidView( $id, $siteId, $personId )
 	{
 		$db = &self::getVidDBO();
 		$query = 'INSERT INTO '.$db->nameQuote('views')
 		."\n".'VALUES'
-		."\n".'(NULL, '.$db->Quote($id).', '.$db->Quote($siteId).', '.$db->Quote($person).', NOW() )';
+		."\n".'(NULL, '.$db->Quote($id).', '.$db->Quote($siteId).', '.$db->Quote($personId).', NOW() )';
 		$db->setQuery($query);
-	
-		return $db->query();
-	}
-	
-	/**
-	 * Get the upload date of the specified video
-	 * 
-	 * @param int $id  The ID of the video whose upload date we want
-	 * @return string  Upload date
-	 */
-	function getUploadDate( $id )
-	{
-		$db = &self::getVidDBO();
-		$query = 'SELECT '.$db->nameQuote('date')
-			."\n".'FROM '.$db->nameQuote('video_status_log')
-			."\n".'WHERE '.$db->nameQuote('video_id').' = '.$db->Quote($id)
-			."\n".'ORDER BY '.$db->nameQuote('date').' ASC'
-			."\n".'LIMIT 1';
-		$db->setQuery( $query );
-		
-		return $db->loadResult();
+		$db->query();
 	}
 	
 	/**
@@ -949,6 +1034,9 @@ class ApothTvVideoVideo extends JObject
 		$this->_roles = null;
 		$this->_filters = null;
 		$this->_res = null;
+		$this->_uploadDate = null;
+		$this->_globalRating = null;
+		$this->_userRating = null;
 		$this->_statusComment = null;
 		$this->_statusCommentLog = null;
 	}
@@ -1219,9 +1307,65 @@ class ApothTvVideoVideo extends JObject
 	 */
 	function getUploadDate()
 	{
-		$fVideo = &ApothFactory::_( 'tv.video' );
+		if( is_null($this->_uploadDate) ) {
+			$fVideo = &ApothFactory::_( 'tv.video' );
+			$this->_uploadDate = $fVideo->getInstanceUploadDate( $this->getId() );
+		}
 		
-		return $fVideo->getUploadDate( $this->getId() );
+		return $this->_uploadDate;
+	}
+	
+	/**
+	 * Get the global rating for this video
+	 * 
+	 * @return float  The average global rating for this video (2 decimal places)
+	 */
+	function getGlobalRating()
+	{
+		if( is_null($this->_globalRating) ) {
+			$fVideo = &ApothFactory::_( 'tv.video' );
+			$this->_globalRating = $fVideo->getInstanceGlobalRating( $this->getId() );
+		}
+		
+		return $this->_globalRating;
+	}
+	
+	/**
+	 * Get the user rating for this video
+	 * 
+	 * @param int $siteId  Site ID of the current user
+	 * @param str $personId  Arc ID of the current user
+	 * @return int  User rating for the specified video
+	 */
+	function getUserRating( $siteId, $personId )
+	{
+		if( is_null($this->_userRating) ) {
+			$fVideo = &ApothFactory::_( 'tv.video' );
+			$this->_userRating = $fVideo->getInstanceUserRating( $this->getId(), $siteId, $personId );
+		}
+		
+		return $this->_userRating;
+	}
+	
+	/**
+	 * Set the user rating for this video
+	 * 
+	 * @param int $rating  The rating to set
+	 * @param int $siteId  Site ID of the current user
+	 * @param str $personId  Arc ID of the current user
+	 * @return array $retVal  Success indicator and optionally the new global and user ratings
+	 */
+	function setUserRating( $rating, $siteId, $personId )
+	{
+		$fVideo = &ApothFactory::_( 'tv.video' );
+		$retVal['success'] = $fVideo->setInstanceUserRating( $this->getId(), $siteId, $personId, $rating );
+		
+		if( $retVal['success'] ) {
+			$retVal['global'] = $this->getGlobalRating();
+			$retVal['user'] = $this->getUserRating( $siteId, $personId );
+		}
+		
+		return $retVal;
 	}
 	
 	/**

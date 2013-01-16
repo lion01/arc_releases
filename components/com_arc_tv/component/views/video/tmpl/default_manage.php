@@ -15,11 +15,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // add javascript
 JHTML::script( 'default_manage.js', $this->addPath, true );
 echo JHTML::_( 'arc.hidden', 'ajax_spinner_path', JURI::base().'media/system/images/mootree_loader.gif', 'id="ajax_spinner_path"' );
-echo JHTML::_( 'arc.hidden', 'save_url',   ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_save',   array('tv.videoId'=>$this->curVideo->getId())), 'id="save_url"'   );
-echo JHTML::_( 'arc.hidden', 'submit_url', ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_submit', array('tv.videoId'=>$this->curVideo->getId())), 'id="submit_url"' );
-echo JHTML::_( 'arc.hidden', 'accept_url', ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_accept', array('tv.videoId'=>$this->curVideo->getId())), 'id="accept_url"' );
-echo JHTML::_( 'arc.hidden', 'reject_url', ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_reject', array('tv.videoId'=>$this->curVideo->getId())), 'id="reject_url"' );
-echo JHTML::_( 'arc.hidden', 'status_url', ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_status', array('tv.videoId'=>$this->curVideo->getId())), 'id="status_url"' );
+echo JHTML::_( 'arc.hidden', 'save_url',    ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_save',    array('tv.videoId'=>$this->curVideo->getId())), 'id="save_url"'    );
+echo JHTML::_( 'arc.hidden', 'submit_url',  ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_submit',  array('tv.videoId'=>$this->curVideo->getId())), 'id="submit_url"'  );
+echo JHTML::_( 'arc.hidden', 'approve_url', ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_approve', array('tv.videoId'=>$this->curVideo->getId())), 'id="approve_url"' );
+echo JHTML::_( 'arc.hidden', 'reject_url',  ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_reject',  array('tv.videoId'=>$this->curVideo->getId())), 'id="reject_url"'  );
+echo JHTML::_( 'arc.hidden', 'status_url',  ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_status',  array('tv.videoId'=>$this->curVideo->getId())), 'id="status_url"'  );
 ?>
 <div id="manage_div">
 	<form id="manage_video_form" method="post" action="<?php echo ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv', array() ); ?>">
@@ -67,7 +67,7 @@ echo JHTML::_( 'arc.hidden', 'status_url', ApotheosisLibAcl::getUserLinkAllowed(
 					</div>
 					<div class="manage_form_input_row">
 						<div class="manage_form_label_div">Tags:</div>
-						<div class="manage_form_input_div"><?php echo JHTML::_( 'arc_tv.tags', 'manage_tags_input', array_keys($this->curVideo->getTags()) ); ?></div>
+						<div class="manage_form_input_div"><?php echo JHTML::_( 'arc_tv.tags', 'manage_tags_input', array_keys($this->curVideo->getTags()), array(), '(^|\W)(\w+(\'s)?)(?=$|\W)' ); ?></div>
 					</div>
 				</div>
 			</div>

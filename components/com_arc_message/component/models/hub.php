@@ -217,11 +217,35 @@ class MessageModelHub extends JModel
 	{
 		$this->_setMessageData( $data );
 		$this->message->setRecipients( ApotheosisData::_( 'message.recipients', $this->message, $method ) );
-		$this->message->commit();
-		$threadId = $this->message->getThreadId();
-		$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
-		$tmp = ApotheosisData::_( 'message.helperData', 'eventAfter'.ucfirst($method), 'message', $this->message->getId(), $method );
-		return $tmp;
+		$ok = $this->message->commit();
+		if( $ok ) {
+			$threadId = $this->message->getThreadId();
+			$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
+			$tmp = ApotheosisData::_( 'message.helperData', 'eventAfter'.ucfirst($method), 'message', $this->message->getId(), $method );
+			if( !is_null( $tmp ) ) {
+				$ok = $ok && $tmp;
+			}
+		}
+		else {
+			$threadId = $this->message->getThreadId();
+			$mId = $this->message->getId();
+			$this->fMsg->freeInstance( $this->message->getId() );
+			if( !is_null($threadId) && ($threadId > 0) ) {
+				// replies to existing threads must be removed from the thread's message list
+				$thread = $this->threads[$threadId];
+				$thread->removeMessage( $mId );
+			}
+			else {
+				// new initial messages should be replaced with a safe blank
+				$parts = explode( '.', JRequest::getVar('form') );
+				$component = array_shift($parts);
+				$this->message = &$this->fMsg->getDummy( $mId );
+				$this->message->setTags( array(), array($this->folder) );
+				$this->message->setHandler( $component );
+				$this->message->setDetailsShown( $details );
+			}
+		}
+		return $ok;
 	}
 	
 	function _setMessageData( $data )
@@ -258,7 +282,8 @@ class MessageModelHub extends JModel
 		if( $tagList === '' ) {
 			$tagList = '21'; // behaviour inbox in base install. Should really be a config option (default folder)
 		}
-		$tags = explode( ',', $tagList );
+		$tags = ( is_array( $tagList ) ? $tagList : explode( ',', $tagList ) );
+		
 		foreach( $tags as $id=>$tag ) {
 			if( !is_numeric($tag) ) {
 				unset($tags[$id]);

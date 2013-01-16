@@ -90,11 +90,11 @@ vidId=~tv.videoId~
 format=raw</params>
 			</action>
 			<action>
-				<name>arc_tv_manage_accept</name>
-				<menu_text>Accept a video</menu_text>
-				<description>Video management - accept a video</description>
+				<name>arc_tv_manage_approve</name>
+				<menu_text>Approve a video</menu_text>
+				<description>Video management - approve a video</description>
 				<params>view=video
-task=accept
+task=approve
 vidId=~tv.videoId~
 format=raw</params>
 			</action>
@@ -139,6 +139,15 @@ vidId=~tv.videoId~</params>
 				<description>Show video of the week in a homepage panel</description>
 				<params>view=video
 task=panel
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_rate_video</name>
+				<menu_text>Rate a video</menu_text>
+				<description>Submit a rating for a given video</description>
+				<params>view=video
+task=rateVideo
+vidId=~tv.videoId~
 format=raw</params>
 			</action>
 		</actions>

@@ -31,7 +31,7 @@ class JHTMLArc_Tv
 	 * @param array $params  Optional input properties
 	 * @return string $retVal  The HTML to display the required input
 	 */
-	function tags( $name, $default = null, $params = array() )
+	function tags( $name, $default = null, $params = array(), $regex = '' )
 	{
 		$default = ( !is_null($default) ? $default : '' );
 		$oldVal = JRequest::getVar( $name, $default );
@@ -44,7 +44,7 @@ class JHTMLArc_Tv
 			$tagList[] = (object)$tag;
 		}
 		
-		$retVal  = JHTML::_( 'arc.combo', $name, $params, $tagList, 'id', 'word', $oldVal, true );
+		$retVal  = JHTML::_( 'arc.combo', $name, $params, $tagList, 'id', 'word', $oldVal, true, $regex );
 		$retVal .= JHTML::_( 'arc.hidden', 'search_default_'.$name, $default, 'class="search_default"' );
 		
 		return $retVal;
@@ -74,6 +74,49 @@ class JHTMLArc_Tv
 		
 		$retVal  = JHTML::_( 'arc.combo', $name, $params, $roleList, 'id', 'role', $oldVal, true );
 		$retVal .= JHTML::_( 'arc.hidden', 'search_default_'.$name, $default, 'class="search_default"' );
+		
+		return $retVal;
+	}
+	
+	/**
+	 * Generate HTML to display a 5 star rating display / input box
+	 * Includes hidden inputs for AJAX submission of user rating
+	 * 
+	 * @param string $name  Root of div IDs and input names
+	 * @param float $global  Current global rating (2 decimal places)
+	 * @param int $user  Current user rating (1 -5, integer)
+	 * @param string action  Submit action
+	 * @return string $retVal  The HTML to display a 5 star rating display / input box
+	 */
+	function ratings( $name, $global, $user, $action )
+	{
+		$ratingsImgPath = 'components'.DS.'com_arc_tv'.DS.'helpers'.DS.'images'.DS;
+		$ratingsJSPath = 'components'.DS.'com_arc_tv'.DS.'helpers'.DS.'html'.DS;
+		JHTML::script( 'ratings.js', $ratingsJSPath, true );
+		
+		// determine how many stars to show for global average ( 0 - 5 in 0.5 increments)
+		if( $global >= ($half = ($ceil = ceil($global))- 0.5) + 0.25 ) {
+			$numOfStars = $ceil;
+		}
+		elseif( $global < $half - 0.25 ) {
+			$numOfStars = floor( $global );
+		}
+		else {
+			$numOfStars = $half;
+		}
+		$pixelsPerStar = 48;
+		$bkgOffset = ( $numOfStars * $pixelsPerStar ) * -1;
+		
+		$globalTip = 'Global rating: '.( ($global > 0) ? $global : 'No ratings.' );
+		$userTip = 'Your rating: '.( ($user > 0) ? $user : 'Please rate me.' );
+		$toolTip = 'Ratings::'.$globalTip.'<br />'.$userTip;
+		
+		$retVal =
+		'<div id="'.$name.'_div" class="arcTip" title="'.$toolTip.'" style="background-image:url(\''.$ratingsImgPath.'rating_stars.png\'); background-position: 0 '.$bkgOffset.'px">'
+			.JHTML::_( 'arc.hidden', $name.'_global', $global, 'id="'.$name.'_global"' )
+			.JHTML::_( 'arc.hidden', $name.'_user', $user, 'id="'.$name.'_user"' )
+			.JHTML::_( 'arc.hidden', $name.'_action', $action, 'id="'.$name.'_action"' )
+		.'</div>';
 		
 		return $retVal;
 	}

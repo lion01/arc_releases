@@ -15,7 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // determine if we are showing status dot overlyas on the previews
 if( isset($this->showOverlay) && $this->showOverlay ) {
 	$curStatus = $this->curPreview->getStatusInfo();
-	$overlayHtml = '<div class="preview_overlay">'.JHTML::_( 'arc.dotMini', $curStatus['colour'], $curStatus['status'] ).'</div>';
+	$overlayHtml = '<div class="preview_overlay">'.JHTML::_( 'arc.dot', $curStatus['colour'], $curStatus['status'] ).'</div>';
 }
 else {
 	$overlayHtml = '';

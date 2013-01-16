@@ -20,9 +20,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<div class="manage_form_input_row">
 		<div class="manage_form_label_div">Approval:</div>
 		<div class="manage_form_input_div">
-			<input id="manage_form_accept_button" type="submit" value="Accept" name="task" />
+			<input id="manage_form_approve_button" type="submit" value="Approve" name="task" />
 			<input id="manage_form_reject_button" type="submit" value="Reject" name="task" />
-			<?php echo $this->loadTemplate( 'ajax_spinners' ); ?>
+			<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 		</div>
 	</div>
 </div>

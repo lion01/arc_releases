@@ -1,24 +1,24 @@
 /**
- * @copyright	Copyright (C) Punnet. All rights reserved.
- * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL.
-*/
+ * @copyright  Copyright (C) Punnet. All rights reserved.
+ * @license    http://www.gnu.org/licenses/gpl.html GNU/GPL.
+ */
 
 @font-face {
-    font-family: 'EntypoRegular';
-    src: url('../font/entypo-webfont.eot');
-    src: url('../font/entypo-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/entypo-webfont.woff') format('woff'),
-         url('../font/entypo-webfont.ttf') format('truetype'),
-         url('../font/entypo-webfont.svg#EntypoRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'EntypoRegular';
+	src: url('../font/entypo-webfont.eot');
+	src: url('../font/entypo-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('../font/entypo-webfont.woff') format('woff'),
+	     url('../font/entypo-webfont.ttf') format('truetype'),
+	     url('../font/entypo-webfont.svg#EntypoRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
 article, aside, canvas, figure, figure img, figcaption, hgroup,
 footer, header, nav, section, audio, video {
 	display: block;
 }
-	
+
 * {
 	margin: 0;
 	padding: 0;
@@ -27,25 +27,29 @@ footer, header, nav, section, audio, video {
 
 .tool-tip,
 .custom-tip {
-	border:solid 1px #cacaca;
+	border: solid 1px #cacaca;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	padding:2px;
+	padding: 2px;
 }
 .custom-tip {
 	font-size: 13px; /* to match the label size defined in bootstrap */
 }
 
 body {
-	min-height:400px;
+	min-height: 400px;
 	-webkit-text-size-adjust: 100%;
 	font-family: helvetica, verdana, arial;
 }
 
 #wrapper {
 	margin: 0px auto;
-	min-height:200px;
+	min-height: 200px;
+}
+
+a.btn {
+	text-decoration: none;
 }
 
 
@@ -55,21 +59,21 @@ body {
 
 
 header {
-	height:50px;
-	line-height:50px;
-	vertical-align:middle;
-	width:100%;
-	position:relative;
+	height: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+	width: 100%;
+	position: relative;
 }
 
 header * {
-	font-size:18px;
+	font-size: 18px;
 }
 
 #punnet {
-	position:relative;
-	float:left;
-	margin:0 20px;
+	position: relative;
+	float: left;
+	margin: 0 20px;
 }
 
 
@@ -78,24 +82,24 @@ header * {
 *******************************/
 
 #content {
-	padding:0px;
-	margin:20px 20px;
-	overflow:hidden;
+	padding: 0px;
+	margin: 20px 20px;
+	overflow: hidden;
     -webkit-border-radius: 15px;	
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 }
 
 #content p, h1, h2, h3, h4, h5, h6 {
-	margin:10px 0px;
+	margin: 10px 0px;
 }
 
 h3#arc_title {
-	display:none;
+	display: none;
 }
 
 .componentheading, .contentheading {
-	padding:10px;
+	padding: 10px;
 }
 
 
@@ -104,48 +108,48 @@ h3#arc_title {
 *******************************/
 
 #form-login div:first-child {
-	width:300px;
-	position:absolute;
-	top:-2px;
-	right:10px;
-	text-align:right;
+	width: 300px;
+	position: absolute;
+	top: -2px;
+	right: 10px;
+	text-align: right;
 }
 
 #form-login ul {
-	list-style:none;
-	margin-top:10px;
+	list-style: none;
+	margin-top: 10px;
 }
 
 #login_form {
-	float:right;
-	margin-right:20px;
-	position:relative;
+	float: right;
+	margin-right: 20px;
+	position: relative;
 }
 
 #login_form ul li {
-	width:80px;
-	height:30px;
+	width: 80px;
+	height: 30px;
 }
 
 #login_form ul {
-	list-style:none;
-	margin-left:-30px;
+	list-style: none;
+	margin-left: -30px;
 }
 
 #login_wrap {
-	margin-left:20px;
+	margin-left: 20px;
 }
 
 #com-form-login {
-	margin-left:20px;
+	margin-left: 20px;
 }
 
 #com-form-login input {
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }
 
 #com-form-login ul li {
-	list-style:none;
+	list-style: none;
 }
 
 

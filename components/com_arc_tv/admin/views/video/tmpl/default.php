@@ -44,6 +44,16 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			</tr>
 		</table>
 	</fieldset>
+	<fieldset class="adminform_thinfieldset" style="vertical-align: top;">
+		<legend><?php echo JText::_( 'Moderation email options' ); ?></legend>
+		<table>
+			<tr>
+				<td>
+					<?php echo $this->videoParams->render( 'params', 'email_params' ); ?>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
 	<input type="hidden" name="option" value="com_arc_tv" />
 	<input type="hidden" name="view" value="video" />
 	<input type="hidden" name="task" value="" />

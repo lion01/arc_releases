@@ -292,7 +292,8 @@ class ApothMessage_Behaviour
 	 */
 	function eventAfterSend( $message )
 	{
-		if( $message->getDatum('callout') ) {
+		$ok = true;
+		if( $message->getDatum('callout') && ApotheosisData::_( 'message.tweetEnabled' ) ) {
 			$fInc = ApothFactory::_( 'behaviour.IncidentType' );
 			$inc = $fInc->getInstance( $message->getDatum('incident') );
 			
@@ -304,10 +305,11 @@ class ApothMessage_Behaviour
 				// http://fla90/j_dave_clone/index.php?option=com_arc_message&view=hub&scope=summary&tags=&Itemid=341				
 			
 			// send this to twitter so followers are notified
-			ApotheosisData::_( 'message.tweet', $msg );
+			$ok = ApotheosisData::_( 'message.tweet', $msg ) && $ok;
 		}
 		
-		$this->setScore( $message );
+		$ok = $this->setScore( $message ) && $ok;
+		return $ok;
 
 		/* **** create new message for parents/pupils with limited information
 		 * Parent / pupils see..
@@ -317,6 +319,21 @@ class ApothMessage_Behaviour
 		 * Red: incident, score, action
 		 * Purple: incident, score
 		 */
+	}
+	
+	function getDataHash( $message )
+	{
+		return md5( $message->getCreated()
+			.'~'.$message->getAuthor()
+			.'~'.$message->getDatum('student_id') );
+	}
+	
+	function getDataValid( $message )
+	{
+		$d1 = $message->getDatum('student_id');
+		$d2 = $message->getDatum('group_id');
+		$d3 = $message->getDatum('incident');
+		return !empty( $d1 ) && !is_null( $d2 ) && !is_null( $d3 );
 	}
 	
 	/**
@@ -338,8 +355,12 @@ class ApothMessage_Behaviour
 		}
 		
 		if( $score !== false ) {
-			ApotheosisData::_( 'behaviour.addScore', $message->getDatum( 'student_id' ), $message->getDatum( 'group_id' ), $score, $message->getId() );
+			$ok = ApotheosisData::_( 'behaviour.addScore', $message->getDatum( 'student_id' ), $message->getDatum( 'group_id' ), $score, $message->getId() );
 		}
+		else {
+			$ok = true;
+		}
+		return $ok;
 	}
 	
 	function getColor( &$message )

@@ -93,5 +93,9 @@ if( isset($subTemplate) ) {
 </div>
 </div> <!-- End section 3 - Submit buttons -->
 
+<div id="msg_sec4" style="display: none">
+<p>Saving...</p>
+</div>
+
 </form>
 </div>

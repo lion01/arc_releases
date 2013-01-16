@@ -133,11 +133,24 @@ var ArcComboAddOptions = ArcComboOptions.extend({
 				// Collect individual words from the entered text
 				var newOpts = new Array();
 				
-				inputText.split( ' ' ).each( function(newOpt) {
-					if( newOpt != '' ) {
-						newOpts.include( newOpt );
+				// Do we have a regex to clean up the tags
+				var origInputId = this.combo.element.getProperty( 'id' );
+				if( (typeof(comboRegexes) != 'undefined') && comboRegexes.hasKey(origInputId) ) {
+					var regex = comboRegexes.get( origInputId );
+					var tmp;
+					
+					// Loop to get all matches
+					while( tmp = regex.exec(inputText) ) {
+						newOpts.include( tmp[2] );
 					}
-				});
+				}
+				else {
+					inputText.split( ' ' ).each( function(newOpt) {
+						if( newOpt != '' ) {
+							newOpts.include( newOpt );
+						}
+					});
+				}
 				
 				// Proceed if we have actually found some new options
 				if( newOpts.length > 0 ) {

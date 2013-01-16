@@ -529,3 +529,54 @@ CREATE TABLE `jos_apoth_sys_log_times` (
 	INDEX (`log_id`)
 ) ENGINE = MYISAM 
 
+
+-- -------------- --
+-- 1.8.2 to 1.8.3 --
+-- -------------- --
+
+-- #####  dev_617_bhv_style  #####
+
+ALTER TABLE `jos_apoth_msg_messages` ADD `data_hash` VARCHAR( 32 ) NULL ;
+ALTER TABLE `jos_apoth_msg_messages` ADD INDEX ( `data_hash` ) ;
+
+-- #####  dev_585_tv_userratings  #####
+
+-- new action for owner vids
+INSERT INTO `jos_apoth_sys_actions`
+(`id`, `menu_id`, `option`, `task`, `params`, `name`, `menu_text`, `description`)
+VALUES
+(NULL, 399, NULL, NULL, 'view=video\ntask=rateVideo\nvidId=~tv.videoId~\nformat=raw', 'arc_tv_rate_video', 'Rate a video', 'Submit a rating for a given video');
+
+# -- keep the id of new action
+SELECT @newId := LAST_INSERT_ID();
+
+# -- setup the acl for new action
+INSERT INTO `jos_apoth_sys_acl` (`action`, `role`, `sees`, `allowed`)
+SELECT @newId, role, sees, allowed
+FROM jos_apoth_sys_acl AS acl
+INNER JOIN jos_apoth_sys_actions AS a
+   ON a.id = acl.action
+WHERE a.name = 'arc_tv_tag';
+
+# -- add new component param to allow video rating
+UPDATE `jos_components`
+SET `params` = CONCAT( `params` , "\nvideo_ratings=1" )
+WHERE `link` = "option=com_arc_tv"
+LIMIT 1;
+
+-- #####  dev_597_tv_modemail  #####
+
+# -- add new component params to enable email sending after moderation
+UPDATE `jos_components`
+SET `params` = CONCAT( `params` , "\nemail_approved_title=Your video has been approved!\nemail_rejected_title=Your video has been rejected\nemail_approved_body=Hello,\\n\\nThank you for uploading to Wildern TV.\\n\\nThe moderators have now approved your video and it is live on the website: ~LINK~\\n\\nThe Wildern TV Moderators\nemail_rejected_body=Hello,\\n\\nThanks for uploading to Wildern TV.\\n\\nUnfortunately your video has not been approved at this time because:\\n\\n~COMMENT~\\n\\nYou can edit the film and then resubmit it: ~LINK~\\n\\nIf you have any other questions do let us know.\\n\\nThe Wildern TV Moderators\nemail_from_name=The Wildern TV Moderators\nemail_from_address=no-reply@arc.pun.net" )
+WHERE `link` = "option=com_arc_tv"
+LIMIT 1;
+
+# -- use 'approve' everywhere we had said 'accept' in the approve video action
+UPDATE `jos_apoth_sys_actions`
+SET `params` = 'view=video task=approve vidId=~tv.videoId~ format=raw',
+`name` = 'arc_tv_manage_approve',
+`menu_text` = 'Approve a video',
+`description` = 'Video management - approve a video'
+WHERE `jos_apoth_sys_actions`.`id` = 285
+LIMIT 1 ;

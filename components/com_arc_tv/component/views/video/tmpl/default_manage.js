@@ -31,7 +31,7 @@ window.addEvent( 'domready', function() {
 	manageForm = $( 'manage_video_form' );
 	manageFormSaveButton = $( 'manage_form_save_button' );
 	manageFormSubmitButton = $( 'manage_form_submit_button' );
-	manageFormAcceptButton = $( 'manage_form_accept_button' );
+	manageFormApproveButton = $( 'manage_form_approve_button' );
 	manageFormRejectButton = $( 'manage_form_reject_button' );
 	if( manageFormSaveButton !== null ) {
 		setFormSubmitButtonClicker( manageFormSaveButton, 'save' );
@@ -39,8 +39,8 @@ window.addEvent( 'domready', function() {
 	if( manageFormSubmitButton !== null ) {
 		setFormSubmitButtonClicker( manageFormSubmitButton, 'submit' );
 	}
-	if( manageFormAcceptButton !== null ) {
-		setFormSubmitButtonClicker( manageFormAcceptButton, 'accept' );
+	if( manageFormApproveButton !== null ) {
+		setFormSubmitButtonClicker( manageFormApproveButton, 'approve' );
 	}
 	if( manageFormRejectButton !== null ) {
 		setFormSubmitButtonClicker( manageFormRejectButton, 'reject' );
@@ -569,8 +569,8 @@ function setFormSubmitButtonClicker( el, task )
 		else if( task == 'submit' ) {
 			saveQueryString = $('submit_url').getValue();
 		}
-		else if( task == 'accept' ) {
-			saveQueryString = $('accept_url').getValue();
+		else if( task == 'approve' ) {
+			saveQueryString = $('approve_url').getValue();
 		}
 		else if( task == 'reject' ) {
 			saveQueryString = $('reject_url').getValue();
@@ -587,7 +587,7 @@ function setFormSubmitButtonClicker( el, task )
 				}
 			}
 		}
-		else if( (task == 'accept') || (task == 'reject') ) {
+		else if( (task == 'approve') || (task == 'reject') ) {
 			submitForm( task, $('manage_mod_div') );
 			submitted = true;
 		}
@@ -623,7 +623,7 @@ function submitForm( task, element )
 		// loop through the inputs and only keep the ones we want
 		for( i = (inputString.length - 1); i >= 0; i-- ) {
 			var inputArray = inputString[i].split( '=' );
-			var inputSearch = inputArray[0].replace(/(manage_|\[\])/gi, '');
+			var inputSearch = inputArray[0].replace( /(manage_|\[\])/gi, '' );
 			var numInElement = element.getElements( '[name^=manage_' + inputSearch + ']' ).length;
 			
 			if( numInElement < 1 ) {
@@ -705,10 +705,10 @@ function updateIdValues( newVidId )
 	// vidIdInput
 	vidIdInput.setProperty( 'value', newVidId );
 	
-	// embedded urls (save_url, submit_url, accept_url, reject_url, status_url)
+	// embedded urls (save_url, submit_url, approve_url, reject_url, status_url)
 	$( 'save_url' ).setProperty( 'value', $('save_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
 	$( 'submit_url' ).setProperty( 'value', $('submit_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
-	$( 'accept_url' ).setProperty( 'value', $('accept_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
+	$( 'approve_url' ).setProperty( 'value', $('approve_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
 	$( 'reject_url' ).setProperty( 'value', $('reject_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
 	$( 'status_url' ).setProperty( 'value', $('status_url').getValue().replace(/vidId=[^&]+/g, 'vidId='+newVidId) );
 	

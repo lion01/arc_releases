@@ -161,18 +161,19 @@ class ApothFactory_Message_Thread extends ApothFactory
 		
 		$d = $r->getNewMessageIds();
 		if( !empty($d) ) {
-			$query = 'START TRANSACTION;';
+			$v1 = '( @tid, ';
+			$v2 = ', @order := (@order+1) )';
+			foreach( $d as $v ) {
+				$values[] = $v1.$db->Quote($v).$v2;
+			}
+			
+			$query = 'START TRANSACTION;'
+				."\n".'LOCK TABLES '.$db->nameQuote('#__apoth_msg_threads').' WRITE;';
 			if( $id < 0 ) {
 				$query .= "\n".'SELECT @tid:=(MAX(id)+1) FROM '.$db->nameQuote( '#__apoth_msg_threads' ).';';
 			}
 			else {
 				$query .= "\n".'SET @tid = '.$db->Quote($id).';';
-			}
-			
-			$v1 = '( @tid, ';
-			$v2 = ', @order := (@order+1) )';
-			foreach( $d as $v ) {
-				$values[] = $v1.$db->Quote($v).$v2;
 			}
 			
 			$query .= "\n".'SELECT @order := IFNULL( MAX('.$db->nameQuote('order').'), 0 )'
@@ -187,6 +188,7 @@ class ApothFactory_Message_Thread extends ApothFactory
 				."\n".'VALUES'
 				."\n".implode( "\n, ", $values ).';'
 				."\n"
+				."\n".'UNLOCK TABLES;'
 				."\n".'COMMIT;';
 			$db->setQuery( $query );
 			$db->QueryBatch();

@@ -25,7 +25,7 @@ class TvControllerVideo extends TvController
 	function __construct()
 	{
 		parent::__construct();
-		$this->registerTask( 'accept', 'approval' );
+		$this->registerTask( 'approve', 'approval' );
 		$this->registerTask( 'reject', 'approval' );
 		
 		$this->model = &$this->getModel( 'video' );
@@ -86,12 +86,12 @@ class TvControllerVideo extends TvController
 	 */
 	function search()
 	{
-		// retrieve search terms
-		preg_match_all( '~(?<=^|\W)\w+(\'s)?(?=$|\W)~', JRequest::getVar('search'), $searchTerms );
+		// retrieve cleaned search terms
+		$searchTerms = $this->model->cleanUpInput( JRequest::getVar('search') );
 		
 		// check we have some valid search terms
-		if( !empty($searchTerms[0]) ) {
-			$this->model->setSearched( $searchTerms[0] );
+		if( !empty($searchTerms) ) {
+			$this->model->setSearched( $searchTerms );
 			
 			// search can have recommended for you if no results found
 			$this->model->setRecommended( 'user' );
@@ -289,6 +289,49 @@ class TvControllerVideo extends TvController
 	}
 	
 	/**
+	 * Rate a video
+	 * Output directly if response is to XHR or redirect to video() with enqueued result message
+	 */
+	function rateVideo()
+	{
+		// what video are we working with
+		$vidId = JRequest::getVar( 'vidId' );
+		$this->model->setVideo( $vidId );
+		
+		// attempt to rate the video and set appropriate results / messages
+		$rating = JRequest::getVar( 'rating' );
+		$rateVid = $this->model->rateVideo( $rating );
+		
+		if( $rateVid['success'] ) {
+			$result['success'] = true;
+			$result['global'] = $rateVid['global'];
+			$result['user'] = $rateVid['user'];
+			$result['message'] = 'You rated this video '.$rating.' out of 5';
+			$result['type'] = 'message';
+		}
+		else {
+			$result['success'] = false;
+			$result['message'] = 'Unable to rate the video. Please try again.';
+			$result['type'] = 'warning';
+		}
+		
+		// what page format
+		$format = JRequest::getVar( 'format', 'html' );
+		
+		// determine output
+		if( $format == 'raw' ) {
+			echo json_encode( $result );
+		}
+		else {
+			global $mainframe;
+			$link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array( 'tv.videoId'=>$vidId ) );
+			
+			$mainframe->enqueueMessage( $result['message'], $result['type'] );
+			$mainframe->redirect( $link );
+		}
+	}
+	
+	/**
 	 * Save all the data relating to a video
 	 * Output directly if response is to XHR or redirect to manage() with enqueued result message
 	 * 
@@ -392,7 +435,7 @@ class TvControllerVideo extends TvController
 	}
 	
 	/**
-	 * Moderator has accepted or rejected this video so mark it as such
+	 * Moderator has approved or rejected this video so mark it as such
 	 * and tell encoding server to start on the other formats if appropriate
 	 */
 	function approval()
@@ -401,12 +444,12 @@ class TvControllerVideo extends TvController
 		$vidId = JRequest::getVar( 'video_id', null );
 		$this->model->setVideo( $vidId );
 		
-		// accept or reject?
+		// approve or reject?
 		$approval = strtolower( JRequest::getVar('task') );
 		
 		// set the data
 		$types[] = 'moderate';
-		$data['status'] = ( $approval == 'accept' ) ? ARC_TV_APPROVED : ARC_TV_REJECTED;
+		$data['status'] = ( $approval == 'approve' ) ? ARC_TV_APPROVED : ARC_TV_REJECTED;
 		$data['comments'] = JRequest::getVar( 'manage_comments_input' );
 		
 		// call the model save method
@@ -415,7 +458,7 @@ class TvControllerVideo extends TvController
 		// if the approve status was correctly set and we saved the new status correctly
 		// we need to tell the video encoder
 		$encMessage = '';
-		if( ($approval == 'accept') && $vidId ) {
+		if( ($approval == 'approve') && $vidId ) {
 			$remote = $this->model->approveVideo( $vidId );
 			if( $remote['success'] ) {
 				$encMessage = ' The video encoder will now finish the remaining formats.';
@@ -423,8 +466,25 @@ class TvControllerVideo extends TvController
 		}
 		
 		if( $vidId ) {
+			// email the owner of the video with the outcome of the moderation
+			$sentEmail = $this->model->sendModEmail();
+			if( $sentEmail === true ) {
+				$emailMessage = ' Email notification sent to video owner.';
+			}
+			else {
+				$emailMessage = ' Email notification to video owner failed.';
+			}
+			
+			// set message text for approval state
+			if( $approval == 'approve' ) {
+				$approvalState = 'approved';
+			}
+			elseif( $approval == 'reject' ) {
+				$approvalState = 'rejected';
+			}
+			
 			$result['success'] = true;
-			$result['message'] = 'Video has been '.$approval.'ed.'.$encMessage;
+			$result['message'] = 'Video has been '.$approvalState.'.'.$emailMessage.$encMessage;
 			$result['type'] = 'message';
 		}
 		else {

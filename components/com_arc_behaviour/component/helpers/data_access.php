@@ -81,6 +81,7 @@ class ApotheosisData_Behaviour extends ApotheosisData
 			."\n".'  , '.$db->nameQuote( 'msg_id' )     .' = '.$db->Quote( $msgId );
 		$db->setQuery( $query );
 		$db->Query();
+		return $db->getErrorMsg() == '';
 	}
 	
 	function removeScore( $pId, $gId, $msgId )
@@ -92,6 +93,7 @@ class ApotheosisData_Behaviour extends ApotheosisData
 			."\n".'  AND '.$db->nameQuote( 'msg_id' )     .' = '.$db->Quote( $msgId );
 		$db->setQuery( $query );
 		$db->Query();
+		return $db->getErrorMsg() == '';
 	}
 	
 	function personScore( $pId, $from, $to )

@@ -11,8 +11,10 @@ CREATE TABLE `#__apoth_msg_messages` (
 	`applies_on` datetime default NULL,
 	`last_modified` datetime default NULL,
 	`last_modified_by` varchar(20) default NULL,
+	`data_hash` VARCHAR( 32 ) NULL,
 	PRIMARY KEY (`id`),
-	INDEX (`author`)
+	INDEX (`author`),
+	INDEX (`data_hash`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `#__apoth_msg_data` (

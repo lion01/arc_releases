@@ -731,5 +731,37 @@ class ApotheosisData_People extends ApotheosisData
 		
 		return $db->loadResult();
 	}
+	
+	/**
+	 * Send an email to the people specified
+	 * 
+	 * @param array $from  Name(0) and email address(1) of sender
+	 * @param string $pId  Arc ID of the person whose email address we want
+	 * @param string $subject  The subject of the email
+	 * @param string $body  The body of the email
+	 * @return bool|object $sent  True if email sent, object otherwise
+	 */
+	function sendEmail( $from, $pId, $subject, $body )
+	{
+		// get recipient
+		$db = &JFactory::getDBO();
+		$query = 'SELECT '.$db->nameQuote('users').'.'.$db->nameQuote('email')
+			."\n".'FROM '.$db->nameQuote('#__apoth_ppl_people').' AS '.$db->nameQuote('ppl')
+			."\n".'INNER JOIN '.$db->nameQuote('#__users').' AS '.$db->nameQuote('users')
+			."\n".'   ON '.$db->nameQuote('users').'.'.$db->nameQuote('id').' = '.$db->nameQuote('ppl').'.'.$db->nameQuote('juserid')
+			."\n".'WHERE '.$db->nameQuote('ppl').'.'.$db->nameQuote('id').' = '.$db->Quote($pId);
+		$db->setQuery( $query );
+		$to = $db->loadResult();
+		
+		// make the email
+		$mail = &JFactory::getMailer();
+		$mail->setSender( $from );
+		$mail->addRecipient( $to );
+		$mail->setSubject( $subject );
+		$mail->setBody( $body );
+		$sent = $mail->Send();
+		
+		return $sent;
+	}
 }
 ?>

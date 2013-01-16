@@ -50,23 +50,57 @@ $linkReq = array( 'core.page'=>0, 'message.tags'=>$this->get( 'tagIds' ), 'messa
 if( $this->page > 1 ) {
 	$linkReq['core.page'] = 0;
 	$prevPage = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );
-	echo '<a href="'.$prevPage.'">&lt;&lt;</a>'."\r\n";
+	echo '<a href="'.$prevPage.'" class="btn">&lt;&lt;</a>'."\r\n";
 }
 if( $this->page > 0 ) {
 	$linkReq['core.page'] = $this->page-1;
 	$prevPage = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );
-	echo '<a href="'.$prevPage.'">&lt;</a>'."\r\n";
+	echo '<a href="'.$prevPage.'" class="btn">&lt;</a>'."\r\n";
 }
 echo 'page '.($this->page + 1).' / '.$this->pageCount."\r\n";
 if( $this->page+1 < $this->pageCount ) {
 	$linkReq['core.page'] = $this->page+1;
 	$nextPage = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );
-	echo '<a href="'.$nextPage.'">&gt;</a>'."\r\n";
+	echo '<a href="'.$nextPage.'" class="btn">&gt;</a>'."\r\n";
 }
 if( $this->page+2 < $this->pageCount ) {
 	$linkReq['core.page'] = $this->pageCount-1;
 	$nextPage = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );
-	echo '<a href="'.$nextPage.'">&gt;&gt;</a>'."\r\n";
+	echo '<a href="'.$nextPage.'" class="btn">&gt;&gt;</a>'."\r\n";
+}
+
+if( $this->pageCount > 2 ) {
+	$linkReq['core.page'] = 0;
+	$action = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );
+	
+	$u = new JURI( $action );
+	$parts = $u->getQuery( true );
+	$action = $u->toString( array('scheme', 'host', 'port', 'path') );
+	unset( $parts['page'] );
+	
+	$o = new stdClass();
+	$o->id = -1;
+	$o->label = 'Go to';
+	$pages = array( $o );
+	for( $i = 0; $i < $this->pageCount; $i++ ) {
+		$o = new stdClass();
+		$o->id = $i;
+		$o->label = $i+1;
+		$pages[] = $o;
+	}
+	echo '<form method="get" action="'.$action.'" id="gotoPageForm">';
+	echo JHTML::_( 'select.genericlist', $pages, 'page', 'onChange="javascript:$(\'gotoPageForm\').submit();"', 'id', 'label' );
+	foreach( $parts as $k=>$v ) {
+		if( is_array( $v ) ) {
+			foreach( $v as $vk=>$vv ) {
+				echo JHTML::_( 'arc.hidden', $k.'['.$vk.']', $vv );
+			}
+		}
+		else {
+			echo JHTML::_( 'arc.hidden', $k, $v );
+		}
+	}
+	echo '</form>';
 }
 ?>
 </div>

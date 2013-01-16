@@ -49,5 +49,5 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</div>
 	<input id="manage_form_save_button" style="margin-top: 10px;" type="submit" value="Save" name="task" />
 	<input id="manage_form_submit_button" style="margin-top: 10px;" type="submit" value="Submit" name="task" />
-	<?php echo $this->loadTemplate( 'ajax_spinners' ); ?>
+	<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 </div>
