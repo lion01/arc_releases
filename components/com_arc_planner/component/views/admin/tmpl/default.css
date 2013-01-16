@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Planner
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+.top_admin_row {
+	overflow:auto;
+}
+
+.admin_row {
+	overflow:auto;
+}
+
+.admin_field {
+	float:left;
+	margin:5px 10px 5px 0;
+	white-space: nowrap;
+}
+
+.arc_combo .arc_combo_list {
+	height: 5em !important;
+}

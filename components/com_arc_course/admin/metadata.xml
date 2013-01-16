@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>Course Manager</text>
+		<link>option=com_arc_course</link>
+		<actions>
+			<action>
+				<name>apoth_cm</name>
+				<menu_text>Course Manager</menu_text>
+				<description>Course management</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>Course list</text>
+				<link>option=com_arc_course&amp;view=list</link>
+				<actions>
+					<action>
+						<name>apoth_cm_list</name>
+						<menu_text>Course list</menu_text>
+						<description>List courses on the system</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Add course</text>
+				<link>option=com_arc_course&amp;view=course&amp;task=add</link>
+				<actions>
+					<action>
+						<name>apoth_cm_add</name>
+						<menu_text>Add course</menu_text>
+						<description>Add a course to the system</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Delete course</text>
+				<link>option=com_arc_course&amp;view=course&amp;task=del</link>
+				<actions>
+					<action>
+						<name>apoth_cm_del</name>
+						<menu_text>Delete course</menu_text>
+						<description>Remove a course from the system</description>
+					</action>
+				</actions>
+			</item>
+		</submenu>
+	</item>
+</metadata>

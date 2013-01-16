@@ -1,0 +1,73 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Core
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+.arc_combo .arc_combo_inputcontainer {
+	width: 100%;
+	overflow: hidden !important;
+	z-index: 1;
+}
+.arc_combo .arc_combo_input {
+	padding: 2px;
+	float: left !important;
+}
+.arc_combo .arc_combo_pulldown {
+	float: right !important;
+	width: 20px !important;
+	height: 20px;
+	background: url( "../images/dropdown.jpg" ) bottom right no-repeat;
+}
+
+.arc_combo .arc_combo_listcontainer {
+	width: 100%;
+	z-index: 5;
+}
+.arc_combo .arc_combo_list {
+	height: 20em;
+	position: absolute !important;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	background: white;
+	border: 1px solid grey;
+	cursor: default;
+}
+.arc_combo .arc_combo_list div {
+	white-space: nowrap;
+}
+.arc_combo .arc_combo_list .current {
+	background: lightblue;
+}
+
+.arc_combo div.arc_combo_chosen {
+	width: 100%;
+	overflow: hidden;
+}
+.arc_combo div.arc_combo_chosen div.combo_item {
+	width: auto !important;
+	white-space: nowrap;
+	float: left;
+	border: 1px solid grey;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	margin: 2px;
+	padding: 1px;
+	font-size: 0.75em;
+	background: #eff7e6;
+	overflow: visible !important;
+}
+.arc_combo div.arc_combo_chosen div.combo_item.over {
+	background: #e6c0c0;
+	border-color: #de7a7b;
+}
+.arc_combo div.arc_combo_chosen div.combo_item.highlight {
+	background: #ffff8f;
+	border-color: #ffd760;
+}

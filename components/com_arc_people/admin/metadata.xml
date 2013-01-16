@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>People Manager</text>
+		<link>option=com_arc_people</link>
+		<actions>
+			<action>
+				<name>apoth_ppl</name>
+				<menu_text>People Manager</menu_text>
+				<description>People management</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>People list</text>
+				<link>option=com_arc_people&amp;view=list</link>
+				<actions>
+					<action>
+						<name>apoth_ppl_list</name>
+						<menu_text>People list</menu_text>
+						<description>List people on the system</description>
+					</action>
+					<action>
+						<params>format=raw</params>
+						<name>ppl_lists_csv</name>
+						<menu_text>People list csv</menu_text>
+						<description>Export people list as CSV</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Add person</text>
+				<link>option=com_arc_people&amp;view=people&amp;task=add</link>
+				<actions>
+					<action>
+						<name>apoth_ppl_add</name>
+						<menu_text>Add person</menu_text>
+						<description>Add a person to the system</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Delete person</text>
+				<link>option=com_arc_people&amp;view=people&amp;task=del</link>
+				<actions>
+					<action>
+						<name>apoth_ppl_del</name>
+						<menu_text>Delete person</menu_text>
+						<description>Remove a person from the system</description>
+					</action>
+				</actions>
+			</item>
+			<item name="apoth_ppl_profile">
+				<text>People profiles</text>
+				<link>option=com_arc_people&amp;view=profile</link>
+				<actions>
+					<action>
+						<name>apoth_ppl_profile</name>
+						<menu_text>People profiles</menu_text>
+						<description>Profiles of people on the system</description>
+					</action>
+					<action>
+						<params>option=com_arc_people
+view=profile
+task=search
+pId=~people.arc_people~
+scope=panel
+panel=links
+format=raw</params>
+						<name>homepage_links</name>
+						<menu_text>Links</menu_text>
+						<description>Homepage - Links panel</description>
+					</action>
+					<action>
+						<params>option=com_arc_people
+view=profile
+task=search
+pId=~people.arc_people~
+scope=panel
+panel=awards
+format=raw</params>
+						<name>homepage_awards</name>
+						<menu_text>Awards</menu_text>
+						<description>Homepage - Awards panel</description>
+					</action>
+					<action>
+						<params>option=com_arc_people
+view=profile
+task=search
+pId=~people.arc_people~
+scope=panel
+panel=biography
+format=raw</params>
+						<name>eportfolio_biography</name>
+						<menu_text>Biography</menu_text>
+						<description>E-portfolio - Biography panel</description>
+					</action>
+					<action>
+						<params>pId=~people.people~
+task=edit
+scope=showcase
+tmpl=component</params>
+						<name>apoth_eportfolio_edit_showcase_for_person</name>
+						<menu_text>Edit showcase</menu_text>
+						<description>E-Portfolio - Edit showcase</description>
+					</action>
+					<action>
+						<params>pId=~people.arc_people~
+task=edit
+scope=biography
+tmpl=component</params>
+						<name>eportfolio_edit_biog</name>
+						<menu_text>Edit biography</menu_text>
+						<description>E-Portfolio - Edit biography</description>
+					</action>
+					<action>
+						<params>pId=~people.arc_people~
+task=edit
+scope=links
+tmpl=component</params>
+						<name>homepage_edit_links</name>
+						<menu_text>Edit links</menu_text>
+						<description>Homepage - Edit links</description>
+					</action>
+					<action>
+						<params>task=saveLinks
+scope=links
+tmpl=component</params>
+						<name>apoth_eportfolio_edit_links</name>
+						<menu_text>Edit links</menu_text>
+						<description>E-Portfolio - Edit links</description>
+					</action>
+					<action>
+						<params>task=saveLinks
+scope=showcase
+tmpl=component</params>
+						<name>apoth_eportfolio_edit_showcase</name>
+						<menu_text>Edit showcase</menu_text>
+						<description>E-Portfolio - Edit showcase</description>
+					</action>
+					<action>
+						<params>task=saveBiography
+tmpl=component</params>
+						<name>homepage_edit_biog</name>
+						<menu_text>Edit biography</menu_text>
+						<description>Homepage - Edit biography</description>
+					</action>
+					<action>
+						<params>tmpl=component</params>
+						<name>people_profile_inter</name>
+						<menu_text>Profile</menu_text>
+						<description>People - Profile inter</description>
+					</action>
+					<action>
+						<params>option=com_arc_people
+view=profile
+task=search
+pId=~people.arc_people~
+scope=panel
+panel=sen
+format=raw</params>
+						<name>eportfolio_sen_list</name>
+						<menu_text>SEN profile</menu_text>
+						<description>E-Portfolio - SEN panel</description>
+					</action>
+					<action>
+						<params>pId=~people.arc_people~
+task=edit
+scope=sen
+tmpl=component</params>
+						<name>eportfolio_edit_sen</name>
+						<menu_text>SEN profile</menu_text>
+						<description>E-Portfolio - edit SEN</description>
+					</action>
+					<action>
+						<params>pId=~people.arc_people~
+task=saveSen
+scope=sen
+tmpl=component</params>
+						<name>eportfolio_save_sen</name>
+						<menu_text>SEN profile</menu_text>
+						<description>E-Portfolio - save SEN</description>
+					</action>
+					<action>
+						<params>task=search
+pId=~people.arc_people~
+scope=panel
+panel=customise
+format=raw</params>
+						<name>apoth_homepage_panel_customise</name>
+						<menu_text>Customise Panels</menu_text>
+						<description>Customise homepage panels</description>
+					</action>
+					<action>
+						<params>scope=panel_edit
+tmpl=component</params>
+						<name>homepage_customise_edit</name>
+						<menu_text>Edit panels</menu_text>
+						<description>Interstitial to edit display of homepage panels</description>
+					</action>
+					<action>
+						<params>task=panelSave
+tmpl=component</params>
+						<name>homepage_customise_save</name>
+						<menu_text>Save panels</menu_text>
+						<description>Form submit action link to save panels</description>
+					</action>
+				</actions>
+			</item>
+		</submenu>
+	</item>
+</metadata>

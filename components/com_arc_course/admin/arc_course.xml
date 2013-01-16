@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/component-install.dtd">
+<install type="component" version="1.5.23">
+	
+	<name>Arc_Course</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A course management sub-system for Arc</description>
+	
+	<installfile>install/install.arc_course.php</installfile>
+	<uninstallfile>install/uninstall.arc_course.php</uninstallfile>
+	
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install_mysql_utf8.sql</file>
+			<file driver="mysql">sql/install_mysql_non_utf8.sql</file>
+		</sql>
+	</install>
+	
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall_mysql_utf8.sql</file>
+			<file driver="mysql">sql/uninstall_mysql_non_utf8.sql</file>
+		</sql>
+	</uninstall>
+	
+	<files folder="../component">
+		<filename>arc_course.php</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	
+	<languages>
+		<language tag="en-GB">../lang/en-GB.com_arc_course.ini</language>
+	</languages>
+	
+	<administration>
+		<menu img="../administrator/components/com_arc_core/images/arc_menu_16.png">Arc - Course</menu>
+		<submenu>
+			<menu view="courses" img="../images/menu/config.png">Courses</menu>
+			<menu view="synch" img="../includes/js/ThemeOffice/backup.png">Import Courses</menu>
+		</submenu>
+		
+		<files folder="../admin">
+			<filename>admin.arc_course.php</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>metadata.xml</filename>
+			
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>install</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>views</folder>
+		</files>
+	</administration>
+	
+</install>

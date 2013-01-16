@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/plugin-install.dtd">
+<install type="plugin" group="system" version="1.5.23">
+	
+	<name>Arc - Subdomains</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A cookie-manipulation plugin for Arc.
+		Ensures logins in a subdomain are valid in the main domain</description>
+	
+	<files>
+		<filename plugin="arc_subdomains">arc_subdomains.php</filename>
+	</files>
+</install>

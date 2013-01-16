@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="twitter_auth">
+		<param name="consKey"       type="text"     size="60" label="Consumer key"        description="Twitter application consumer key" />
+		<param name="consSecret"    type="password" size="60" label="Consumer secret"     description="Twitter application consumer secret" />
+		<param name="callback"      type="text"     size="60" label="Callback URL"        description="URL for Twitter API to call back to on successful authentication" default="" />
+		<param name="token"         type="text"     size="60" label="Access token"        description="User-approved access token" />
+		<param name="tokenSecret"   type="password" size="60" label="Access token secret" description="User-approved access token secret" />
+	</params>
+	<params group="twitter_api">
+		<param name="urlTwitReqTok"      type="text" size="60" label="URL: Request token"   description="URL of Twitter API function to get a request token"        default="https://api.twitter.com/oauth/request_token" />
+		<param name="urlTwitAuth"        type="text" size="60" label="URL: Authorize"       description="URL of Twitter API function to get an authorisation key"   default="https://api.twitter.com/oauth/authorize" />
+		<param name="urlTwitAccTok"      type="text" size="60" label="URL: Access token"    description="URL of Twitter API function to get an access token"        default="https://api.twitter.com/oauth/access_token" />		
+		<param name="urlTwitTweet"       type="text" size="60" label="URL: Sending tweets"  description="URL of Twitter API function to send tweets"                default="https://api.twitter.com/1/statuses/update.json" />		
+		<param name="urlTwitTimeline"    type="text" size="60" label="URL: Listing tweets"  description="URL of Twitter API function to list all user's tweets"     default="https://api.twitter.com/1/statuses/user_timeline.json?trim_user=true" />		
+		<param name="urlTwitCredentials" type="text" size="60" label="URL: Account details" description="URL of Twitter API function to get user's account details" default="https://api.twitter.com/1/account/verify_credentials.json" />		
+	</params>
+</config>

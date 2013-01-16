@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_assessments" link="option=com_arc_assessment">
+		<text>Markbook</text>
+		<description>Markbook</description>
+		<submenu>
+			
+			<item name="apoth_ass_main" link="option=com_arc_assessment&amp;view=markbook">
+				<text>View my markbook</text>
+				<description>View my entire markbook</description>
+				<actions>
+					<action name="apoth_ass_main_edit">
+						<task>edit</task>
+						<text>Edit marks</text>
+						<description>Edit marks for an assessment</description>
+					</action>
+				</actions>
+			</item>
+			
+			<item name="apoth_ass_current" link="option=com_arc_assessment&amp;view=markbook&amp;task=current">
+				<text>View current markbook</text>
+				<description>View markbook for my current class</description>
+				<actions>
+					<action name="apoth_ass_current_edit">
+						<task>edit</task>
+						<text>Edit current marks</text>
+						<description>Edit marks for the current assessment</description>
+					</action>
+				</actions>
+			</item>
+			
+			<item name="apoth_ass_admin_add" link="option=com_arc_assessment&amp;view=admin&amp;scope=new">
+				<text>Admin</text>
+				<description>Administrate assessments</description>
+				
+				<submenu>
+					<item name="apoth_ass_admin_add" link="option=com_arc_assessment&amp;view=admin&amp;scope=new">
+						<text>New</text>
+						<description>Create a new assessment from scratch</description>
+					</item>
+					
+					<item name="apoth_ass_admin_existing" link="option=com_arc_assessment&amp;view=admin&amp;scope=existing">
+						<text>Existing</text>
+						<description>View existing assessments to review / modify.</description>
+						<actions>
+							<action name="apoth_ass_admin_edit">
+								<task>save</task>
+								<text>Save changes</text>
+								<description>Edit properties of the selected assessment</description>
+							</action>
+							<action name="apoth_ass_admin_delete">
+								<task>delete</task>
+								<text>Delete</text>
+								<description>Delete the selected assessment</description>
+							</action>
+							<action name="apoth_ass_admin_lock">
+								<task>lock</task>
+								<text>Lock</text>
+								<description>Lock the selected assessment to prevent further changes</description>
+							</action>
+						</actions>
+					</item>
+					
+					<item name="apoth_ass_export" link="option=com_arc_assessment&amp;view=export">
+						<text>Import / Export assessment(s)</text>
+						<description>Import / export one or more assessments in a variety of formats</description>
+						
+						<submenu>
+							<item name="apoth_ass_import" link="option=com_arc_assessment&amp;view=import">
+								<text>Import</text>
+								<description>Import an assessment from elsewhere</description>
+							</item>
+							<item name="apoth_ass_export" link="option=com_arc_assessment&amp;view=export">
+								<text>Export</text>
+								<description>Export an assessment to a file elsewhere</description>
+							</item>
+						</submenu>
+						
+					</item>
+				</submenu>
+				
+			</item>
+			
+		</submenu>
+		
+	</item>
+</metadata>

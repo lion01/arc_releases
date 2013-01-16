@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="synch_source">
+		<param name="ext_source"
+			type="sql"
+			label="External Data Soursce"
+			description="Use an external data source"
+			query="SELECT * FROM #__apoth_sys_data_sources" key_field="id" value_field="name">
+		</param>
+		<param name="host" type="text" label="Host" description="Address of the data source" />
+		<param name="user" type="text" label="Username" description="Database username" />
+		<param name="pass" type="password" label="Password" description="Database password" />
+		<param name="driver" type="filelist" directory="/libraries\joomla\database\database" exclude="index\.html" stripext="1" hide_none="0" hide_default="1" default="" label="Server Driver (if db)" description="file containing database commands" />
+		<param name="db" type="text" label="Database Name" description="Database Name" />
+		<param name="prefix" type="text" label="Table Prefix" description="" />
+	</params>
+	<params group="system_wide">
+		<param name="early_date" type="calendar" label="Early date" description="The earliest date from which to include data by default" />
+		<param name="arc_data_dir" type="text" default="/var/www/arcdev/joomla_var/arc_data" size="50" label="Arc data directory" description="Relative path to the Arc data directory" />
+	</params>
+</config>

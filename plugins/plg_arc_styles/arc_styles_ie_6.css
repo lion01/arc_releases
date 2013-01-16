@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Plugin_Styles
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#arc_data td {
+	white-space: nowrap;
+}
+
+#arc_data table tr.assmnt_title td{
+	height:1em;
+}
+
+#arc_data .controls {
+	height:1.5em;
+}
+
+#arc_data_left {
+	float: left;
+	width: 20em;
+	overflow: hidden;
+}
+
+#arc_data_left .controls {
+	height:1.9em;
+}
+
+#arc_data_right.js {
+	overflow: hidden;
+	padding-left: 0px;
+}
+
+#arc_data_right_inner.js {
+	overflow: auto;
+	padding-left: 5px;
+}
+
+.mooTree_node {
+	clear: both;
+}

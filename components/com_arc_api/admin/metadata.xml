@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>API</text>
+		<link>option=com_arc_api</link>
+		<actions>
+			<action>
+				<name>arc_api</name>
+				<menu_text>API</menu_text>
+				<description>API Menu</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>Data</text>
+				<link>option=com_arc_api&amp;view=data</link>
+				<actions>
+					<action>
+						<name>arc_api_data</name>
+						<menu_text>Data</menu_text>
+						<description>Data Menu</description>
+					</action>
+					<action>
+						<params>task=read
+format=~api.format~
+call=~api.call~</params>
+						<name>arc_api_read</name>
+						<menu_text>Read</menu_text>
+						<description>Read from the API</description>
+					</action>
+					<action>
+						<params>task=write
+format=~api.format~
+call=~api.call~</params>
+						<name>arc_api_write</name>
+						<menu_text>Write</menu_text>
+						<description>Write through the API</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Authorise</text>
+				<link>option=com_arc_api&amp;view=oauth</link>
+				<actions>
+					<action>
+						<name>arc_api_oauth</name>
+						<menu_text>Oauth</menu_text>
+						<description>Oauth Menu</description>
+					</action>
+					<action>
+						<params>format=raw
+task=request_token</params>
+						<name>arc_api_oauth_request</name>
+						<menu_text>Request Token</menu_text>
+						<description>Get a request token</description>
+					</action>
+					<action>
+						<params>task=authorise
+oauth_token=~api.token~</params>
+						<name>arc_api_oauth_authorise</name>
+						<menu_text>Authorise Token</menu_text>
+						<description>Authorise an app to access an account</description>
+					</action>
+					<action>
+						<params>format=raw
+task=access_token</params>
+						<name>arc_api_oauth_access</name>
+						<menu_text>Access Token</menu_text>
+						<description>Get an access token</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Apps</text>
+				<link>option=com_arc_api&amp;view=apps</link>
+				<actions>
+					<action>
+						<name>arc_api_apps_list</name>
+						<menu_text>List enabled apps</menu_text>
+						<description>List enabled apps</description>
+					</action>
+					<action>
+						<params>task=request</params>
+						<name>arc_api_apps_request</name>
+						<menu_text>Request addition of app</menu_text>
+						<description>Form to contact admins to request an app be enabled</description>
+					</action>
+				</actions>
+			</item>
+		</submenu>
+	</item>
+</metadata>

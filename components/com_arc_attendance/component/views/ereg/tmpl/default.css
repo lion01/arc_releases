@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Attendance
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+/* mini dots */
+
+#whitebox .arcTip_inc_tip {
+	
+}
+
+.mini_dot_div {
+	margin: 1px;
+	float: left;
+}
+
+.inc_tip span div img {
+	vertical-align: middle;
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD module 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/module-install.dtd">
+<install type="module" version="1.5.23">
+	
+	<name>Arc - Tasks</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A task lister</description>
+	
+	<files>
+		<filename module="mod_arc_tasks">helper.php</filename>
+		<filename module="mod_arc_tasks">index.html</filename>
+		<filename module="mod_arc_tasks">mod_arc_tasks.php</filename>
+		
+		<folder>tmpl</folder>
+	</files>
+	
+	<params>
+		<param name="style" type="list" default="1" label="Task selection style" description="How would you like common tasks presented">
+			<option value="0"></option>
+			<option value="1">dropdown</option>
+		</param>
+		<param name="cache_time" type="text" default="15" label="Cache Time" description="The time in seconds before the module is re-cached." />
+	</params>
+</install>

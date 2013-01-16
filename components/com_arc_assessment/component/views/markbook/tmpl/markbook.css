@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Assessment
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#arc_data table {
+	border-collapse: collapse;
+}
+#arc_data table thead td,
+#arc_data table tr.controls td,
+#arc_data table tr.assmnt_title td,
+#arc_data table tr.aspect_title td {
+	background: #dddddd;
+	border-width: 1px;
+	border-style: solid;
+}
+#arc_data table tbody td {
+	border-width: 0px 1px;
+	border-style: solid;
+}
+
+#arc_data .cell_on.old {
+	font-style: italic;
+	color: grey;
+}
+#arc_data .cell_off {
+	background: lightgrey !important;
+}
+
+#arc_data tbody tr:hover td {
+	background: #b0dea3;
+}
+#arc_data tbody tr:hover td:hover {
+	background: #ecf4e3;
+}
+
+/* heights etc so rows match up in the arc_data gubbins */
+#arc_data .controls {
+	height: 2em;
+}
+#arc_data .assmnt_title {
+	height: 3em;
+}
+#arc_data .assmnt_title .title,
+#arc_data .assmnt_title .title a {
+	font-size: 1.1em;
+	font-weight: bold !important;
+}
+#arc_data .aspect_title {
+	height: 2em;
+}
+#arc_data .sort {
+	height: 25px;
+}
+#arc_data .pupil {
+	height: 1.5em;
+}
+#arc_data .pupil_entry {
+	height: 3em;
+}
+#arc_data textarea {
+	height: 2em;
+	width: 20em;
+}

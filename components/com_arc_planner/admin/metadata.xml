@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_plan" link="option=com_arc_planner">
+		<text>Planner</text>
+		<description>Planning and task management</description>
+		<submenu>
+			<item name="apoth_plan_task" link="option=com_arc_planner&amp;view=task">
+				<text>Tasks</text>
+				<description>View and manage task summary, details and dependencies</description>
+			</item>
+			<item name="apoth_plan_list" link="option=com_arc_planner&amp;view=list">
+				<text>Lists</text>
+				<description>Displays an overview list of tasks</description>
+			</item>
+			<item name="apoth_plan_cat" link="option=com_arc_planner&amp;view=category">
+				<text>Categories</text>
+				<description>Review and manage task categories</description>
+			</item>
+		</submenu>
+	</item>
+</metadata>

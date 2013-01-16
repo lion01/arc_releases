@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/plugin-install.dtd">
+<install type="plugin" group="user" version="1.5.23">
+	
+	<name>Arc - User</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A user synchronisation plugin for Arc</description>
+
+	<files>
+		<filename plugin="arc_user">arc_user.php</filename>
+	</files>
+	
+	<languages>
+		<language tag="en-GB">en-GB.plg_user_arc_user.ini</language>
+	</languages>
+	
+	<params>
+		<param name="autoregister" type="radio" default="1" label="Auto Create Users" description="PARAMAUTOCREATEUSERS">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="autoupdate" type="radio" default="0" label="Auto Update Users" description="PARAMAUTOUPDATEUSERS">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+</install>

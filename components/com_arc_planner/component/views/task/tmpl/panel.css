@@ -1,0 +1,25 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Planner
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#task_panel .task {
+	border-style: double;
+	margin: 1em 2em;
+	padding: 0.5em 1em;
+}
+#task_panel .task ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+#task_panel .task ul li:before {
+	content: "- ";
+}

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>Messages</text>
+		<link>option=com_arc_message</link>
+		<actions>
+			<action>
+				<name>apoth_msg</name>
+				<menu_text>Messages</menu_text>
+				<description>Message handling</description>
+			</action>
+			<action>
+				<params>task=ajax
+scope=formParts
+part=~msg.formParts~
+format=xml
+view=hub</params>
+				<name>apoth_msg_hub_inter_ajax</name>
+				<menu_text>Form parts for AJAX</menu_text>
+				<description>Various snippets of HTML for use in the behaviour forms</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>Hub</text>
+				<link>option=com_arc_message&amp;view=hub&amp;scope=summary&amp;tags=</link>
+				<actions>
+					<action>
+						<params>tags=~message.tags~
+scope=~message.scopes~</params>
+						<name>apoth_msg_hub</name>
+						<menu_text>Hub</menu_text>
+						<description>The main point of creating, viewing and replying to messages</description>
+					</action>
+					<action>
+						<params>scope=~message.scopes~
+form=~message.forms~
+data=~message.data~
+tmpl=component</params>
+						<name>apoth_msg_hub_inter</name>
+						<menu_text>Hub</menu_text>
+						<description>The main point of creating messages from other components</description>
+					</action>
+					<action>
+						<params>task=~message.tasks~
+threadId=~message.threads~</params>
+						<name>apoth_msg_hub_toggle_thread</name>
+						<menu_text>Hub</menu_text>
+						<description>Toggle a thread's details</description>
+					</action>
+					<action>
+						<params>task=~message.tasks~
+msgId=~message.messages~</params>
+						<name>apoth_msg_hub_toggle_message</name>
+						<menu_text>Hub</menu_text>
+						<description>Toggle a message's details</description>
+					</action>
+					<action>
+						<params>task=~message.tasks~
+msgId=~message.messages~</params>
+						<name>apoth_msg_hub_reply</name>
+						<menu_text>Hub</menu_text>
+						<description>Reply to a message</description>
+					</action>
+					<action>
+						<params>task=~message.tasks~
+format=raw</params>
+						<name>apoth_msg_hub_ajax</name>
+						<menu_text>Hub - via Ajax</menu_text>
+						<description>The main point of creating, viewing and replying to messages in an ajax environment</description>
+					</action>
+					<action>
+						<params>task=~message.tasks~
+format=raw</params>
+						<name>apoth_msg_thread_ajax</name>
+						<menu_text>One thread - via Ajax</menu_text>
+						<description>Toggle and render a thread in an ajax environment</description>
+					</action>
+					<action>
+						<params>task=generate
+format=apothpdf</params>
+						<name>apoth_msg_hub_pdf</name>
+						<menu_text>View Messages as PDF</menu_text>
+						<description>View messages in the hub as a PDF</description>
+					</action>
+					<action>
+						<params>task=generate
+format=apothpdf
+threads=~message.threads~</params>
+						<name>apoth_specific_msg_hub_pdf</name>
+						<menu_text>View Specific Messages as PDF</menu_text>
+						<description>View specific messages in the hub as a PDF</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Behaviour Reports</text>
+				<link>option=com_arc_behaviour&amp;view=reports</link>
+				<actions>
+					<action>
+						<params>task=displayPanel
+format=raw
+pId=~people.arc_people~</params>
+						<name>apoth_be_report_panel</name>
+						<menu_text>View Behaviour summary</menu_text>
+						<description>View a summary of the behaviour incidents for a pupil</description>
+					</action>
+					<action>
+						<name>apoth_be_reports</name>
+						<menu_text>View Behaviour Reports</menu_text>
+						<description>View various breakdowns of the behaviour scores for pupils</description>
+					</action>
+					<action>
+						<params>task=generate
+format=apothpdf</params>
+						<name>apoth_be_reports_pdf</name>
+						<menu_text>View Behaviour Report PDFs</menu_text>
+						<description>View various breakdowns of the behaviour scores for pupils as PDFs</description>
+					</action>
+					<action>
+						<params>task=displayPanel
+format=raw
+pId=~people.arc_people~
+start=~sys.date~
+end=~sys.date~
+highlightDate=~sys.date~</params>
+						<name>apoth_be_report_panel_highlighted</name>
+						<menu_text>Behaviour highlighted</menu_text>
+						<description>Behaviour with a highlight</description>
+					</action>
+					<action>
+						<params>task=displayPanel
+format=raw
+pId=~people.arc_people~
+start=~sys.date~
+end=~sys.date~</params>
+						<name>apoth_be_report_panel_old</name>
+						<menu_text>Behaviour history</menu_text>
+						<description>Behaviour from the past</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Channels</text>
+				<link>option=com_arc_message&amp;view=channel</link>
+				<actions>
+					<action>
+						<name>apoth_msg_channels</name>
+						<menu_text>Channels</menu_text>
+						<description>View, modify, subscribe to channels</description>
+					</action>
+					<action>
+						<params>scope=~message.scopes~
+format=raw</params>
+						<name>apoth_msg_channel_ajax</name>
+						<menu_text>Channel data via ajax</menu_text>
+						<description>Render a channel related form for inclusion in a page via ajax</description>
+					</action>
+					<action>
+						<params>scope=restricted</params>
+						<name>apoth_msg_channel_restricted</name>
+						<menu_text>Channels&amp;apos; restricted settings</menu_text>
+						<description>Restricted settings in the channel definition form</description>
+					</action>
+				</actions>
+			</item>
+		</submenu>
+	</item>
+</metadata>

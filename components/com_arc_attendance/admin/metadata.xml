@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_att" link="option=com_arc_attendance">
+		<text>Attendance</text>
+		<description>Attendance management</description>
+		<submenu>
+			
+			<item name="apoth_att_record_current" link="option=com_arc_attendance&amp;view=ereg&amp;scope=current" favourite="sys_admin;sys_operator;sys_teacher;group_admin;group_teacher">
+				<text>Record Current</text>
+				<description>Record the attendance data for your current group</description>
+			</item>
+			
+			<item name="apoth_att_historical_registers" link="option=com_arc_attendance&amp;view=absent">
+				<text>Absence lists</text>
+				<description>Select a group to see and modify unexplained absences</description>
+				<actions>
+					<action name="apoth_att_historical_edit">
+						<task>save</task>
+						<text>Clear absences</text>
+						<description>Clear absences from "unexplained" to some reason</description>
+					</action>
+				</actions>
+				<submenu>
+					<item name="apoth_att_missing_registers" link="option=com_arc_attendance&amp;view=reports&amp;report=missingMarks&amp;scope=tutor">
+						<text>Missing Tutor Registers</text>
+						<description>Displays a list of missing tutor registers</description>
+					</item>
+					<item name="apoth_att_missing_registers" link="option=com_arc_attendance&amp;view=reports&amp;report=missingMarks&amp;scope=class">
+						<text>Subject Leader Analysis</text>
+						<description>Displays a list of missing class registers</description>
+					</item>
+					<item name="apoth_att_historical_registers" link="option=com_arc_attendance&amp;view=absent">
+						<text>Search absence lists</text>
+						<description>Select a group to see and modify unexplained absences</description>
+						<actions>
+							<action name="apoth_att_historical_edit">
+								<task>save</task>
+								<text>Clear absences</text>
+								<description>Clear absences from "unexplained" to some reason</description>
+							</action>
+						</actions>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_att_future_marks" link="option=com_arc_attendance&amp;view=future_marks">
+				<text>Future Marks</text>
+				<description>Input attendance marks for pupils</description>
+				<submenu>
+					<item name="apoth_att_individual_mark" link="option=com_arc_attendance&amp;view=future_marks&amp;scope=individual">
+						<text>Individual Student</text>
+						<description>Input marks for an individual student</description>
+					</item>
+					<item name="apoth_att_weekly_pattern" link="option=com_arc_attendance&amp;view=future_marks&amp;scope=weekly_pattern">
+						<text>Set up a Weekly Pattern</text>
+						<description>Set up a repeating weekly pattern of attendance codes</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_att_old_regs" link="option=com_arc_attendance&amp;view=ereg&amp;scope=history">
+				<text>View Registers</text>
+				<description>View non-current registers and other historical mark data</description>
+				<submenu>
+					<item name="apoth_att_select_group" link="option=com_arc_attendance&amp;view=ereg&amp;scope=recent" favourite="sys_admin;sys_operator;sys_teacher;group_admin;group_teacher">
+						<text>Record Attendance For...</text>
+						<description>Select a group for which to record attendance data</description>
+					</item>
+					<item name="apoth_att_historical_registers" link="option=com_arc_attendance&amp;view=ereg&amp;scope=history">
+						<text>Historical Registers</text>
+						<description>Select a group and a date for which to show previous register</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_att_reports" link="option=com_arc_attendance&amp;view=reports&amp;report=pupilDetails">
+				<text>View attendance reports</text>
+				<description>View various reports on pupils' attendance (TODO)</description>
+				<submenu>
+					<item name="apoth_att_report_pupil_details" link="option=com_arc_attendance&amp;view=reports&amp;report=pupilDetails">
+						<text>Pupil Details</text>
+						<description>Select a date range and a pupil to show their attendance marks for all lessons</description>
+					</item>
+					<item name="apoth_att_report_attendance_summary" link="option=com_arc_attendance&amp;view=reports&amp;report=attsummary">
+						<text>Attendance summary</text>
+						<description>Select a pupil (or group of pupils) to show a summary of attendance marks</description>
+					</item>
+					<item name="apoth_att_report_incident_summary" link="option=com_arc_attendance&amp;view=reports&amp;report=incsummary">
+						<text>Incident summary</text>
+						<description>Select a pupil (or group of pupils) to show a summary of incidents</description>
+					</item>
+					<item name="apoth_att_report_truant_details" link="option=com_arc_attendance&amp;view=reports&amp;report=truantDetails">
+						<text>Truant Details</text>
+						<description>Show the attendance of identified truants for all their lessons</description>
+						<submenu>
+							<item name="apoth_att_report_truant_details_edit" link="option=com_arc_attendance&amp;view=reports&amp;scope=truantList">
+								<text>Edit Truant List</text>
+								<description>Add pupils to, or remove them from, the list of known truants</description>
+							</item>
+						</submenu>
+					</item>
+					<item name="apoth_att_report_day_details" link="option=com_arc_attendance&amp;view=reports&amp;report=dayDetails">
+						<text>Day Details</text>
+						<description>Select a date and some pupils to show attendance marks for all day sections</description>
+					</item>
+					<item name="apoth_att_report_course_details" link="option=com_arc_attendance&amp;view=reports&amp;report=courseDetails">
+						<text>Course Details</text>
+						<description>Select a date range and a course to show attendance marks for all pupils</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_att_firedrill" link="option=com_arc_attendance&amp;view=absent&amp;scope=fire">
+				<text>Firedrill</text>
+				<description>A report of students missing from tutor registrations for a firedrill</description>
+				<submenu>
+					<item name="apoth_att_fire_abs" link="option=com_arc_attendance&amp;view=absent&amp;scope=fire">
+						<text>Daily absence lists</text>
+						<description>A list of all the kids absent (for whatever reason) today</description>
+					</item>
+					<item name="apoth_att_fire_tutors" link="option=com_arc_timetable&amp;view=enrolments&amp;scope=search&amp;course_type=pastoral">
+						<text>Tutor membership lists</text>
+						<description>A set of all the tutor membership lists</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_att_notes" link="option=com_arc_attendance&amp;view=notes" favourite="sys_admin;sys_operator;sys_teacher;group_admin;group_teacher">
+				<text>Add note</text>
+				<description>Add a note for a pupil to be delivered with their register</description>
+				<actions>
+					<action name="apoth_att_note_edit">
+						<task>save</task>
+						<text>Save note</text>
+						<description>Save changes to one or more notes</description>
+					</action>
+					<action name="apoth_att_note_deliver">
+						<task>save</task>
+						<text>Deliver note</text>
+						<description>Mark one or more notes as delivered</description>
+					</action>
+				</actions>
+			</item>
+			
+		</submenu>
+		
+	</item>
+</metadata>

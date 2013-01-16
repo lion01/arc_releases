@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="general_params">
+		<param name="votw"            type="text" size="10"   label="Video of the week"      description="The featured video for the week to show on the home page" />
+		<param name="rec_size"        type="text" size="10"   label="Recommended size"       description="How many videos to show in the recommended section" />
+		<param name="sidebar_size"    type="text" size="10"   label="Sidebar size"           description="How many videos to show in the sidebar" />
+		<param name="searched_size"   type="text" size="10"   label="Searched size"          description="How many videos to show in the searched section" />
+		<param name="tagcloud_size"   type="text" size="10"   label="Tag cloud size"         description="How many tags to show in the tag cloud" />
+		<param name="tagcloud_scale"  type="text" size="10"   label="Tag cloud scale factor" description="Scale factor for largest tag in the cloud" />
+		<param name="viewed_days"     type="list" default="3" label="Viewed period"          description="Time before current date to consider for determing how popular a video is based on number of views">
+			<option value="1">1 Day</option>
+			<option value="3">3 Days</option>
+			<option value="7">1 Week</option>
+			<option value="14">2 Weeks</option>
+			<option value="30">1 Month</option>
+			<option value="90">3 Months</option>
+			<option value="365">1 Year</option>
+		</param>
+	</params>
+	<params group="search_params">
+		<param name="title_weight" type="text" size="5"   label="Title weight"       description="Search weighting for words in video titles" />
+		<param name="desc_weight"  type="text" size="5"   label="Description weight" description="Search weighting for words in video descriptions" />
+		<param name="tag_weight"   type="text" size="5"   label="Tag weight"         description="Search weighting for words in video tags" />
+	</params>
+	<params group="res_params">
+		<param name="res_1" type="list" default="360_640" label="Resolution 1" description="Supported video resolution 1">
+			<option value=""></option>
+			<option value="360_640">640 x 360</option>
+			<option value="480_854">854 x 480</option>
+			<option value="540_960">960 x 540</option>
+			<option value="576_1024">1024 x 576</option>
+			<option value="720_1280">1280 x 720</option>
+			<option value="768_1366">1366 x 768</option>
+			<option value="900_1600">1600 x 900</option>
+			<option value="1080_1920">1920 x 1080</option>
+			<option value="1152_2048">2048 x 1152</option>
+			<option value="1440_2560">2560 x 1440</option>
+			<option value="2160_3840">3840 x 2160</option>
+			<option value="2304_4096">4096 x 2304</option>
+		</param>
+		<param name="res_2" type="list" default="480_854" label="Resolution 2" description="Supported video resolution 2">
+			<option value=""></option>
+			<option value="360_640">640 x 360</option>
+			<option value="480_854">854 x 480</option>
+			<option value="540_960">960 x 540</option>
+			<option value="576_1024">1024 x 576</option>
+			<option value="720_1280">1280 x 720</option>
+			<option value="768_1366">1366 x 768</option>
+			<option value="900_1600">1600 x 900</option>
+			<option value="1080_1920">1920 x 1080</option>
+			<option value="1152_2048">2048 x 1152</option>
+			<option value="1440_2560">2560 x 1440</option>
+			<option value="2160_3840">3840 x 2160</option>
+			<option value="2304_4096">4096 x 2304</option>
+		</param>
+		<param name="res_3" type="list" label="Resolution 3" description="Supported video resolution 3">
+			<option value=""></option>
+			<option value="360_640">640 x 360</option>
+			<option value="480_854">854 x 480</option>
+			<option value="540_960">960 x 540</option>
+			<option value="576_1024">1024 x 576</option>
+			<option value="720_1280">1280 x 720</option>
+			<option value="768_1366">1366 x 768</option>
+			<option value="900_1600">1600 x 900</option>
+			<option value="1080_1920">1920 x 1080</option>
+			<option value="1152_2048">2048 x 1152</option>
+			<option value="1440_2560">2560 x 1440</option>
+			<option value="2160_3840">3840 x 2160</option>
+			<option value="2304_4096">4096 x 2304</option>
+		</param>
+		<param name="res_4" type="list" label="Resolution 4" description="Supported video resolution 4">
+			<option value=""></option>
+			<option value="360_640">640 x 360</option>
+			<option value="480_854">854 x 480</option>
+			<option value="540_960">960 x 540</option>
+			<option value="576_1024">1024 x 576</option>
+			<option value="720_1280">1280 x 720</option>
+			<option value="768_1366">1366 x 768</option>
+			<option value="900_1600">1600 x 900</option>
+			<option value="1080_1920">1920 x 1080</option>
+			<option value="1152_2048">2048 x 1152</option>
+			<option value="1440_2560">2560 x 1440</option>
+			<option value="2160_3840">3840 x 2160</option>
+			<option value="2304_4096">4096 x 2304</option>
+		</param>
+		<param name="res_5" type="list" label="Resolution 5" description="Supported video resolution 5">
+			<option value=""></option>
+			<option value="360_640">640 x 360</option>
+			<option value="480_854">854 x 480</option>
+			<option value="540_960">960 x 540</option>
+			<option value="576_1024">1024 x 576</option>
+			<option value="720_1280">1280 x 720</option>
+			<option value="768_1366">1366 x 768</option>
+			<option value="900_1600">1600 x 900</option>
+			<option value="1080_1920">1920 x 1080</option>
+			<option value="1152_2048">2048 x 1152</option>
+			<option value="1440_2560">2560 x 1440</option>
+			<option value="2160_3840">3840 x 2160</option>
+			<option value="2304_4096">4096 x 2304</option>
+		</param>
+	</params>
+	<params group="external_server">
+		<param name="video_scripts" type="text" size="60" label="Video scripts" description="Location of video server scripts" />
+	</params>
+	<params group="external_db">
+		<param name="prefix"   type="text"     size="60" label="Prefix"   description="External video database connection prefix" />
+		<param name="driver"   type="text"     size="60" label="Driver"   description="External video database driver" />
+		<param name="host"     type="text"     size="60" label="Host"     description="External video database host" />
+		<param name="user"     type="text"     size="60" label="User"     description="External video database username" />
+		<param name="password" type="password" size="60" label="Password" description="External video database password" />
+		<param name="database" type="text"     size="60" label="Database" description="External video database name" />
+	</params>
+</config>

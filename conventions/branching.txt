@@ -1,0 +1,106 @@
+General notes
+=============
+
+Branch    Purpose                                 Lifespan
+master  - Current stable development state.       Eternal
+maint_* - Maintenance of a tagged minor version.  While minor version is supported (2 major versions, each with 2 minor versions within?).
+dev_*   - Development of a new feature.           While version of introduction exists
+hot_*   - Hot fixes for rapid deployment.         While version of introduction exists
+
+All tagged versions get zipped and archived for posterity
+Local repositories should probably be kept clear of branches not currently in active use
+All merges MUST be executed with ONLY the "no fast-forward" option
+Any merge into master MUST be followed by a push of master to the upstream server
+
+
+Feature development
+===================
+
+                    dev_102_name                                                                                    
+                  /--------------------/-----------/------\!-------/------\                                         
+                 /                    /           / <test> .      / <test> \                                        
+                /                    /           /         .     /          \                                       
+            dev_101_name            /   dev_103_name       .    /           dev_104_name                            
+          /--------/------\        /  /-----/------\       .   /          /-----------------------------/-----------
+         /   /    / <test> \      /  /     / <test> \      .  /          /     \                       /            
+master  /   /    /          \    /  /     /  /       \     . /          /       \                     /             
+=============================\========================\==========================\==================================
+                                                                                       \                            
+                                                                                        \ maint_x.y                 
+                                                                                         \--------------------------
+
+notes:
+* Development branch creation
+    Each branch SHOULD cover exactly one feature OR non-urgent bug fix
+    Branches MUST be created from the master branch
+    Branches MAY be created from any revision
+    Names MUST be in lower case and of the format dev_X_Y_Z where:
+      X is the bug id (without "ARC-" prefix)
+      Y is the (2 to 5 letter) short name of the component most directly / significantly affected
+      Z is a brief indicator of the feature being developed in that branch (<20 * a-z_)
+      for example dev_11_bhv_pdfoutput or dev_9999_core_factoryoverhaul
+    Immature branches MAY be immediately pushed to the upstream server
+
+* During active development
+    Commits SHOULD be made frequently with informative messages
+    Pushes to the upstream server SHOULD happen roughly daily and MUST be no less frequent than weekly
+    Changes from master SHOULD be merged in to the dev branch from time-to-time to ensure compatibility
+
+* On completion of development
+    All changes in master MUST be meged into the development branch
+    The new feature MUST be tested to ensure it meets requirements
+    The development branch MUST then be merged into master:
+    If between merging from and to master new changes have been made, the new changes must also be
+     brought into the dev branch and checked for conflicts and the feature re-tested. This continues
+     until a merge-test-merge cycle can be carried out without new changes being introduced.
+
+
+Release Procedure
+=================
+
+        \ <final feature merged in>               
+master   \                                        
+==========\======================/========/=======
+             \                  /        /        
+              \ maint_x.y      /x.y??   /x.y.0 
+               \--------------*--------*----------
+                 <test> <fix> <tag>               
+
+notes:
+* When all features / fixes for a major / minor version have been completed and individually tested:
+    1) New maint_ branch is created for finalising and maintenance of the new version
+    2) The full suite of tests MUST be run on all test platforms
+    3) Fix all new bugs
+    4) Tag and release
+    5) Merge updates into master
+    6) If going through alpha / beta / rc cycle, steps 2 -> 4 MUST be repeated until a stable version is reached
+
+
+Hotfix Procedure
+================
+
+
+master                                                         
+========================================================/======
+                                                       /       
+                                                      /        
+maint_1.2.0                                 1.2.1    /         
+----------------------------------------/---*------------------
+                         \             /    <tag>              
+                      /---\-----------/                        
+maint_1.1.5          / 1.1.6                                   
+-------------------/---*---------------------------------------
+    \ hot_name    //   <tag>                                   
+     \-----------//                                            
+
+notes:
+* When an urgent bug is discovered a new branch MUST be created from the oldest affected maint branch
+* Fixes are applied to resolve the problem in the oldest maintained branch first
+* When a branch is fixed:
+    the fix gets merged into the parent branch
+    the fix branch gets updated to the next affected maintenance brach
+    the fixed maint branch MUST be tagged with an updated patch version number
+    the fix branch may need to be updated or may work as-is, update / merge as required
+* Once all maint branches are fixed and tagged, the most recent tagged version MUST be merged into the master branch
+    this ensures the master branch both has the fix and an indicator of the version to which it was applied
+    the master branch does not need to be tagged

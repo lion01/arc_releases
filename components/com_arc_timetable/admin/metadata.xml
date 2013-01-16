@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>Timetable Manager</text>
+		<link>option=com_arc_timetable</link>
+		<actions>
+			<action>
+				<name>apoth_tt</name>
+				<menu_text>Timetable Manager</menu_text>
+				<description>Timetable management</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>Browse</text>
+				<link>option=com_arc_timetable&amp;view=summary</link>
+				<actions>
+					<action>
+						<name>apoth_tt_overview</name>
+						<menu_text>Browse</menu_text>
+						<description>Browse timetable information</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Reports</text>
+				<link>option=com_arc_timetable&amp;view=reports</link>
+				<actions>
+					<action>
+						<name>apoth_tt_reports</name>
+						<menu_text>Reports</menu_text>
+						<description>View timetable reports</description>
+					</action>
+				</actions>
+				<submenu>
+					<item name="apoth_tt_report_today" link="">
+						<text>Today</text>
+						<link>option=com_arc_timetable&amp;view=reports&amp;report=today</link>
+						<actions>
+							<action>
+								<name>apoth_tt_report_today</name>
+								<menu_text>Today</menu_text>
+								<description>Today's timetable</description>
+							</action>
+							<action>
+								<params>option=com_arc_timetable
+view=reports
+report=today
+scope=person
+pId=~people.arc_people~
+format=raw</params>
+								<name>homepage_timetable</name>
+								<menu_text>Timetable</menu_text>
+								<description>Homepage - Timetable panel</description>
+							</action>
+						</actions>
+					</item>
+				</submenu>
+			</item>
+		</submenu>
+	</item>
+</metadata>

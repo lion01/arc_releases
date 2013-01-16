@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_pup" link="option=com_arc_pupil">
+		<text>Pupil Manager</text>
+		<description>Pupil management</description>
+		<submenu>
+			<item name="apoth_pup_add" link="option=com_arc_pupil&amp;view=pupil&amp;task=add">
+				<text>Add pupil</text>
+				<description>Add a pupil to the system</description>
+			</item>
+			<item name="apoth_ppl_del" link="option=com_arc_pupil&amp;view=pupil&amp;task=del">
+				<text>Delete pupil</text>
+				<description>Remove a pupil from the system</description>
+			</item>
+		</submenu>
+	</item>
+</metadata>

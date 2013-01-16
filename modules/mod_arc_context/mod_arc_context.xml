@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD module 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/module-install.dtd">
+<install type="module" version="1.5.23">
+	
+	<name>Arc - Context</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A context-sensitive link creator</description>
+	
+	<files>
+		<filename module="mod_arc_context">helper.php</filename>
+		<filename module="mod_arc_context">index.html</filename>
+		<filename module="mod_arc_context">mod_arc_context.php</filename>
+		
+		<folder>tmpl</folder>
+	</files>
+</install>

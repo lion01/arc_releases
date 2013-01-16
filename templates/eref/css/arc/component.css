@@ -1,0 +1,33 @@
+/**
+ * @package     Arc
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+body {
+	font-family: helvetica, verdana, arial;
+}
+
+textarea {
+	width:95%;
+}
+
+#now_or_date input {
+	 margin-left:1px !important;
+}
+
+div.row div p {
+	 margin-top:0px !important;
+}
+
+.new_msg {
+	margin: 10px 10px;
+}
+
+.new_msg h4 {
+	margin: 5px 0px;
+}

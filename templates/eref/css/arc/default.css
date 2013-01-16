@@ -1,0 +1,278 @@
+/**
+ * @package     Arc
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+.item25 {
+	display:none;
+}
+
+.form-validate table {
+	margin-left:10px;
+}
+
+.form-validate table.paramlist.admintable {
+	display:none;
+}
+
+.form-validate button {
+	margin-left:10px;
+}
+
+
+#sbox-window {
+	padding:6px !important;
+}
+ 
+#sbox-content,
+#sbox-window {
+	border-radius:7px !important;
+	-moz-border-radius: 7px !important;
+}
+
+#subs_def,
+#channel_def {
+	overflow: hidden;
+}
+
+fieldset {
+	border: none !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+fieldset.col {
+	float: left;
+	margin-right: 5px !important;
+}
+
+.combo_container {
+	width: 20em;
+}
+
+#arc_nav {
+	position: relative;
+	float: left;
+	width:115px;
+	min-height:450px;
+	margin-bottom:20px;
+	border-radius: 15px 0 0 15px;
+	font-size:10pt;
+}
+
+#arc_main {
+	word-wrap:break-word;
+	padding:10px;
+	min-height:400px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	overflow:hidden;
+}
+
+/******* Menu *******/
+
+#login_form input {
+	cursor:pointer;
+	border:none;
+}
+
+#arc_menu a {
+	margin:0 auto;
+}
+
+#arc_menu ul.menu li,
+#arc_menu ul.menu li a {
+	text-decoration:none;
+}
+
+#arc_menu ul.menu li {
+	margin-left:15px;
+}
+
+#arc_menu ul .expand {
+	left: 0px;
+}
+
+#arc_menu ul .expand {
+	width: 100%;
+}
+
+#arc_menu ul :hover ul {
+	visibility: hidden;
+}
+
+#allcoms {
+	width:100%;
+	height:50px;
+	padding-top:20px;
+}
+
+
+/**********************
+******** FONTS ********
+**********************/
+
+.inbox:before,
+.sent:before,
+.drafts:before,
+.archive:before,
+.searched:before
+{
+    font-family: 'EntypoRegular';
+	font-size:150px;
+	line-height:45px;
+}
+
+.inbox:before 		{ content: "% "; }
+.sent:before 		{ content: "v "; }
+.drafts:before 		{ content: "l "; }
+.archive:before 	{ content: "t "; }
+.searched:before 	{ content: "ô "; }
+
+#button_search span.search_ico:after,
+#button_refresh span:before,
+#button_archive span:before,
+#button_revive span:before,
+#button_delete span:before,
+#button_pdf span:before
+{
+    font-family: 'EntypoRegular';
+	font-size:50px;
+	line-height:10px;
+	vertical-align:-8px;
+}
+
+#button_search span.search_ico:after	{ content: "ô"; }
+#button_refresh span:before 			{ content: "h"; }
+#button_archive span:before 			{ content: "t"; }
+#button_revive span:before  			{ content: "("; }
+#button_delete span:before  			{ content: "u"; }
+#button_pdf span:before  				{ content: "/"; }
+
+#button_search span.search_text { display:none; }
+
+
+/***************
+ * task module *
+ ***************/
+
+ #mod_arc_tasks {
+ 	float:left;
+ 	margin-left:25px;
+ }
+
+ #mod_arc_context {
+ 	float:right;
+ 	height:50px;
+ 	margin-right:25px;
+ }
+
+#mod_arc_context .btn
+ {
+ 	height:30px;
+ 	width:30px;
+ }
+
+#mod_arc_tasks .btn {
+	height:30px;
+}
+
+.button_list {
+    position: relative;
+    padding-bottom: 5px;
+}
+#mod_arc_tasks .button_list { float: left; }
+#mod_arc_context .button_list { float: left; }
+
+.button_list span.label {
+    font-size:20px;
+    line-height:32px;
+	vertical-align:middle;
+}
+
+.button_list span.label:before {
+    font-family: 'EntypoRegular';
+    font-size:45px;
+    line-height:0px;
+	vertical-align:-4px;
+}
+
+.button_list span.label:after {
+    font-family: 'EntypoRegular';
+    font-size:25px;
+    line-height:0px;
+	vertical-align:-4px;
+}
+
+#context_help a.btn {
+	display: block;
+	margin-right:10px;
+}
+
+.button_list .list_wrapper ul {
+    position: absolute;
+    top: 40px;
+    width: 100px;
+	border:solid 1px #c2c2c2;
+    list-style-type: none;
+    visibility:hidden;
+	z-index:2000;
+	border-radius:3px;
+}
+
+.list_wrapper ul a {
+	display:block;
+	padding:10px 10px;
+}
+
+#mod_arc_tasks   .button_list .list_wrapper ul { left: 0px; }
+#mod_arc_context .button_list .list_wrapper ul { right: 0px; text-align:right; }
+
+.button_list:hover .list_wrapper ul {
+    visibility:visible;
+}
+
+.button_list .btn a,
+.button_list a.btn,
+.button_list .list_wrapper ul a {
+    text-decoration: none;
+}
+
+#tasks.button_list span.label:before             { content: "Z"; }
+/* arrow on New button hidden as not sure it's needed - the settings button/dropdown doesn't have one
+#tasks.button_list span.label:after              { content: "ä"; }
+*/
+#context_help.button_list span.label:before      { content: "a"; }
+#category_settings.button_list span.label:before { content: "@"; }
+
+.list_wrapper ul li {
+	transition: background 1s;
+	-moz-transition: background 1s; /* Firefox 4 */
+	-webkit-transition: background 1s; /* Safari and Chrome */
+	-o-transition: background 1s; /* Opera */
+}
+
+.list_wrapper ul li a {
+	transition: color 1s;
+	-moz-transition: color 1s; /* Firefox 4 */
+	-webkit-transition: color 1s; /* Safari and Chrome */
+	-o-transition: color 1s; /* Opera */
+}
+
+#icon_wrap ul li.cur:hover a,
+#icon_wrap ul li, #icon_wrap ul li span.inbox:before, #icon_wrap ul li span.inbox,
+#icon_wrap ul li span.sent:before, #icon_wrap ul li span.sent, #icon_wrap ul li span.sent,
+#icon_wrap ul li span.drafts:before, #icon_wrap ul li span.drafts, #icon_wrap ul li span.draft,
+#icon_wrap ul li span.archive:before, #icon_wrap ul li span.archive, #icon_wrap ul li span.archive,
+#icon_wrap ul li span.searched:before, #icon_wrap ul li span.searched, #icon_wrap ul li span.searched
+{
+	transition: background 1s;
+	-moz-transition: background 1s; /* Firefox 4 */
+	-webkit-transition: background 1s; /* Safari and Chrome */
+	-o-transition: background 1s; /* Opera */
+}

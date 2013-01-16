@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="synch_db">
+		<param name="tt_data" type="radio" default="0" label="Transfer Timetable Data" description="Transfer the timetables used by the school">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="tt_enrolment" type="radio" default="0" label="Transfer Enrolment Data" description="Transfer the enrolment lists for the timetable">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="spacer" type="spacer"></param>
+		<param name="date_from" type="calendar" default="" label="Date From" description="Transfer data from this date"></param>
+		<param name="date_to" type="calendar" default="" label="Date To" description="Transfer data to this date"></param>
+		<param name="eff_date" type="calendar" default="" label="Effective Date" description="The effective date of the report"></param>
+		<param type="spacer" />
+		<param name="complete" type="radio" default="0" label="Complete Data Set" description="Is this a complete set of data or just a partial update?">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+</config>

@@ -1,0 +1,112 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Plugin_Styles
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#content {
+ 	background:none !important;
+ }
+
+/* arc data styles */
+#arc_data {
+	width: auto;
+	white-space: nowrap;
+}
+
+#arc_data.js {
+	overflow: hidden;
+}
+
+#arc_data_left {
+	float: left;
+	overflow: hidden;
+}
+#arc_data_left.js {
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+#arc_data_left table {
+	width: 100%;
+}
+
+#arc_data_right {
+	padding-left: 2px;
+}
+#arc_data_right.js {
+	overflow-x: scroll;
+	overflow-y: auto;
+}
+#arc_data_right_inner {
+	width: 100%;
+	overflow-x: auto;
+}
+#arc_data_right_inner.js {
+	overflow-x: visible;
+}
+
+/* mootree styles */
+.arc_moo_tree_control .buttons {
+	text-align: center !important;
+}
+
+/* search form styles */
+select.multi_small {
+	height: 5em;
+}
+select.multi_medium {
+	height: 10em;
+	width: 15em;
+}
+select.multi_large {
+	height: 15em;
+	width:25em;
+}
+
+#search_container {
+	width:100%;
+	margin:5px 0 5px 0;
+}
+
+#column_container {
+	width:95%;
+	overflow:auto;
+}
+
+.search_row {
+	overflow:auto;
+}
+
+.search_column {
+	float:left;
+}
+	
+.search_field {
+	float:left;
+	margin:5px 10px 5px 0;
+	white-space: nowrap;
+}
+
+.search_field label {
+	line-height: 16px;
+}
+
+.search_field img {
+	vertical-align: middle;
+}
+
+.search_div_nowrap {
+	padding-right: 2px;
+	display: inline-table;
+}
+
+/* backend admin styles */
+fieldset.adminform_thinfieldset {
+	display: inline;
+}

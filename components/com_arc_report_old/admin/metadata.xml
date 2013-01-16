@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_rpt" link="option=com_arc_report">
+		<text>Reports</text>
+		<description>Student reports</description>
+		<submenu>
+			
+			<item name="apoth_rpt_lists" link="option=com_arc_report&amp;view=lists">
+				<text>Enrollment lists</text>
+				<description>View lists of courses, classes, and pupils</description>
+				<submenu>
+					<item name="apoth_rpt_lists" link="option=com_arc_report&amp;view=lists">
+						<text>All enrollment lists</text>
+						<description>View lists of courses and tutor groups</description>
+					</item>
+					<item name="apoth_rpt_lists_course" link="option=com_arc_report&amp;view=lists&amp;scope=courses">
+						<text>Course list</text>
+						<description>View a list of courses</description>
+					</item>
+					<item name="apoth_rpt_lists_tutors" link="option=com_arc_report&amp;view=lists&amp;scope=tutors">
+						<text>Tutor list</text>
+						<description>View a list of tutor groups</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_rpt_report" link="option=com_arc_report&amp;view=report">
+				<text>Search for an individual report</text>
+				<description>View a single report</description>
+				<actions>
+					<action name="apoth_rpt_report_save">
+						<task>savedraft</task>
+						<text>Save draft</text>
+						<description>Save a draft version of the report</description>
+					</action>
+					<action name="apoth_rpt_report_submit">
+						<task>savecomplete</task>
+						<text>Save Complete</text>
+						<description>Save a complete report and submit it for peer review</description>
+					</action>
+					<action name="apoth_rpt_report_approve">
+						<task>approve</task>
+						<text>Approve</text>
+						<description>Approve the report</description>
+					</action>
+					<action name="apoth_rpt_report_reject">
+						<task>reject</task>
+						<text>Reject</text>
+						<description>Reject the report and leave feedback</description>
+					</action>
+				</actions>
+			</item>
+			
+			<item name="apoth_rpt_admin" link="option=com_arc_report&amp;view=admin">
+				<text>Administrate</text>
+				<description>Manage various aspects of the report system</description>
+				<submenu>
+					<item name="apoth_rpt_admin_assign" link="option=com_arc_report&amp;view=admin&amp;scope=assignAdmins">
+						<text>Assign administrators</text>
+						<description>Assign users to be administrators for a course</description>
+					</item>
+					<item name="apoth_rpt_peer_assign" link="option=com_arc_report&amp;view=admin&amp;scope=assignPeers">
+						<text>Assign peer checkers</text>
+						<description>Assign users to be additional peer checkers for a course</description>
+					</item>
+					<item name="apoth_rpt_admin_associate" link="option=com_arc_report&amp;view=admin&amp;scope=associate">
+						<text>Associate settings</text>
+						<description>Set this group to use shared settings from another group</description>
+					</item>
+					<item name="apoth_rpt_admin_statements" link="option=com_arc_report&amp;view=admin&amp;scope=statements">
+						<text>Statement banks</text>
+						<description>View, edit, upload and delete statements</description>
+						<actions>
+							<action name="apoth_rpt_admin_state_add">
+								<task>addStatement</task>
+								<text>Add a statement</text>
+								<description>Add a statement to the statement bank</description>
+							</action>
+							<action name="apoth_rpt_admin_state_edit">
+								<task>savestatement</task>
+								<text>Save changes</text>
+								<description>Save changes to a statement already in the bank</description>
+							</action>
+							<action name="apoth_rpt_admin_state_delete">
+								<task>deletestatements</task>
+								<text>Delete one or more statements</text>
+								<description>Remove the selected statements from the statement bank</description>
+							</action>
+						</actions>
+					</item>
+					<item name="apoth_rpt_admin_layout" link="option=com_arc_report&amp;view=admin&amp;scope=layout">
+						<text>Change page layout</text>
+						<description>Select a layout for your course from the available layouts</description>
+					</item>
+					<item name="apoth_rpt_admin_marks" link="option=com_arc_report&amp;view=admin&amp;scope=marks">
+						<text>Change mark style</text>
+						<description>Select a mark style for your course from the available styles</description>
+					</item>
+					<item name="apoth_rpt_admin_fields" link="option=com_arc_report&amp;view=admin&amp;scope=fields">
+						<text>Change field style</text>
+						<description>Adjust style and settings for fields on your course''s reports</description>
+					</item>
+					<item name="apoth_rpt_admin_blurb" link="option=com_arc_report&amp;view=admin&amp;scope=blurb">
+						<text>Edit introduction text</text>
+						<description>Edit the subject and coursework description</description>
+					</item>
+					<item name="apoth_rpt_admin_statistics" link="option=com_arc_report&amp;view=admin&amp;scope=statistics">
+						<text>View completion statistics</text>
+						<description>View statistics on the progress of the reports</description>
+					</item>
+				</submenu>
+			</item>
+			
+			<item name="apoth_rpt_output" link="option=com_arc_report&amp;view=output">
+				<text>Output</text>
+				<description>Generate various formats of output from the written reports</description>
+			</item>
+			
+		</submenu>
+		
+	</item>
+</metadata>

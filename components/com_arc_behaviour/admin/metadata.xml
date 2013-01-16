@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>Behaviour</text>
+		<link>option=com_arc_behaviour</link>
+		<actions>
+			<action>
+				<name>apoth_be</name>
+				<menu_text>Behaviour</menu_text>
+				<description>Behaviour Tracking</description>
+			</action>
+		</actions>
+	</item>
+</metadata>

@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Timetable
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+table {
+	width: 100%;
+	text-align: center;
+}
+td {
+	vertical-align: top;
+}
+.att_img img {
+	vertical-align: middle;
+	margin: 2px 0px 2px 3px;
+}
+.oddcol {
+	background: #ecf4e3;
+}
+.evencol {
+	background: #b0dea3;
+}

@@ -1,0 +1,298 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Planner
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+/* Tasks */
+.task_div_wrapper {
+	padding: 0px 3px 3px 3px;
+}
+
+.task_edge_div {
+	border-style: solid;
+	border-width: 0px 5px;
+}
+
+.task_top_edge_div {
+	border-style: solid;
+	border-width: 4px 0px 0px 0px;
+	margin-bottom: 3px;
+}
+
+.task_color_div {
+	height: 2em;
+}
+
+.task_inner_left_div {
+	float: left;
+	padding-left: 1em;
+}
+
+.task_inner_div {
+	margin-top: -2em;
+}
+
+.task_inner_centre_div {
+	width: 20em;
+	margin: 0px auto;
+	text-align: center !important;
+}
+
+.task_inner_right_div {
+	float: right;
+}
+
+.task_title {
+	line-height: 2em;
+	font-weight: bold;
+}
+
+.task_matched { /* *** doubles up task_title atm */
+	line-height: 2em;
+	font-weight: bold;
+}
+
+.task_complete { /* *** nearly doubles up task_title atm */
+	line-height: 2em;
+	font-weight: bold;
+}
+
+.task_micro { /* *** nearly doubles up task_title atm */
+	line-height: 2em;
+	font-weight: bold;
+}
+
+.task_micro_duration { /* *** nearly doubles up task_title atm */
+	line-height: 2em;
+	font-weight: bold;
+}
+
+.task_buttons {
+	line-height: 2em;
+	font-weight: bold;
+	margin-right: 1em;
+}
+
+.b1f, .b2f, .b3f, .b4f {
+	font-size: 1px;
+	overflow: hidden;
+	display: block;
+	height: 1px
+}
+
+.b1f {
+	margin: 0px 5px;
+}
+
+.b2f {
+	margin: 0px 3px;
+}
+
+.b3f {
+	margin: 0px 2px;
+}
+
+.b4f {
+	height: 2px;
+	margin: 0px 1px;
+}
+
+
+
+/* Task details */
+
+.task_details_wrapper {
+	padding: 0px 3px 3px 3px;
+}
+
+.task_details_wrapper ul {
+	list-style: inside;
+	margin: 0px;
+	padding: 0px;
+}
+
+.task_details_block {
+	overflow: auto;
+}
+
+.task_details_block_inner {
+	width: 50%;
+	float: left;
+}
+
+.task_details_block_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.task_details_block_text {
+	margin: 0px 2px;
+	padding: 2px 2px;
+	border: solid 1px grey;
+	min-height: 3em;
+}
+
+.task_details_line {
+	overflow: auto;
+}
+
+.task_details_line_inner {
+	margin-top: 3px;
+	width: 25%;
+	float: left;
+}
+
+.task_details_line_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.task_details_line_text {
+	margin: 0px 2px;
+	padding: 2px 2px;
+	border: solid 1px grey;
+}
+
+.task_details_progress {
+	overflow: auto;
+}
+
+.task_details_progress_inner {
+	margin-top: 3px;
+}
+
+.task_details_progress_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.task_details_progress_table_outer {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	border: solid 1px grey;
+}
+
+.task_details_progress_table {
+	padding: 4px 1px 3px 2px;
+}
+
+.task_details_progress_table table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.task_details_progress_table th {
+	padding: 1px 3px;
+	border: solid 1px silver;
+	vertical-align: middle;
+	color: black;
+}
+
+.task_details_progress_table td {
+	padding: 1px 3px;
+	border: solid 1px silver;
+	vertical-align: middle;
+}
+
+
+
+/* Micro tasks */
+
+.micro_details_wrapper {
+	padding: 0px 3px 3px 3px;
+}
+
+.micro_details_block {
+	overflow: auto;
+}
+
+.micro_details_block_inner {
+	width: 50%;
+	float: left;
+}
+
+.micro_details_block_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.micro_details_block_text {
+	margin: 0px 2px;
+	padding: 2px 2px;
+	border: solid 1px grey;
+	min-height: 3em;
+}
+
+.micro_details_line {
+	overflow: auto;
+}
+
+.micro_details_line_inner {
+	margin-top: 3px;
+	width: 25%;
+	float: left;
+}
+
+.micro_details_line_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.micro_details_line_text {
+	margin: 0px 2px;
+	padding: 2px 2px;
+	border: solid 1px grey;
+}
+
+.micro_details_progress {
+	overflow: auto;
+}
+
+.micro_details_progress_inner {
+}
+
+.micro_details_progress_title {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	font-weight: bold;
+}
+
+.micro_details_progress_table_outer {
+	margin: 0px 2px;
+	padding: 0px 2px;
+	border: solid 1px grey;
+}
+
+.micro_details_progress_table {
+	padding: 4px 1px 3px 2px;
+}
+
+.micro_details_progress_table table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.micro_details_progress_table th {
+	padding: 1px 3px;
+	border: solid 1px silver;
+	vertical-align: middle;
+	color: black;
+}
+
+.micro_details_progress_table td {
+	padding: 1px 3px;
+	border: solid 1px silver;
+	vertical-align: middle;
+}

@@ -1,0 +1,38 @@
+<style>
+/**
+ * @package     Arc
+ * @subpackage  Attendance
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#att_panel_stat,
+#att_panel_all,
+#att_panel_all_per {
+}
+.att_panel_image {
+}
+.colorbox {
+	width: 10px;
+	height: 10px;
+	float: left;
+	margin: 2px;
+}
+.colorbox_key {
+}
+.colorbox_value {
+	font-weight: bold;
+}
+#att_panel_buttons {
+	display: none;
+	clear: left;
+	padding-left: 46px;
+}
+.att_panel_button {
+	margin: 0px 5px;
+}
+</style>

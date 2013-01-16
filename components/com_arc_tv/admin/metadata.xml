@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>TV</text>
+		<link>option=com_arc_tv</link>
+		<actions>
+			<action>
+				<name>arc_tv</name>
+				<menu_text>Videos</menu_text>
+				<description>Videos for education</description>
+			</action>
+			<action>
+				<name>arc_tv_video</name>
+				<menu_text>View video</menu_text>
+				<description>View a single video</description>
+				<params>view=video
+task=video
+vidId=~tv.videoId~</params>
+			</action>
+			<action>
+				<name>arc_tv_search</name>
+				<menu_text>Search videos</menu_text>
+				<description>View a list of videos that match search criteria</description>
+				<params>view=video
+task=search</params>
+			</action>
+			<action>
+				<name>arc_tv_moderate</name>
+				<menu_text>Moderate videos</menu_text>
+				<description>View a list of videos that require moderation</description>
+				<params>view=video
+task=moderate</params>
+			</action>
+			<action>
+				<name>arc_tv_myvids</name>
+				<menu_text>My videos</menu_text>
+				<description>View a list of videos owned by the current user</description>
+				<params>view=video
+task=myvids</params>
+			</action>
+			<action>
+				<name>arc_tv_tag</name>
+				<menu_text>Tagged videos</menu_text>
+				<description>View a list of videos that have a particular tag</description>
+				<params>view=video
+task=tag
+tag=~tv.tag~</params>
+			</action>
+			<action>
+				<name>arc_tv_manage</name>
+				<menu_text>Manage a video</menu_text>
+				<description>Video management</description>
+				<params>view=video
+task=manage
+vidId=~tv.videoId~</params>
+			</action>
+			<action>
+				<name>arc_tv_manage_status</name>
+				<menu_text>Video status panel</menu_text>
+				<description>Video management - view status panel</description>
+				<params>view=video
+task=updateStatus
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_manage_save</name>
+				<menu_text>Save a video</menu_text>
+				<description>Video management - save a video</description>
+				<params>view=video
+task=save
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_manage_submit</name>
+				<menu_text>Submit a video</menu_text>
+				<description>Video management - submit a video</description>
+				<params>view=video
+task=submit
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_manage_accept</name>
+				<menu_text>Accept a video</menu_text>
+				<description>Video management - accept a video</description>
+				<params>view=video
+task=accept
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_manage_reject</name>
+				<menu_text>Reject a video</menu_text>
+				<description>Video management - reject a video</description>
+				<params>view=video
+task=reject
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_file_form</name>
+				<menu_text>Upload a file</menu_text>
+				<description>Select a file for upload</description>
+				<params>view=video
+task=vidFiles
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_file_upload</name>
+				<menu_text>Upload a file</menu_text>
+				<description>Select a file for upload</description>
+				<params>view=video
+task=uploadVidFiles
+vidId=~tv.videoId~
+format=raw</params>
+			</action>
+			<action>
+				<name>arc_tv_file_delete</name>
+				<menu_text>Delete video files</menu_text>
+				<description>Delete all the files for a video</description>
+				<params>view=video
+task=delVidFiles
+vidId=~tv.videoId~</params>
+			</action>
+			<action>
+				<name>arc_tv_homepage_panel</name>
+				<menu_text>TV Homepage Panel</menu_text>
+				<description>Show video of the week in a homepage panel</description>
+				<params>view=video
+task=panel
+format=raw</params>
+			</action>
+		</actions>
+	</item>
+</metadata>

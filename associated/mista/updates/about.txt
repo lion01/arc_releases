@@ -1,0 +1,3 @@
+This directory is where updates to the MIStA program are downloaded.
+They are held here until being applied to the code.
+If you find a file here with a version below that of your MIStA installation it should be ok to remove it.

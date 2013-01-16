@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="cycles" addpath="/administrator/components/com_arc_attendance/elements">
+		<param name="synch_writes" type="radio" default="0" label="Synchronous Writes" description="Record any attendance marks to external database">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+	
+	<params group="synch_db">
+		<param name="att_codes" type="radio" default="0" label="Transfer School Attendance Codes" description="Transfer the codes used by the school for their attendance marks">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="spacer" type="spacer"></param>
+		<param name="att_history" type="radio" default="0" label="Transfer Attendance History" description="Transfer attendance history from external Database">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="date_from" type="text" default="" label="Date From" description="Transfer data from this date"></param>
+		<param name="date_to" type="text" default="" label="Date To" description="Transfer data from this date"></param>
+		<param name="spacer" type="spacer"></param>
+		<param name="truncate" type="radio" default="0" label="Delete existing rows" description="Delete the existing rows in the database">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+	
+	<params group="settings_settings" addpath="/administrator/components/com_arc_report/elements">
+		<param name="current_cycle" type="currentCycle" default="" label="Select current report cycle" description="Choose the current year the reports cycle focuses on"></param>
+		<param name="en-masse_reports" type="radio" default="1" label="Allow En-Masse report writing" description="Allow multiple reports to be generated at the click of a button">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="merge_start" type="text" default="" label="Merge Field: Starting text" description="Characters to identify the start of a merge field"></param>
+		<param name="merge_end" type="text" default="" label="Merge Field: Ending text" description="Characters to identify the end of a merge field"></param>
+		<param name="bullet_id" type="bulletText" default="" label="Bullet Text" description="Character to identify the bullet character"></param>
+	</params>
+	
+	<params group="statements" addpath="/administrator/components/com_arc_report_elements">
+		<param name="historical_cycles" type="historicalCycles" default="" label="Select past report cycle" description="Choose a previous reports cycle to copy from"></param>
+	</params>
+
+	<params group="merge_properties">
+		<param name="property" type="select" default="" label="Property" description="Attributes of this student's / group contribution">
+			<option value="Name">Name</option>
+			<option value="Subject">Subject</option>
+			<option value="Grade">Grade</option>
+			<option value="clp">clp</option>
+			<option value="clp2">clp2</option>
+		</param>
+	</params>
+
+	<params group="pseudo" addpath="/administrator/components/com_arc_report_elements">
+		<param name="current_cycle" type="currentCycle" default="" label="Select current report cycle" description="Choose the current year the reports cycle focuses on"></param>
+	</params>
+</config>

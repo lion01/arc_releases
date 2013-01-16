@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.6//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<install version="1.5" type="template">       
+	<name>eRef</name>
+	<creationDate>30 March 2012</creationDate>
+	<author>becca</author>
+	<authorEmail>becca@pun.net</authorEmail>
+	<authorUrl>pun.net</authorUrl>
+	<copyright>Copyright (C) punnet</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<version>1.5</version>
+	<description>eRef template</description>
+	<files>
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>language</folder>
+		<folder>PIE</folder>
+		<folder>scripts</folder>
+		<filename>border-radius.htc</filename>
+		<filename>favicon.ico</filename>
+		<filename>index.php</filename>
+		<filename>offline.php</filename>
+		<filename>params.ini</filename>
+		<filename>template_preview.png</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>templateDetails.xml</filename>
+	</files>
+	<positions>
+		<position>arc_menu</position>
+		<position>login_top</position>
+		<position>context1</position>
+		<position>context2</position>
+	</positions>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.tpl_punnet.ini</language>
+	</languages>	
+	<params>
+		<param name="palate" type="list" default="grey" label="Palate" description="Background and foreground colours">
+			<option value="grey">Grey</option>
+		</param>
+		<param name="arcNavPosition" type="list" default="left" label="Folder List Position" description="Position for Arc navigation (eg folders in the message hub)">
+			<option value="left">Left</option>
+		</param>
+	</params>	
+</install>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_sm" link="option=com_arc_staff">
+		<text>Staff Manager</text>
+		<description>Staff management</description>
+		<submenu>
+			<item name="apoth_sm_add" link="option=com_arc_staff&amp;view=people&amp;task=add">
+				<text>Add staff member</text>
+				<description>Add a member of staff to the system</description>
+			</item>
+			<item name="apoth_sm_del" link="option=com_arc_staff&amp;view=people&amp;task=del">
+				<text>Delete staff member</text>
+				<description>Remove a member of staff from the system</description>
+			</item>
+		</submenu>
+	</item>
+</metadata>

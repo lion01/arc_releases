@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/component-install.dtd">
+<install type="component" version="1.5.23">
+	
+	<name>Arc_API</name>
+	<creationDate>2011-09-24</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>An API sub-system for Arc to allow access by 3rd party apps</description>
+	
+	<installfile>install/install.arc_api.php</installfile>
+	<uninstallfile>install/uninstall.arc_api.php</uninstallfile>
+	
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install_mysql_utf8.sql</file>
+			<file driver="mysql">sql/install_mysql_non_utf8.sql</file>
+		</sql>
+	</install>
+	
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall_mysql_utf8.sql</file>
+			<file driver="mysql">sql/uninstall_mysql_non_utf8.sql</file>
+		</sql>
+	</uninstall>
+	
+	<files folder="../component">
+		<filename>arc_api.php</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	
+	<languages>
+		<language tag="en-GB">../lang/en-GB.com_arc_api.ini</language>
+	</languages>
+	
+	<administration>
+		<menu img="../administrator/components/com_arc_core/images/arc_menu_16.png">Arc - API</menu>
+		<submenu>
+			<menu view="consumers" img="../images/menu/config.png">Consumers</menu>
+		</submenu>
+		
+		<files folder="../admin">
+			<filename>admin.arc_api.php</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>metadata.xml</filename>
+			
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>install</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>views</folder>
+		</files>
+	</administration>
+	
+	<params>
+		<param name="urlReqTok" default="index.php?option=com_arc_api&amp;view=oauth&amp;format=raw&amp;task=request_token" type="text" label="urlReqTok" />
+	</params>
+	
+</install>

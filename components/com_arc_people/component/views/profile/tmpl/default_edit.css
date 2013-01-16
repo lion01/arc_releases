@@ -1,0 +1,42 @@
+<style>
+/**
+ * @package     Arc
+ * @subpackage  People
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+#homepage_customise_div {
+	padding: 10px;
+}
+
+.select_panels_centre {
+	text-align: center;
+}
+
+form div#formEls {
+	margin: 10px 0px;
+	overflow: auto;
+}
+
+form div#formEls label {
+	clear: left;
+	float: left;
+	width: 300px;
+	text-align: right;
+	margin: 5px 5px 5px 0px;
+}
+
+form div#formEls input {
+	float: left;
+	margin: 5px 0px 5px 0px;
+}
+
+form div#buttons {
+	text-align: center;
+}
+</style>

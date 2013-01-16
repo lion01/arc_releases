@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="synch_db">
+		<param name="parentage" type="radio" default="1" label="Adopt Parentage" description="Transfer over the courses parents also">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param type="spacer" />
+		<param name="complete" type="radio" default="0" label="Complete Data Set" description="Is this a complete set of data or just a partial update?">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+</config>

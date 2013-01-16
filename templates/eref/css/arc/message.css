@@ -1,0 +1,121 @@
+/**
+ * @package     Arc
+ * @subpackage  Message
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+
+/* layout bits */
+#messages {
+	min-height:650px !important;
+	margin-left:115px;
+	border-radius: 0 15px 15px 15px;
+	padding-bottom:25px;
+}
+
+#folders h4 {
+	display:none;
+}
+
+#icon_wrap {
+	width:114px !important;
+}
+
+#icon_wrap ul li {
+	width:114px;
+	border-right:solid 1px #cacaca;
+	border-bottom:solid 1px #cacaca;
+	height:100px;
+	overflow:hidden;
+}
+
+#icon_wrap ul ul li:first-child {
+	border-radius:15px 0 0 0;
+}
+
+#icon_wrap > ul > li:last-child {
+	border-radius:0 0 0 15px;
+	margin-bottom:0;
+	border-bottom:none;
+}
+
+#icon_wrap ul li a {
+	text-decoration:none;
+	display:block;
+	height:100%;
+}
+
+#messages_wrap {
+	padding-left: 11em;
+	padding-right: 20em;
+}
+
+#extra {
+	position: relative;
+	float: left;
+	width: 20em;
+	margin-right: -20em;
+}
+#extra_inner {
+	padding: 0px 5px;
+}
+
+/* styling bits */
+
+#folders ul {
+	list-style: none;
+	text-align:center;
+}
+
+#messages #msg_head {
+	overflow: auto;
+}
+
+#messages #controls {
+	float: left;
+	height:50px;
+	margin:10px 15px;
+}
+
+#controls input {
+	border-radius: 5px;
+	padding:2px;
+	height:40px;
+}
+
+#messages #msg_search {
+	float: right;
+	margin: 10px 20px 0px 20px;
+	height:50px;
+}
+
+#msg_search .search {
+	height:18px;
+	width:150px;
+	border:solid 1px #cacaca;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#messages #msg_list {
+	width: 100%;
+	margin-left:5px;
+}
+#messages #msg_list th {
+	text-align: left;
+}
+
+#pdf_link,
+#button_pdf {
+	margin-left: 1em;
+}
+
+#msg_search .search {
+	border:solid 1px #e6e6e6;
+}

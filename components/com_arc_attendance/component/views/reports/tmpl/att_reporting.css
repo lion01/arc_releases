@@ -1,0 +1,204 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Attendance
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+/* Breadcrumbs */
+#breadcrumbs_trail_div,
+#expand_links_div {
+	overflow: auto;
+	line-height: 2em;
+}
+#expand_links_div {
+	margin-bottom: 0.5em;
+}
+#breadcrumbs ul {
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
+}
+#breadcrumbs ul li {
+	float: left;
+	list-style-type: none;
+	padding: 0px 5px 0px 15px;
+	background: left center no-repeat url("../../../images/apothmenu.png");
+}
+#breadcrumbs ul li:first-child {
+	padding: 0px 5px 0px 0px;
+	background-image: none;
+}
+
+/* Filter Form */
+#filter_forms_div {
+	margin-bottom: 0.5em;
+	line-height: 2em;
+	overflow: auto;
+}
+#filter_forms_div a {
+	margin-right: 1em;
+}
+.filter_form {
+	float: left;
+	margin-right: 1em;
+}
+#expand_links_div a {
+	margin-right: 0em;
+}
+
+/* Sheet Layout */
+#sheet_div {
+	overflow: auto;
+	margin-bottom: 1em;
+}
+
+/* Mark Table */
+#mark_table {
+	border-collapse: collapse;
+}
+#mark_table th,
+#mark_table td {
+	border: 1px solid black;
+	text-align: center;
+	min-width: 30px;
+	padding: 2px;
+}
+#mark_table .indent_cell {
+	text-align: left;
+}
+span.indent {
+	padding-left: 1.5em;
+}
+#mark_table span.few {
+	color: red;
+	font-weight: bold;
+}
+#mark_table span.many {
+	color: blue;
+	font-weight: bold;
+}
+#mark_table span.right {
+	font-weight: bold;
+}
+
+/* Edit Form */
+.edit_form,
+#edit_form_div {
+	margin-bottom: 1em;
+}
+#edit_form_div div {
+	margin-bottom: 0.5em;
+	line-height: 2em;
+}
+#edit_form_clicker_div {
+	display: none;
+	float: left;
+}
+.edit_form select,
+.edit_form span.indent {
+	margin-right: 1.5em;
+}
+
+/* Tabs */
+ul.tab_row {
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+li.tab,
+li.tab_active {
+	display: inline-block;
+	float: left;
+	height: 18px;
+	text-align: center;
+	line-height: 18px;
+	vertical-align: middle;
+	margin: 3px;
+	padding: 0px 3px;
+	border: 2px outset black;
+	font-weight: normal;
+}
+li.tab_active,
+li.tab_active a {
+	font-weight: bold;
+	background-color: #B0DEA3;
+}
+li.tab_inactive {
+	background-color: lightgray;
+}
+
+/* Toggles */
+a.toggle,
+a.toggle_active,
+span.toggle_disabled {
+	display: inline-block;
+	height: 18px;
+	width: 18px;
+	text-align: center;
+	line-height: 18px;
+	vertical-align: middle;
+	margin: 2px;
+	border: 2px outset black;
+	font-weight: normal;
+	}
+a.toggle_active {
+	font-weight: bold !important;
+	background-color: #B0DEA3;
+}
+span.toggle_disabled {
+	background: lightgray;
+}
+
+/* Summary Div */
+.summary_div {
+	border: 1px solid black;
+	overflow: auto;
+	margin-bottom: 1em;
+	padding: 1em;
+	display: table;
+}
+#summary_image_div {
+	float: left;
+}
+#summary_table_div {
+	float: left;
+	margin-left: 3em;
+	margin-top: 10px;
+}
+.summary_table {
+	border-collapse: collapse;
+}
+.summary_table th,
+.summary_table td {
+	border: 1px solid black;
+	text-align: center;
+	min-width: 30px;
+	padding: 2px;
+}
+.summary_table td.sum_table_key_cell {
+	min-width: 0px;
+	background: #ffffff;
+}
+.summary_table td.stat_sub_row_desc,
+.summary_table td.all_sub_row_desc,
+.summary_table td.all_per_sub_row_desc {
+	text-align: right;
+}
+#summary_code_div {
+float: left;
+}
+#summary_sessions_div {
+float: left;
+margin-left: 3em;
+}
+.totals_table_title_div {
+	padding-left: 3px;
+	font-weight: bold;
+}

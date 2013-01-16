@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>System</text>
+		<link>option=com_arc_core</link>
+		<actions>
+			<action>
+				<name>apoth</name>
+				<menu_text>System</menu_text>
+				<description>The Arc system menu</description>
+			</action>
+			<action>
+				<params>view=ajax
+format=xml
+task=loadtreenode
+action=~core.action~</params>
+				<name>apoth_sys_grouptree</name>
+				<menu_text>Group selector</menu_text>
+				<description>The group selector tree control</description>
+			</action>
+			<action>
+				<params>view=ajax
+format=xml
+task=loadtreenode
+action=~core.action~
+node=~core.treenode~</params>
+				<name>apoth_sys_grouptree_node</name>
+				<menu_text>Group selector node</menu_text>
+				<description>The group selector tree control child node</description>
+			</action>
+		</actions>
+		<submenu>
+			<item>
+				<text>Favourites</text>
+				<link>option=com_arc_core&amp;view=favourites</link>
+				<actions>
+					<action>
+						<name>apoth_favourites</name>
+						<menu_text>Favourites</menu_text>
+						<description>Shows a list of common tasks for your user type</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>Luhn utilities</text>
+				<link>option=com_arc_core&amp;view=luhn</link>
+				<actions>
+					<action>
+						<name>apoth_luhn</name>
+						<menu_text>Luhn utilities</menu_text>
+						<description>Check a string (including letters and numbers) to see if it has a valid luhn checknumber</description>
+					</action>
+					<action>
+						<task>generate</task>
+						<name>apoth_luhn_generate</name>
+						<menu_text>Generate Luhn</menu_text>
+						<description>Generate a valid luhn checknumber for a string (including letters and numbers)</description>
+					</action>
+					<action>
+						<task>check</task>
+						<name>apoth_luhn_check</name>
+						<menu_text>Check Luhn</menu_text>
+						<description>Record the attendance data for your current group</description>
+					</action>
+				</actions>
+			</item>
+			<item>
+				<text>System settings</text>
+				<link>option=com_arc_core&amp;view=systemDefault</link>
+				<actions>
+					<action>
+						<name>apoth_sys</name>
+						<menu_text>System settings</menu_text>
+						<description>Set up the Arc settings</description>
+					</action>
+				</actions>
+			</item>
+		</submenu>
+	</item>
+</metadata>

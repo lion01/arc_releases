@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="synch_db">
+		<param name="ppl_data" type="radio" default="0" label="People Data" description="Transfer the people stored by the school">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="ppl_relation" type="radio" default="0" label="Relations Data" description="Transfer the relationship data">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param type="spacer" />
+		<param name="complete" type="radio" default="0" label="Complete Data Set" description="Is this a complete set of data or just a partial update?">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+	<params group="jos_user_format">
+		<param type="spacer" default="&lt;b&gt;Primary&lt;/b&gt;" />
+		<param name="fullname1" type="text" size="60" default="[[uc_firstname]] [[uc_surname]]" label="Fullname" description="Formal representation of the full name of each Joomla! user." />
+		<param name="username1" type="text" size="60" default="[[lc_firstname]].[[lc_surname]]" label="Username" description="Format of the Joomla! user's user name. This is used to login to the website." />
+		<param name="email1" type="text" size="60" default="[[lc_firstname]].[[lc_surname]]@[[domain]]" label="Email" description="Email format to use if no email supplied from Arc user record." />
+		<param type="spacer" default="&lt;b&gt;Secondary&lt;/b&gt;" />
+		<param name="fullname2" type="text" size="60" default="" label="Fullname" description="Formal representation of the full name of each Joomla! user." />
+		<param name="username2" type="text" size="60" default="" label="Username" description="Format of the Joomla! user's user name. This is used to login to the website." />
+		<param name="email2" type="text" size="60" default="" label="Email" description="Email format to use if no email supplied from Arc user record." />
+		<param type="spacer" default="&lt;b&gt;Tertiary&lt;/b&gt;" />
+		<param name="fullname3" type="text" size="60" default="" label="Fullname" description="Formal representation of the full name of each Joomla! user." />
+		<param name="username3" type="text" size="60" default="" label="Username" description="Format of the Joomla! user's user name. This is used to login to the website." />
+		<param name="email3" type="text" size="60" default="" label="Email" description="Email format to use if no email supplied from Arc user record." />
+	</params>
+</config>

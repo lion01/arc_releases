@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/plugin-install.dtd">
+<install type="plugin" group="system" version="1.5.23">
+	
+	<name>Arc - Style Rules</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A style inclusion plugin for Arc.
+		Brings in many style declarations essential to the smooth functioning of the Arc system</description>
+	
+	<files>
+		<filename plugin="arc_styles">arc_styles.css</filename>
+		<filename plugin="arc_styles">arc_styles.php</filename>
+		<filename plugin="arc_styles">arc_styles_ie_6.css</filename>
+		<filename plugin="arc_styles">arc_styles_ie_7.css</filename>
+		<filename plugin="arc_styles">arc_styles_ie_all.css</filename>
+		<filename plugin="arc_styles">arc_data.js</filename>
+		<filename plugin="arc_styles">arc_data_common.js</filename>
+		<filename plugin="arc_styles">arc_data_ie6.js</filename>
+		<filename plugin="arc_styles">arc_mootree.gif</filename>
+	</files>
+</install>

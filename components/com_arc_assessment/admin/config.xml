@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<params group="main">
+		<param name="foo" type="radio" default="0" label="Foo" description="An irrelevant admin control">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+	
+</config>

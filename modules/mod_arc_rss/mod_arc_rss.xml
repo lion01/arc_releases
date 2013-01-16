@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD module 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/module-install.dtd">
+<install type="module" version="1.5.23">
+	
+	<name>Arc - Rss</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>An RSS feed module for Arc</description>
+	
+	<files>
+		<filename module="mod_arc_rss">helper.php</filename>
+		<filename module="mod_arc_rss">index.html</filename>
+		<filename module="mod_arc_rss">mod_arc_rss.php</filename>
+		
+		<folder>tmpl</folder>
+	</files>
+	
+	<params>
+		<param name="block_view" type="radio" default="1" label="Items section view" description="Show items grouped in feed sections">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_item_summary" type="radio" default="1" label="Item summary" description="Display a summary of the item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="word_count" type="text" size="6" default="10" label="Summary word count" description="Number of words to include in item summary" />
+		
+		<param type="spacer" label="" name="spacer1" default="&lt;b&gt;Feed 1&lt;/b&gt;" />
+		<param name="rss_url_0" type="text" size="50" default="" label="URL" description="Enter the URL of the RSS/RDF feed" />
+		<param name="rss_items_0" type="text" size="6" default="3" label="Items" description="Enter the number of RSS items to display for this feed" />
+		<param name="rss_title_0" type="radio" default="1" label="Title" description="Display the feed title">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_desc_0" type="radio" default="1" label="Description" description="Display the feed description">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_image_0" type="radio" default="1" label="Image" description="Display the associated feed image">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_favicon_0" type="radio" default="1" label="Favicon" description="Display the associated feed favicon before each item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		
+		<param type="spacer" label="" name="spacer2" default="&lt;b&gt;Feed 2&lt;/b&gt;" />
+		<param name="rss_url_1" type="text" size="50" default="" label="URL" description="Enter the URL of the RSS/RDF feed" />
+		<param name="rss_items_1" type="text" size="6" default="3" label="Items" description="Enter the number of RSS items to display for this feed" />
+		<param name="rss_title_1" type="radio" default="1" label="Title" description="Display the feed title">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_desc_1" type="radio" default="1" label="Description" description="Display the feed description">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_image_1" type="radio" default="1" label="Image" description="Display the associated feed image">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_favicon_1" type="radio" default="1" label="Favicon" description="Display the associated feed favicon before each item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		
+		<param type="spacer" label="" name="spacer3" default="&lt;b&gt;Feed 3&lt;/b&gt;" />
+		<param name="rss_url_2" type="text" size="50" default="" label="URL" description="Enter the URL of the RSS/RDF feed" />
+		<param name="rss_items_2" type="text" size="6" default="3" label="Items" description="Enter the number of RSS items to display for this feed" />
+		<param name="rss_title_2" type="radio" default="1" label="Title" description="Display the feed title">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_desc_2" type="radio" default="1" label="Description" description="Display the feed description">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_image_2" type="radio" default="1" label="Image" description="Display the associated feed image">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_favicon_2" type="radio" default="1" label="Favicon" description="Display the associated feed favicon before each item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		
+		<param type="spacer" label="" name="spacer4" default="&lt;b&gt;Feed 4&lt;/b&gt;" />
+		<param name="rss_url_3" type="text" size="50" default="" label="URL" description="Enter the URL of the RSS/RDF feed" />
+		<param name="rss_items_3" type="text" size="6" default="3" label="Items" description="Enter the number of RSS items to display for this feed" />
+		<param name="rss_title_3" type="radio" default="1" label="Title" description="Display the feed title">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_desc_3" type="radio" default="1" label="Description" description="Display the feed description">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_image_3" type="radio" default="1" label="Image" description="Display the associated feed image">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_favicon_3" type="radio" default="1" label="Favicon" description="Display the associated feed favicon before each item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		
+		<param type="spacer" label="" name="spacer5" default="&lt;b&gt;Feed 5&lt;/b&gt;" />
+		<param name="rss_url_4" type="text" size="50" default="" label="URL" description="Enter the URL of the RSS/RDF feed" />
+		<param name="rss_items_4" type="text" size="6" default="3" label="Items" description="Enter the number of RSS items to display for this feed" />
+		<param name="rss_title_4" type="radio" default="1" label="Title" description="Display the feed title">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_desc_4" type="radio" default="1" label="Description" description="Display the feed description">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_image_4" type="radio" default="1" label="Image" description="Display the associated feed image">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		<param name="rss_favicon_4" type="radio" default="1" label="Favicon" description="Display the associated feed favicon before each item">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+		
+		<param type="spacer" label="" name="spacerA" default="&lt;b&gt;Advanced&lt;/b&gt;" />
+		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+		
+		<param name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+			<option value="1">Use global</option>
+			<option value="0">No caching</option>
+		</param>
+		<param name="cache_time" type="text" default="15" label="Cache Time" description="The time in seconds before the module is re-cached." />
+	</params>
+</install>

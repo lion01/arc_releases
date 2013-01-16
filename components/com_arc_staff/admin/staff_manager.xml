@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/component-install.dtd">
+<install type="component" version="1.5.0">
+	<name>Arc_Staff</name>
+	<creationDate>2007-01-09</creationDate>
+	<author>Mike Heaver</author>
+	<authorEmail>m.heaver@wildern.hants.sch.uk</authorEmail>
+	<authorUrl>http://www.wildern.co.uk</authorUrl>
+	<copyright>This component is released under the GNU/GPL License</copyright>
+	<license>GNU/GPL</license>
+	<version>0.1</version>
+	<description>A staff management sub-system for Apotheosis</description>
+
+<install>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/install_mysql_utf8.sql</file>
+		<file driver="mysql">sql/install_mysql_non_utf8.sql</file>
+	</sql>
+</install>
+
+<uninstall>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/uninstall_mysql_utf8.sql</file>
+		<file driver="mysql">sql/uninstall_mysql_non_utf8.sql</file>
+	</sql>
+</uninstall>
+
+<administration>
+	<menu>Apoth. Staff Manager</menu>
+	
+	<files folder="../admin">
+		<filename>admin.arc_staff.php</filename>
+		<filename>admin.staffmanager.html.php</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<filename>metadata.xml</filename>
+		<filename>toolbar.staffmanager.html.php</filename>
+		<filename>toolbar.staffmanager.php</filename>
+		
+		<folder>install</folder>
+		<folder>sql</folder>
+	</files>
+</administration>
+
+<files folder="../component">
+	<filename>arc_staff.php</filename>
+	<filename>index.html</filename>
+	<filename>staffmanager.class.php</filename>
+	<filename>staffmanager.html.php</filename>
+</files>
+
+<languages>
+	<language tag="en-GB">../lang/en-GB.com_arc_staff.ini</language>
+</languages>
+
+<installfile>install/install.staffmanager.php</installfile>
+<uninstallfile>install/uninstall.staffmanager.php</uninstallfile>
+
+</install>

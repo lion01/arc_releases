@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	
+		<param name="ppl_data" type="radio" default="0" label="Transfer People Data" description="Transfer the people stored by the school">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="ppl_relation" type="radio" default="0" label="Transfer Relations data" description="Transfer the relationship data">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="spacer" type="spacer"></param>
+		<param name="date_from" type="text" default="" label="Date From" description="Transfer data from this date"></param>
+		<param name="date_to" type="text" default="" label="Date To" description="Transfer data from this date"></param>
+		<param name="spacer" type="spacer"></param>
+		<param name="truncate" type="radio" default="0" label="Delete existing rows" description="Delete the existing rows in the database">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+</config>

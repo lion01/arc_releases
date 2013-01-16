@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/plugin-install.dtd">
+<install type="plugin" group="system" version="1.5.23">
+	
+	<name>Arc - Menu Style</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A dropdown-flyout menu styling plugin for Arc</description>
+
+	<files>
+		<filename plugin="arc_menu">arc_menu.css</filename>
+		<filename plugin="arc_menu">arc_menu.php</filename>
+		<filename plugin="arc_menu">arc_menu.png</filename>
+	</files>
+	
+	<params>
+		<param name="position" type="sql" label="Position" description="In Which position is the menu to be styled" query="SELECT DISTINCT position AS value, position FROM #__modules WHERE published = 1 ORDER BY position" />
+	</params>
+</install>

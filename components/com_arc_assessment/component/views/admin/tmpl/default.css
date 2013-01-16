@@ -1,0 +1,68 @@
+@CHARSET "UTF-8";
+/**
+ * @package     Arc
+ * @subpackage  Assessment
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+.form_column {
+	margin-top: 10px;
+	margin-right: 3em;
+	float: left;
+}
+
+.form_row,
+#arc_data {
+	margin-top: 10px;
+	clear: left;
+}
+.form_row:first-child {
+	margin-top: 0px;
+}
+
+.input_div {
+	clear: left;
+	display: block;
+	margin: 5px 0px;
+}
+.input_div label {
+	display: block;
+	float: left;
+	margin-right: 5px;
+	text-align: right;
+	width: 85px;
+}
+
+#aspects_table {
+	border-collapse: collapse;
+}
+#aspects_table th,
+#aspects_table td {
+	border: 1px solid black;
+	text-align: center;
+	height: 2.3em;
+	min-width: 30px;
+	padding: 2px;
+}
+#aspects_table td input,
+#aspects_table td select {
+	text-align: center;
+}
+#aspects_table td.clicker_on {
+	background-color: #B0DEA3;
+}
+
+.boundary_slider_div {
+	display: inline-block;
+	padding-top: 10px;
+}
+
+.boundary_div {
+	border: 1px solid black;
+	padding: 2px 8px 2px 8px;
+}

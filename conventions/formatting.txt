@@ -1,0 +1,120 @@
+Naming conventions:
+~~~~~~~~~~~~~~~
+
+# classes and functions
+
+class ParentClassName_ClassName
+
+private function _functionName($varName, $varName, $optionalVarName = value)
+function functionName($varName, $varName, $optionalVarName = value)
+
+
+# variable names
+
+$_privateClassVarName
+$publicClassVarName
+$nonClassVarName
+$scope_varName_detailLevel
+
+
+# in language files:
+
+$lang('snippet_filename_theStringName'), or
+$lang('module_filename_theStringName'), etc.
+
+
+# filenames:
+
+module_class_sub_name.php  (all lower-case, all underscore separated)
+
+
+# in comments:
+
+*** = development note
+**** = development note to be acted upon and then removed
+// ==================== GROUP OF FUNCTIONS ====================
+
+# debugging blocks that are to remain and be used from time to time:
+# (the "/* ..." at the beginning allows for easy activation by adding a single
+# "/" at the beginning so that it becomes "//* ..."):
+
+/* // *** Debugging lines
+	// explanatory notes
+	code line;
+	code line;
+// */
+
+# method / function comments (for phpDocumentor )
+- see http://manual.phpdoc.org/HTMLSmartyConverter/HandS/li_phpDocumentor.html for details
+- our change is to leave a line after description and before @xxxx comments
+
+/**
+ * Description of method / function
+ * (description continues if necessary)
+ *
+ * @params array $myArray an array for my stuff
+ * @return object|string description of returned item
+ */
+
+
+# pageVars
+
+$_sFooBar  indicates a pre-set literal string
+$_lFooBar  indicates a link address
+$_aFooBar  indicates an array
+
+
+# Git commit notation:
+
+* -> Security Fix
+# -> Bug Fix
+$ -> Language fix or change
++ -> Addition
+^ -> Change
+- -> Removed
+! -> Note
+
+
+# Adding Javascript to a page:
+
+<?php
+   $filename = 'filename.js';
+   $path = 'path/to/file/'; // add the path parameter if the path is different than : 'media/system/js/'
+   true: MooTools will load if it is not already loaded
+   JHTML::script($filename, $path, true);
+?>
+
+
+# Adding CSS stylesheets:
+
+<?php
+   $filename = 'filename.css';
+   $path = 'path/to/file/'; // add the path parameter if the path is different than : 'media/system/css/'
+   JHTML::stylesheet($filename, $path);
+?>
+
+
+# Adding image path:
+
+<?php echo JURI::base().'components'.DS.'com_arc_attendance'.DS.'images'.DS.'tab_inactive_pre.bmp'; ?>
+
+
+# JPATH usage:
+
+! Some entries give same path so they are thinned out for clarity
+! First 2 are important as JPATH_COMPONENT used in the admin backend side
+	return same result as JPATH_COMPONENT_ADMINISTRATOR so use the latter for clarity 
+
+JPATH_COMPONENT gives /Joomla/components/com_example // use from within the component to reach front end
+JPATH_COMPONENT_ADMINISTRATOR gives /Joomla/administrator/components/com_example // use from within component to reach admin backend
+
+JPATH_ADMINISTRATOR-- Sets the path to /Joomla/administrator
+JPATH_BASE -- sets the entry to joomla /Joomla
+JPATH_CACHE --Sets the cache path /Joomla/cache
+JPATH_CONFIGURATION --sets the configuration.php file path
+JPATH_INSTALLATION --The path to the installation folder.
+JPATH_LIBRARIES --The path to the libraries folder.
+JPATH_PLUGINS --The path to the plugins folder.
+JPATH_SITE --The path to the installed Joomla! site.
+JPATH_THEMES --The path to the templates folder.
+JPATH_XMLRPC --The path to the XML-RPC Web service folder.

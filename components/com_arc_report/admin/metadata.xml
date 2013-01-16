@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item>
+		<text>Reports</text>
+		<link>option=com_arc_report</link>
+		<actions>
+			<action>
+				<params>view=home</params>
+				<name>apoth_report_home</name>
+				<menu_text>Report home</menu_text>
+				<description>The Reports home page - shows upcoming events</description>
+			</action>
+		</actions>
+	</item>
+</metadata>

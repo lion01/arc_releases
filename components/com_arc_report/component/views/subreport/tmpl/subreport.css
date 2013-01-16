@@ -1,0 +1,120 @@
+@CHARSET "ISO-8859-1";
+
+.subreport {
+	border: 1px solid grey;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	box-shadow: 1px 1px 2px rgba(134, 134, 134, 0.88);
+	-moz-box-shadow: 1px 1px 2px rgba(134, 134, 134, 0.88);
+	-webkit-box-shadow: 1px 1px 2px rgba(134, 134, 134, 0.88);
+	background: rgba(211, 211, 211, 0.3);
+	margin-bottom: 10px;
+	position: relative;
+	overflow: hidden;
+	padding: 2px;
+}
+.subreport .part {
+	position: relative;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+.subreport .p_more_wrapper {
+}
+.field {
+	position: absolute;
+	overflow: hidden;
+}
+.field.absolute * {
+	position: absolute;
+}
+
+.subreport_controls,
+.subreport_status {
+	float: right;
+}
+.subreport_status {
+	width: 40px;
+	margin-left: 10px;
+}
+a.btn {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+	background-color:#ededed;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #bbb;
+	display:inline-block;
+	font-family:arial;
+	font-size:12px;
+	font-weight:bold;
+	padding:5px 7px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #ffffff;
+}
+.subreport_controls a.btn {
+	float: left;
+	margin-left: 3px;
+}
+
+.activity_overlay {
+	background: darkgrey;
+}
+.activity_overlay div {
+	background: lightgrey;
+	border: 4px inset;
+	width: 100px;
+	margin: 50px auto;
+	padding: 1em;
+	text-align: center;
+}
+
+.more_loader {
+	width: 20em;
+	text-align: center;
+	margin: 0px auto 10px auto;
+}
+
+table.data th {
+	font-weight: bold;
+}
+table.data th,
+table.data td {
+	padding: 0px 2px 1px 2px;
+	font-size: 13px;
+}
+table.data .odd_col {
+	background: #cccccc;
+}
+
+a.report_statement_bank {
+	text-decoration: none;
+	color: #4b4b4b;
+}
+a.report_statement_bank:hover {
+	text-decoration: none;
+	color: black;
+}
+.report_statement_bank.btn {
+	display: block;
+	top: 15px;
+	right: 0px;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	padding: 1px;
+}
+.report_statement_bank {
+	overflow: hidden;
+}
+.report_statement_bank span.inline_icon:before{
+	content: "j ";
+}
+.report_statement_bank span.bank_text {
+	display: none;
+}

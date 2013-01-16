@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/component-install.dtd">
+<install type="component" version="1.5.0">
+	<name>Arc_Assessment</name>
+	<creationDate>2008-03-11</creationDate>
+	<author>David Swain</author>
+	<authorEmail>d.swain@wildern.hants.sch.uk</authorEmail>
+	<authorUrl>http://www.wildern.co.uk</authorUrl>
+	<copyright>This component is released under the GNU/GPL License</copyright>
+	<license>GNU/GPL</license>
+	<version>0.1</version>
+	<description>An assessment manager / markbook sub-system for Arc</description>
+
+<install>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/install_mysql_utf8.sql</file>
+		<file driver="mysql">sql/install_mysql_non_utf8.sql</file>
+	</sql>
+</install>
+
+<uninstall>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/uninstall_mysql_utf8.sql</file>
+		<file driver="mysql">sql/uninstall_mysql_non_utf8.sql</file>
+	</sql>
+</uninstall>
+
+<administration>
+	<menu>Apoth. Assessments</menu>
+	<submenu>
+		<menu view="settings" img="js/ThemeOffice/controlpanel.png">Settings</menu>
+	</submenu>
+	
+	<files folder="../admin">
+		<filename>admin.arc_assessment.php</filename>
+		<filename>config.xml</filename>
+		<filename>index.html</filename>
+		<filename>metadata.xml</filename>
+		
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>install</folder>
+		<folder>models</folder>
+		<folder>sql</folder>
+		<folder>views</folder>
+	</files>
+</administration>
+
+<files folder="../component">
+	<filename>arc_assessment.php</filename>
+	<filename>controller.php</filename>
+	<filename>index.html</filename>
+	
+	<folder>controllers</folder>
+	<folder>helpers</folder>
+	<folder>models</folder>
+	<folder>views</folder>
+</files>
+
+<languages>
+	<language tag="en-GB">../lang/en-GB.com_arc_assessment.ini</language>
+</languages>
+
+<installfile>install/install.assessments.php</installfile>
+<uninstallfile>install/uninstall.assessments.php</uninstallfile>
+
+</install>

@@ -1,0 +1,19 @@
+<?php
+/**
+ * @package     Arc
+ * @subpackage  Core
+ * @copyright   Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt
+ * Arc is free software: you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License
+ * as published by the Free Software Foundation.
+ * The disclaimer of warranty as stated in the GPL applies to this program
+ */
+
+defined( '_JEXEC' ) or die( 'Restricted access' );
+?>
+<tr class="<?php echo 'row'.$this->item->index % 2; ?>">
+<td align="center"><input type="checkbox" onclick="isChecked(this.checked);" id="cb<?php echo $this->item->index; ?>" name="aId[<?php echo $this->item->id ?>]" /></td>
+<td><?php echo $this->item->menu_text; ?></td>
+<td><?php echo $this->item->description; ?><?php echo ( $this->item->favourite == true ? ' * ' : '' ); ?></td>
+</tr>

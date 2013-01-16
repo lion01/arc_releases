@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/component-install.dtd">
+<install type="component" version="1.5.0">
+	<name>Arc_Homepage</name>
+	<creationDate>2009-07-09</creationDate>
+	<author>David Swain</author>
+	<authorEmail>d.swain@wildern.hants.sch.uk</authorEmail>
+	<authorUrl>http://www.wildern.co.uk</authorUrl>
+	<copyright>This component is released under the GNU/GPL License</copyright>
+	<license>GNU/GPL</license>
+	<version>0.1</version>
+<description>Profiles and personalised pages for Arc</description>
+
+<install>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/install_mysql_utf8.sql</file>
+		<file driver="mysql">sql/install_mysql_non_utf8.sql</file>
+	</sql>
+</install>
+
+<uninstall>
+	<sql>
+		<file driver="mysql" charset="utf8">sql/uninstall_mysql_utf8.sql</file>
+		<file driver="mysql">sql/uninstall_mysql_non_utf8.sql</file>
+	</sql>
+</uninstall>
+
+<administration>
+	<menu>Arc Homepage</menu>
+	
+	<files folder="../admin">
+		<filename>admin.arc_homepage.php</filename>
+		<filename>config.xml</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<filename>metadata.xml</filename>
+		
+		<folder>install</folder>
+		<folder>sql</folder>
+	</files>
+</administration>
+
+<files folder="../component">
+	<filename>arc_homepage.php</filename>
+	<filename>controller.php</filename>
+	<filename>index.html</filename>
+	
+	<folder>clock</folder>
+	<folder>controllers</folder>
+	<folder>models</folder>
+	<folder>views</folder>
+	
+</files>
+
+<languages>
+	<language tag="en-GB">../lang/en-GB.com_arc_homepage.ini</language>
+</languages>
+
+<installfile>install/install.homepage.php</installfile>
+<uninstallfile>install/uninstall.homepage.php</uninstallfile>
+
+</install>

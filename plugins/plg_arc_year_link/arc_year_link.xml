@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://www.joomla.org/xml/dtd/1.5/plugin-install.dtd">
+<install type="plugin" group="system" version="1.5.23">
+	
+	<name>Arc - Year Link</name>
+	<creationDate>2010-01-01</creationDate>
+	<author>Punnet - Arc Team</author>
+	<authorEmail>arc_developers@pun.net</authorEmail>
+	<authorUrl>http://www.pun.net</authorUrl>
+	<copyright>Copyright (C) 2005 Punnet. All rights reserved. See COPYRIGHT_ARC.txt</copyright>
+	<license>http://www.gnu.org/licenses/gpl.html GNU/GPL. See LICENSE_ARC.txt</license>
+	<version>1.6.0</version>
+	<description>A cohort-sensitive redirection plugin for Arc</description>
+	
+	<files>
+		<filename plugin="arc_year_link">arc_year_link.php</filename>
+	</files>
+	
+	<params>
+		<param name="message"  type="text" size="60" default="" label="Message" description="A message to display to the user when they are redirected" />
+		<param name="spacer" type="spacer" default="" label="" description="" />
+		<param name="trigger"  type="text" size="60" default="" label="Trigger URL" description="What URL should we redirect away from?" />
+		<param name="spacer" type="spacer" default="" label="" description="" />
+		<param name="targetdefault" type="text" size="60" default="" label="Target for yearless folks" description="What URL should we redirect people without years to?" />
+		<param name="target7"  type="text" size="60" default="" label="Target for Year 7"  description="What URL should we redirect year 7s to?" />
+		<param name="target8"  type="text" size="60" default="" label="Target for Year 8"  description="What URL should we redirect year 8s to?" />
+		<param name="target9"  type="text" size="60" default="" label="Target for Year 9"  description="What URL should we redirect year 9s to?" />
+		<param name="target10" type="text" size="60" default="" label="Target for Year 10" description="What URL should we redirect year 10s to?" />
+		<param name="target11" type="text" size="60" default="" label="Target for Year 11" description="What URL should we redirect year 11s to?" />
+	</params>
+</install>

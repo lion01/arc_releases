@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata type="component">
+	<item name="apoth_homepage" link="option=com_arc_homepage">
+		<text>Homepage</text>
+		<description>Individual Homepages and ePortfolios</description>
+		<submenu>
+			<item name="apoth_homepage_home" link="option=com_arc_homepage&amp;view=homepage&amp;scope=home">
+				<text>My Homepage</text>
+				<description>View my Homepage</description>
+				<submenu>
+					<item name="apoth_homepage_panel_clock" link="option=com_arc_homepage&amp;view=panels&amp;scope=clock">
+						<text>Desktop Clock</text>
+						<description>Show Clock Panel</description>
+					</item>
+					<item name="apoth_homepage_panel_lotd" link="option=com_arc_homepage&amp;view=panels&amp;scope=lotd">
+						<text>Link of the Day</text>
+						<description>Show Link of the Day</description>
+					</item>
+				</submenu>
+			</item>
+			<item name="apoth_homepage_eportfolio" link="option=com_arc_homepage&amp;view=homepage&amp;scope=eportfolio">
+				<text>ePortfolio</text>
+				<description>View ePortfolio page</description>
+			</item>
+			<item name="apoth_homepage_admin" link="option=com_arc_homepage&amp;view=admin">
+				<text>Administrate</text>
+				<description>Administrate how homepages can be used</description>
+			</item>
+		</submenu>
+	</item>
+</metadata>

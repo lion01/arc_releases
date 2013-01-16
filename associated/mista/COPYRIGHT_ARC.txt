@@ -1,0 +1,9 @@
+The copyright (c) for Arc and all its components, modules, plugins, templates, and associated code and media (including but not limited to MIStA) belongs to Punnet ICT Ltd.
+
+The above-mentioned suite was developed internally at Wildern School from 2006 to 2011 during which development transfered to Punnet who have prepared it for first publication and distribution in March 2012.
+
+To the extent permitted by the GPL (under which the Arc suite is licensed) the copyright holders require that anyone seeking to redistribute or profit from Arc first obtain permission from Punnet ICT Ltd.
+
+Contact details:
+http://pun.net
+contact@pun.net
