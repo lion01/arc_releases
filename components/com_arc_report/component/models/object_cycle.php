@@ -169,6 +169,12 @@ class ApothReportCycle extends JObject
 		return $fEvent->getInstances( $requirements );
 	}
 	
+	function getLayout()
+	{
+		$fLayout = ApothFactory::_( 'report.layout' );
+		return $fLayout->getInstance( $this->_core['layout_id'] );
+	}
+	
 	/**
 	 * Commit the cycle to the database
 	 */

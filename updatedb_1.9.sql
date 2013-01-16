@@ -77,3 +77,57 @@ UPDATE `jos_apoth_sys_actions`
 SET `params` = 'view=video\ntask=idssearch\nuserid=~tv.userid~'
 WHERE `jos_apoth_sys_actions`.`id` = 311
 LIMIT 1 ;
+
+
+-- -------------- --
+-- 1.9.0 to 1.9.1 --
+-- -------------- --
+
+
+-- #####  dev_638_tv_tweaks  #####
+
+-- new params for ajaxking in sidebar
+UPDATE `jos_apoth_sys_actions`
+SET `params` = 'view=video\ntask=sidebar\nidCheck=~js.idcheck.replace~\nformat=raw'
+WHERE `jos_apoth_sys_actions`.`id` = 317 LIMIT 1 ;
+
+
+-- #####  dev_566_rpt_reports  #####
+
+SELECT @menu_id := id
+FROM jos_menu
+WHERE `link` LIKE '%index.php?option=com_arc_report%';
+
+-- new actions for print and share
+INSERT INTO jos_apoth_sys_actions
+(`id`, `menu_id`, `option`, `task`, `params`, `name`, `menu_text`, `description`)
+VALUES
+(NULL, @menu_id, NULL, NULL, 'view=printshare\r\nformat=raw\r\ntask=save', 'apoth_report_print_save',  'Report print save / download', 'Download a single pdf, or zip of separate pdfs of the selected reports'),
+(NULL, @menu_id, NULL, NULL, 'view=printshare\r\nformat=apothpdf\r\ntask=preview', 'apoth_report_print_preview',  'Report print preview', 'Open a single pdf of the selected reports');
+
+# -- keep the id of new action
+SELECT @newId := LAST_INSERT_ID();
+
+# -- setup the acl for new actions
+INSERT INTO `jos_apoth_sys_acl` (`action`, `role`, `sees`, `allowed`)
+SELECT @newId, role, sees, allowed
+FROM jos_apoth_sys_acl AS acl
+INNER JOIN jos_apoth_sys_actions AS a
+   ON a.id = acl.action
+WHERE a.name = 'apoth_report_printshare';
+
+INSERT INTO `jos_apoth_sys_acl` (`action`, `role`, `sees`, `allowed`)
+SELECT @newId+1, role, sees, allowed
+FROM jos_apoth_sys_acl AS acl
+INNER JOIN jos_apoth_sys_actions AS a
+   ON a.id = acl.action
+WHERE a.name = 'apoth_report_printshare';
+
+
+# -- Add people photo table
+CREATE TABLE `jos_apoth_ppl_photos` (
+	`person_id` VARCHAR( 20 ) NOT NULL ,
+	`photo` BLOB NOT NULL ,
+	PRIMARY KEY ( `person_id` ),
+	FOREIGN KEY (`person_id`) REFERENCES `jos_apoth_ppl_people` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;

@@ -24,30 +24,58 @@ class ApothReportField_Assessment_Mark extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-//		global $doDump;
-//		$doDump = ( $this->_id == 114 );
-//		if( $doDump ) { dump( $this, 'field 114 object' ); }
-		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
-			$aspIds = $this->_config['aspIds'];
-			$pId = $this->_rptData[$this->_core['lookup_source']];
-			$gId = ApotheosisData::_( 'report.lookupGroup', $this->_rptData['rpt_group_id'] );
-			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, $gId, $this->_config['from'], $this->_config['to'], null, false, false );
-			
-			foreach( $aspIds as $aspId ) {
-				$m = JHTML::_( 'arc_assessment.mark', $aspId, $pId, $gId );
-				if( $m['hasMark'] ) {
-					break;
-				}
-			}
-			$m = $m['html'];
+			$m = $this->getMark();
+			$m = $m['htmlLong'];
 		}
 		else {
 			$m = htmlspecialchars( $value );
 		}
-//		$doDump = false;
-		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		
+		if( is_null( $value ) ) {
+			$m = $this->getMark();
+			
+			if( isset( $this->_config['use_long'] ) && $this->_config['use_long'] ) {
+				$txt = $m['htmlLong'];
+			}
+			else {
+				$txt = $m['html'];
+			}
+			
+			if( ($txt == '--') || ($txt == '') || !$m['hasMark'] || ($m['raw'] == '') ) {
+				$txt = 'n/a';
+			}
+		}
+		else {
+			$txt = htmlspecialchars( $value );
+		}
+		parent::renderPDF( $pdf, $txt );
+	}
+	
+	function getMark()
+	{
+//		global $doDump;
+//		$doDump = ( $this->_id == 112 );
+//		if( $doDump ) { dump( $this, 'field 106 object' ); }
+		$aspIds = $this->_config['aspIds'];
+		if( empty( $aspIds ) ) {
+			$m = array( 'html'=>'--', 'htmlLong'=>'--', 'raw'=>'', 'mark'=>null, 'color'=>'grey', 'hasMark'=>false );
+		}
+		else {
+			$pId = $this->_rptData[$this->_core['lookup_source']];
+			$gId = ApotheosisData::_( 'report.lookupGroup', $this->_rptData['rpt_group_id'] );
+			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, $gId, $this->_config['from'], $this->_config['to'], null, false, false );
+			
+			$m = JHTML::_( 'arc_assessment.markCoalesce', $aspIds, $pId, $gId );
+		}
+		
+//		$doDump = false;
+		return $m;
 	}
 }
 
@@ -63,20 +91,36 @@ class ApothReportField_Assessment_MarkAverage extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
-			$aspIds = $this->_config['aspIds'];
-			$pId = $this->_rptData[$this->_core['lookup_source']];
-			ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, null, $this->_config['from'], $this->_config['to'], null, false, false );
-			
-			$m = JHTML::_( 'arc_assessment.markAverage', $aspIds, $pId, 'pupil' );
+			$m = $this->getMark();
 			$m = $m['html'];
 		}
 		else {
 			$m = htmlspecialchars( $value );
 		}
-		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		if( is_null( $value ) ) {
+			$m = $this->getMark();
+			$m = $m['html'];
+		}
+		else {
+			$m = htmlspecialchars( $value );
+		}
+		parent::renderPDF( $pdf, $m );
+	}
+	
+	function getMark()
+	{
+		$aspIds = $this->_config['aspIds'];
+		$pId = $this->_rptData[$this->_core['lookup_source']];
+		ApotheosisData::_( 'assessment.prepare', $aspIds, $pId, null, $this->_config['from'], $this->_config['to'], null, false, false );
+		
+		$m = JHTML::_( 'arc_assessment.markAverage', $aspIds, $pId, 'pupil' );
+		return $m;
 	}
 }
 
@@ -92,7 +136,6 @@ class ApothReportField_Assessment_MarkSummary extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		// get relevant config
 		$aspIds = $this->_config['aspIds'];
 		$pId = $this->_rptData[$this->_core['lookup_source']];
@@ -182,8 +225,15 @@ class ApothReportField_Assessment_MarkSummary extends ApothReportField
 		}
 		$html .= '</table>';
 		
-		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		// *** TODO
+		$txt = 'attendance graph not supported';
+		parent::renderPDF( $pdf, $txt );
+	}
+	
 }
 ?>

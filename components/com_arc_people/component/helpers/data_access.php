@@ -385,6 +385,52 @@ class ApotheosisData_People extends ApotheosisData
 		return $retVal;
 	}
 	
+	function photo( $pId )
+	{
+		$db = &JFactory::getDBO();
+		
+		$query = 'SELECT photo'
+			."\n".'FROM '.$db->nameQuote( '#__apoth_ppl_photos' )
+			."\n".'WHERE '.$db->nameQuote( 'person_id' ).' = '.$db->Quote( $pId )
+			."\n".'LIMIT 1';
+		$db->setQuery( $query );
+		$data = $db->loadResult();
+		
+		if( empty( $data ) ) {
+			$data = file_get_contents( JPATH_SITE.DS.'components'.DS.'com_arc_people'.DS.'images'.DS.'no_avatar.png' );
+		}
+		else {
+			$data = base64_decode( $data );
+		}
+		
+		$config = &JFactory::getConfig();
+		$dirName = $config->getValue('config.tmp_path');
+		$tmpName = tempnam( $dirName, 'photo_'.time().'_' );
+		
+		$im = imagecreatefromstring( $data );
+		imagejpeg( $im, $tmpName );
+		
+		// clear out any old temp files
+		$dir = opendir( $dirName );
+		if( $dir ) {
+			do {
+				$fName = readdir( $dir );
+				$matches = array();
+				preg_match( '/^photo_([\\d]+)_\\w+$/', $fName, $matches );
+				if( is_file($dirName.DS.$fName) && isset($matches[1]) && ($matches[1] < (time()-600)) ) {
+					unlink( $dirName.DS.$fName );
+//					dump( $fName, 'deleting' );
+				}
+				else {
+//					dump( $fName, 'leaving' );
+				}
+			} while( $fName !== false );
+		}
+		
+		$tmpName = str_replace( JPATH_BASE, JURI::base(), $tmpName );
+		return $tmpName;
+	}
+	
 	function peopleListNames( $var )
 	{
 		if( $var ) {
@@ -403,7 +449,7 @@ class ApotheosisData_People extends ApotheosisData
 	 * This parsing is wholely left-associative with no precedence; ie. "a or b and c" == "(a or b) and c"
 	 * 
 	 * @param string $listNames  The (compound) list name
-	 * @param string $limPeople  Auth table to use for permission checks instead of the default
+	 * @param string|false $limPeople  Auth table to use for permission checks instead of the default, might be false for backend admin hack (no acl on back end)
 	 * @param boolean $withTutor  Do we want to add tutor group names where appropriate
 	 */
 	function people( $listNames = null, $limPeople = null, $withTutor = false )
@@ -425,8 +471,7 @@ class ApotheosisData_People extends ApotheosisData
 		// get the data relevant to each list and combine according to compound elements ('AND', 'OR')
 		foreach( $listNames as $opId=>$listName ) {
 			$wheres = array();
-			$joins = array( '~LIMITINGJOIN~' );
-//			$joins = array(); // **** broken - remove
+			$joins = $limPeople ? array( '~LIMITINGJOIN~' ) : array();
 			$listNameParts = explode( '.', $listName );
 			switch( $listNameParts[0] ) {
 			case( 'current' ):

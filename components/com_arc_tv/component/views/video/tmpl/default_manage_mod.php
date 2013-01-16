@@ -22,8 +22,13 @@ JHTML::_( 'Arc.tip' );
 	<div class="manage_form_input_row">
 		<div class="manage_form_label_div">Approval:</div>
 		<div class="manage_form_input_div">
-			<input id="manage_form_approve_button" type="submit" value="Approve" name="task" class="arcTip" title="Approve the video" />
-			<input id="manage_form_reject_button" type="submit" value="Reject" name="task" class="arcTip" title="Reject the video" />
+			<input id="manage_form_approve_button" type="submit" value="Approve" name="task" class="btn arcTip" title="Approve the video" />
+			<input id="manage_form_reject_button" type="submit" value="Reject" name="task" class="btn arcTip" title="Reject the video" />
+			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage', array('tv.videoId'=>$this->curVideo->getId()))) ): ?>
+				<input id="manage_form_manage_button" type="submit" value="Manage" name="task" class="btn arcTip" title="Manage the video" />
+				<?php echo JHTML::_( 'arc.hidden', 'vidId', $this->curVideo->getId() ); ?>
+				<?php echo JHTML::_( 'arc.hidden', 'noMod', 1 ); ?>
+			<?php endif; ?>
 			<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 		</div>
 	</div>

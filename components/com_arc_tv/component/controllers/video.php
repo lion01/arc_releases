@@ -28,9 +28,10 @@ class TvControllerVideo extends TvController
 	function __construct()
 	{
 		parent::__construct();
-		$this->registerTask( 'save draft', 'save' );
+		$this->registerTask( 'savedraft', 'save' );
 		$this->registerTask( 'approve', 'approval' );
 		$this->registerTask( 'reject', 'approval' );
+		$this->registerTask( 'moderatevideo', 'manage' );
 	}
 	
 	/**
@@ -286,6 +287,9 @@ class TvControllerVideo extends TvController
 		// selected video
 		$model->setVideo( JRequest::getVar('vidId', null) );
 		
+		// override moderation go to basic management instead?
+		$noMod = (bool)JRequest::getVar( 'noMod' );
+		
 		// sidebar is most viewed
 		$model->setSidebar( 'viewed' );
 		
@@ -293,7 +297,7 @@ class TvControllerVideo extends TvController
 		$model->setTagCloud();
 		
 		// display
-		$view->manage();
+		$view->manage( $noMod );
 	}
 	
 	/**
@@ -552,7 +556,7 @@ class TvControllerVideo extends TvController
 		if( $savedVidId ) {
 			// get the ID of the next moderatable video
 			$curModIds = $model->getPageIds( 'searched' );
-			$nextModVidId = !empty( $curModIds ) ? reset($curModIds) : $vidId;
+			$nextModVidId = !empty( $curModIds ) ? reset($curModIds) : null;
 			
 			// email the owner of the video with the outcome of the moderation
 			$sentEmail = $model->sendModEmail();
@@ -655,11 +659,11 @@ class TvControllerVideo extends TvController
 		// set the video whose current status we need to update
 		$model->setVideo( JRequest::getVar('video_id') );
 		
-		// sidebar is persisted search
-		$model->setSidebar( 'searched_recent' );
+		// are we checking IDs as part of the pagination check that will take place in $model->setSidebar()?
+		$idCheck = (bool)JRequest::getvar( 'idCheck' );
 		
-		// extend persistence of 'searched' paginator if appropriate
-		$model->savePaginationCheck( 'searched', false );
+		// sidebar defaults to 'viewed', will be changed by setSidebar() to 'searched_recent' if appropriate
+		$model->setSidebar( 'viewed', $idCheck );
 		
 		// display
 		$view->sidebar();

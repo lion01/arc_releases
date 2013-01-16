@@ -74,6 +74,13 @@ CREATE TABLE `#__apoth_ppl_address_history` (
 	FOREIGN KEY (`address_id`) REFERENCES `#__apoth_ppl_addresses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE `jos_apoth_ppl_photos` (
+	`person_id` VARCHAR( 20 ) NOT NULL ,
+	`photo` BLOB NOT NULL ,
+	PRIMARY KEY ( `person_id` ),
+	FOREIGN KEY (`person_id`) REFERENCES `jos_apoth_ppl_people` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE `#__apoth_ppl_medical_conditions` (
 	`conditions` varchar(50) NOT NULL,
 	PRIMARY KEY (`conditions`)

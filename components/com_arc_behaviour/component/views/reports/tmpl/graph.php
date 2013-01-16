@@ -115,8 +115,8 @@ class ArcGraphBehaviour
 		$min = floor($min / $ySnap) * $ySnap;
 		$max = ceil( $max / $ySnap) * $ySnap;
 		$range = ( $max == $min ) ? $ySnap : ($max - $min);
-		$scale = $height1 / $range;
-		$offset = 0;
+		$scale = ( $height1 - 20 ) / $range;
+		$offset = 10;
 		ArcGraphBehaviour::y( null, $offset, $max, $scale ); // setup static cache of values for y()
 		//echo 'min: '.$min.' max: '.$max.' range: '.$range.' scale: '.$scale.' 0->'.y(0).', 20->'.y(20);
 		
@@ -148,8 +148,8 @@ class ArcGraphBehaviour
 			$labelOffsetY = 0;
 		}
 		else {
-			$labelOffsetX = 40;
-			$labelOffsetY = 75;
+			$labelOffsetX = 30;
+			$labelOffsetY = 65;
 		}
 		imageline( $img, 0, ArcGraphBehaviour::y($yOfxAxis), $width, ArcGraphBehaviour::y($yOfxAxis), $colors['axes'] );
 		// ... y
@@ -165,18 +165,43 @@ class ArcGraphBehaviour
 			$yM2 = ArcGraphBehaviour::y($yOfxAxis) - 5;
 			$yS1 = ArcGraphBehaviour::y($yOfxAxis) + 2;
 			$yS2 = ArcGraphBehaviour::y($yOfxAxis) - 2;
-			reset($s);
-			$i = date( 'N', strtotime(key($s)));
-			foreach( $s as $date=>$val ) {
+			$dateWidth = 30;
+			$yLabelWidth = 20;
+			
+			$i = date( 'N', strtotime(reset($dates)));
+			$last = end( $dates );
+			foreach( $dates as $date ) {
+				// line markers, with a bigger one every monday
 				if( $i % 7 == 1 ) {
 					imageline( $img, $x, $yM1, $x, $yM2, $colors['axes'] );
 				}
 				elseif( $rawPointWidth >= 2 ) {
 					imageline( $img, $x, $yS1, $x, $yS2, $colors['axes'] );
 				}
+				
+				// date labels
 				if( ($i % 7 == 1) && ( ($i * $pointWidth) > $xTarget) ) {
-					$xTarget = ($i * $pointWidth) + 30;
-					imagettftext($img, 10, 45, ($x - $labelOffsetX), ($yL + $labelOffsetY), $colors['scales'], $font, $date);
+					$xTarget = ($i * $pointWidth) + $dateWidth;
+					$dateT = new DateTime( $date );
+					$datePrint = $dateT->format( 'd-m-y' );
+					
+					$dateX = $x - $labelOffsetX;
+					$dateY = $yL + $labelOffsetY;
+					$angle = 45;
+					
+					// deal with labels falling off the image
+					if( $labelsOver && (($dateX + $dateWidth) >= $width) ) {
+						$angle = 90;
+						$dateX += 5;
+					}
+					elseif( !$labelsOver && ($dateX < $yLabelWidth) ) { // 20 is enough room for y-axis labels
+						$angle = 90;
+						$dateX += $labelOffsetX + 5;
+						$dateY += 20;
+					}
+					if( $dateX > $yLabelWidth ) {
+						imagettftext($img, 10, $angle, $dateX, $dateY, $colors['scales'], $font, $datePrint);
+					}
 				}
 				$x += $pointWidth;
 				$i++;
@@ -188,7 +213,7 @@ class ArcGraphBehaviour
 		$yTarget = ArcGraphBehaviour::y($min) + 1;
 		for( $y = $min; $y <= $max; $y += 5 ) {
 			imageline( $img, 0, ArcGraphBehaviour::y($y), 2, ArcGraphBehaviour::y($y), $colors['axes'] );
-			if( ArcGraphBehaviour::y($y) < $yTarget ) {
+			if( ($y != 0) && (ArcGraphBehaviour::y($y) < $yTarget) ) {
 				$yTarget = ArcGraphBehaviour::y($y) - 10;
 				imageline( $img, 2, ArcGraphBehaviour::y($y), 4, ArcGraphBehaviour::y($y), $colors['axes'] );
 				imagettftext($img, 10, 0, 10, (ArcGraphBehaviour::y($y)+5), $colors['scales'], $font, abs($y));

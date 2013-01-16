@@ -1,0 +1,35 @@
+@CHARSET "ISO-8859-1";
+
+#print_content {
+	position: relative;
+}
+
+#print_selectors {
+	background: #f0f0f0;
+	border: 2px solid grey;
+	margin-right: 120px;
+	padding: 0.5em;
+}
+#print_filters_wrap,
+#print_summary_wrap {
+	display: table-cell;
+}
+
+
+#print_buttons {
+	position: absolute;
+	top: 0px;
+	right: 1px;
+	width: 100px;
+	margin: 1px;
+}
+
+#print_buttons ul {
+	list-style: none outside none;
+}
+#print_buttons li {
+	border: 1px solid grey;
+	display: block;
+	height: 95px;
+	width: 100%;
+}

@@ -9,6 +9,10 @@
 			<option value="0">No</option>
 			<option value="1">Yes</option>
 		</param>
+		<param name="ppl_photo" type="radio" default="0" label="People photos" description="Transfer the photos of staff and students">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
 		<param type="spacer" />
 		<param name="complete" type="radio" default="0" label="Complete Data Set" description="Is this a complete set of data or just a partial update?">
 			<option value="0">No</option>

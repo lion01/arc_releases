@@ -156,7 +156,7 @@ class ApothFactory_Report_Field extends ApothFactory
 				.( empty($orderBy) ? '' : "\n ORDER BY ".implode(', ', $orderBy) );
 			$db->setQuery( $query );
 			$data = $db->loadAssocList( 'id' );
-//			debugQuery( $db, $data );
+//			dumpQuery( $db, $data );
 			
 			$ids = array_keys( $data );
 			$this->_addInstances( $sId, $ids );
@@ -477,13 +477,30 @@ class ApothReportField extends JObject
 			'id'=>$report->getId(),
 			'rpt_group_id'=>$report->getDatum( 'rpt_group_id' ),
 			'reportee_id'=>$report->getDatum( 'reportee_id' ),
-			'author_id'=>$report->getDatum( 'author_id' ),
+			'author_id'=>$report->getDatum( 'author_id' )
 		);
+		
+		$gIdRpt = $this->_rptData['rpt_group_id'];
+		$gIdOrig = ApotheosisData::_( 'report.lookupGroup', $gIdRpt );
+		$authorIds = ApotheosisData::_( 'timetable.members', $gIdRpt, ApotheosisLibAcl::getRoleId( 'report_author' ) );
+		$tIds = ApotheosisData::_( 'timetable.teachers', $gIdOrig );
+		$tIds2 = array_intersect( $tIds, $authorIds );
+		
+		if( empty( $tIds2 ) ) {
+			$tId = reset( $tIds );
+		}
+		else {
+			$tId = reset( $tIds2 );
+		}
+		
+		$this->_rptData['teacher_id'] = $tId;
 	}
 	
-	function renderHTML( $html, $absolute = false )
+	function renderHTML( $html, $absolute = false, $escape = true )
 	{
-		$v = ( is_null( $html ) ? '--'.$this->_config['default'] : $html );
+		$default = ( isset( $this->_config['default'] ) ? $this->_config['default'] : '' );
+		$v = ( is_null( $html ) ? '--'.$default : $html );
+		$v = ( $escape ? nl2br(htmlspecialchars($v)) : $v );
 		$s = 'style="top: '.$this->_core['web_t'].'px; left: '.$this->_core['web_l'].'px; width: '.$this->_core['web_width'].'px; height: '.$this->_core['web_height'].'px;"';
 //		return '<div class="field f_'.$this->_id.'" '.$s.'>('.$this->_core['name'].' - '.get_class( $this ).')'.$v.'</div>';
 		return '<div class="field f_'.$this->_id.($absolute ? ' absolute' : '').'" '.$s.'>'.$v.'</div>';
@@ -492,6 +509,89 @@ class ApothReportField extends JObject
 	function getHTMLBottom()
 	{
 		return $this->_core['web_t'] + $this->_core['web_height'];
+	}
+	
+	function setPDFBoundingBox( $boundBox )
+	{
+		$this->_boundBox = $boundBox;
+	}
+	
+	function setPDFFont( $pdf )
+	{
+		$doStuff = false;
+		$fontStyle = '';
+		$fontSize = 0;
+		
+		if( isset( $this->_config['style'] ) ) {
+			if( preg_match( '~font(-weight)?:[^;]*bold~', $this->_config['style'] ) ) {
+				$fontStyle .= 'B';
+			}
+			if( preg_match( '~font(-style)?:[^;]*italic~', $this->_config['style'] ) ) {
+				$fontStyle .= 'I';
+			}
+			
+			if( !empty( $fontStyle ) ) {
+				if( !isset( $this->_defaultPDFFont['style'] ) ) {
+					$this->_defaultPDFFont['style'] = '';
+				}
+				$doStuff = true;
+			}
+		}
+		
+		if( !is_null( $this->_core['print_font_size'] ) ) {
+			if( !isset( $this->_defaultPDFFont['size'] ) ) {
+				$this->_defaultPDFFont['size'] = $pdf->getFontSizePt();
+				$this->_defaultPDFFont['lasth'] = $pdf->getLastH();
+			}
+			$doStuff = true;
+			$fontSize = $this->_core['print_font_size'];
+		}
+		
+		if( $doStuff ) {
+			$pdf->setFont( '', $fontStyle, $fontSize );
+		}
+	}
+	
+	function resetPDFFont( $pdf )
+	{
+		if( isset( $this->_defaultPDFFont ) ) {
+			$pdf->setFont( '',
+				( isset( $this->_defaultPDFFont['style'] ) ? $this->_defaultPDFFont['style'] : '' ),
+				( isset( $this->_defaultPDFFont['size']  ) ? $this->_defaultPDFFont['size']  : 0 ) );
+			if( isset( $this->_defaultPDFFont['lasth'] ) ) {
+				$pdf->setLastH( $this->_defaultPDFFont['lasth'] );
+			}
+		}
+	}
+	
+	function renderPDF( $pdf, $txt )
+	{
+		$this->setPDFFont( $pdf );
+		$l = $this->_core['print_l'] + $this->_boundBox['l'];
+		$t = $this->_core['print_t'] + $this->_boundBox['t'];
+		$w = $this->_core['print_width'];
+		$h = $this->_core['print_height'];
+		$r = $this->_boundBox['r'] + ( $this->_boundBox['w'] - ( $this->_core['print_l'] + $this->_core['print_width'] ) );
+		
+		// **** Dev only so positions can be studied
+//		$pdf->rect( $l, $t, $w, $h, 'F', array(), array( rand( 200, 256 ), rand( 200, 256 ), rand( 200, 256 ) ) );
+		
+		if( $this->_core['print_border'] ) {
+			$pdf->rect( $l, $t, $w, $h);
+		}
+		
+		$l += $this->_core['print_pad_l'];
+		$t += $this->_core['print_pad_t'];
+		$r += $this->_core['print_pad_r'];
+		
+		$pdf->setLeftMargin( $l );
+		$pdf->setRightMargin( $r );
+		$pdf->setTopMargin( $t );
+		
+		$align = ( isset( $this->_core['print_text_align'] ) ? strtoupper( $this->_core['print_text_align'] ) : '' );
+		$pdf->SetXY( $l, $t );
+		$pdf->writeHTML( $txt, false, false, false, false, $align );
+		$this->resetPDFFont( $pdf );
 	}
 	
 	function getScripts()

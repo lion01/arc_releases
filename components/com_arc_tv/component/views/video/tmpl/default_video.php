@@ -68,7 +68,6 @@ $rolesHtml = implode( '<br />', $rolesHtml );
 	<?php echo $this->loadTemplate( 'video_player' ); ?>
 	<?php if( $this->get('AllowRatings') ): ?>
 		<div id="ratings_div_outer" style="width: <?php echo $this->get( 'Horizontal' ); ?>px;">
-			<?php JHTML::_( 'Arc.tip' ); ?>
 			<?php echo JHTML::_( 'arc_tv.ratings', 'ratings', $globalRating, $userRating, ApotheosisLibAcl::getUserLinkAllowed('arc_tv_rate_video', array('tv.videoId'=>$this->curVideo->getId())) ); ?>
 			<div id="ajax_ratings_spinner_div"><?php echo JHTML::_( 'arc.loading', 'Rating...' ); ?></div>
 			<div id="ajax_ratings_message_div"></div>

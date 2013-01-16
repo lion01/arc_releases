@@ -75,6 +75,8 @@ class TvViewVideo extends JView
 	
 	/**
 	 * Display the search page
+	 * 
+	 * @param str $searchDivTitle  Title for the search div
 	 */
 	function search( $searchDivTitle )
 	{
@@ -97,15 +99,15 @@ class TvViewVideo extends JView
 	
 	/**
 	 * Display the video management page
+	 * 
+	 * @param bool $noMod  Should we override moderation and go to basic manage page?
 	 */
-	function manage()
+	function manage( $noMod )
 	{
 		$this->model = &$this->getModel();
 		
 		$this->mainView = 'manage';
 		$this->curVideo = &$this->get( 'Video' );
-
-		$this->manageDivTitle = ( $this->curVideo->getId() < 0 ) ? 'Upload a video...' : 'Manage a video...';
 		
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
 		$this->tagCloud = &$this->get( 'TagCloud' );
@@ -113,9 +115,18 @@ class TvViewVideo extends JView
 		
 		$this->siteId = $this->get( 'SiteId' );
 		$this->filters = $this->curVideo->getFilters();
-		$this->moderate = ApotheosisLibAcl::getUserLinkAllowed('arc_tv_moderate', array()) ? true : false;
-		
+		$this->moderate = !$noMod && ( ApotheosisLibAcl::getUserLinkAllowed('arc_tv_moderate', array()) ? true : false );
 		$this->submitted = ( $this->curVideo->getDatum('status') == ARC_TV_PENDING );
+		
+		if( $this->curVideo->getId() < 0 ) {
+			$this->manageDivTitle = 'Upload a video...';
+		}
+		elseif( $this->moderate && $this->submitted ) {
+			$this->manageDivTitle = 'Moderate a video...';
+		}
+		else {
+			$this->manageDivTitle = 'Manage a video...';
+		}
 		
 		parent::display();
 	}

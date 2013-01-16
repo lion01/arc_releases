@@ -115,13 +115,13 @@ class MessageControllerHub extends MessageController
 		$tId = JRequest::getVar('threadId');
 		$t = &$fThread->getInstance( $tId );
 		$t->setDetailsShown();
-		$this->saveModel();
 		if( JRequest::getVar('format') == 'raw' ) {
 			JRequest::setVar( 'scope', 'thread' );
 			$model->setCurrentThread( $tId );
 			$this->display();
 		}
 		else {
+			$this->saveModel();
 			$l = ApotheosisLib::getActionLinkByName( 'apoth_msg_hub', array('message.tags'=>$model->getFolder(), 'message.scopes'=>'list') );
 			$this->saveAndRedirect( $l.'#thread_'.$tId );
 		}

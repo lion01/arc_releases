@@ -29,6 +29,7 @@ class JHTMLArc_Tv
 	 * @param string $name  The name to use for the input
 	 * @param string $default  Default input value (used for form reset)
 	 * @param array $params  Optional input properties
+	 * @param string $regex  Optional regex to apply to input
 	 * @return string $retVal  The HTML to display the required input
 	 */
 	function tags( $name, $default = null, $params = array(), $regex = '' )
@@ -57,9 +58,10 @@ class JHTMLArc_Tv
 	 * @param string $name  The name to use for the input
 	 * @param string $default  Default input value (used for form reset)
 	 * @param array $params  Optional input properties
+	 * @param string $regex  Optional regex to apply to input
 	 * @return string $retVal  The HTML to display the required input
 	 */
-	function roles( $name, $default = null, $params = array() )
+	function roles( $name, $default = null, $params = array(), $regex = '' )
 	{
 		$default = ( !is_null($default) ? $default : '' );
 		$oldVal = JRequest::getVar( $name, $default );
@@ -72,7 +74,7 @@ class JHTMLArc_Tv
 			$roleList[] = (object)$role;
 		}
 		
-		$retVal  = JHTML::_( 'arc.combo', $name, $params, $roleList, 'id', 'role', $oldVal, true );
+		$retVal  = JHTML::_( 'arc.combo', $name, $params, $roleList, 'id', 'role', $oldVal, true, $regex );
 		$retVal .= JHTML::_( 'arc.hidden', 'search_default_'.$name, $default, 'class="search_default"' );
 		
 		return $retVal;
@@ -107,12 +109,8 @@ class JHTMLArc_Tv
 		$pixelsPerStar = 48;
 		$bkgOffset = ( $numOfStars * $pixelsPerStar ) * -1;
 		
-		$globalTip = 'Global rating: '.( ($global > 0) ? $global : 'No ratings.' );
-		$userTip = 'Your rating: '.( ($user > 0) ? $user : 'Please rate me.' );
-		$toolTip = 'Ratings::'.$globalTip.'<br />'.$userTip;
-		
 		$retVal =
-		'<div id="'.$name.'_div" class="arcTip" title="'.$toolTip.'" style="background-image:url(\''.$ratingsImgPath.'rating_stars.png\'); background-position: 0 '.$bkgOffset.'px">'
+		'<div id="'.$name.'_div" style="background-image:url(\''.$ratingsImgPath.'rating_stars.png\'); background-position: 0 '.$bkgOffset.'px">'
 			.JHTML::_( 'arc.hidden', $name.'_global', $global, 'id="'.$name.'_global"' )
 			.JHTML::_( 'arc.hidden', $name.'_user', $user, 'id="'.$name.'_user"' )
 			.JHTML::_( 'arc.hidden', $name.'_action', $action, 'id="'.$name.'_action"' )

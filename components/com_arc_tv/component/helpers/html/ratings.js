@@ -27,11 +27,18 @@ window.addEvent( 'domready', function() {
  */
 function initRatingsDiv()
 {
+	// remove relevant events
+	ratingsDiv.removeEvents( 'mouseenter' );
+	ratingsDiv.removeEvents( 'mouseleave' );
+	
 	// get global rating input
 	globalRatingInput = $( 'ratings_global' );
 	
 	// get user rating input
 	userRatingInput = $( 'ratings_user' );
+	
+	// set the tooltip
+	setToolTip();
 	
 	// get rating submit action
 	ratingAction = $( 'ratings_action' ).getValue();
@@ -50,6 +57,39 @@ function initRatingsDiv()
 		
 		// hide user rating overlay
 		userRating( false );
+	});
+}
+
+/**
+ * Set the tooltip for the ratings div
+ */
+function setToolTip()
+{
+	// get the values we need
+	var globalRating = globalRatingInput.getValue() > 0 ? globalRatingInput.getValue() : 'No ratings.';
+	var userRating = userRatingInput.getValue() > 0 ? userRatingInput.getValue() : 'Please rate me.';
+	var divTitle = 'Ratings::Global rating: ' + globalRating + '<br />Your rating: ' + userRating;
+		
+	
+	// add title and class needed for tooltip to ratings div
+	ratingsDiv.setProperty( 'title', divTitle );
+	ratingsDiv.addClass( 'arcTip' );
+	
+	// generate the tooltip
+	ratingsTip = new Tips(ratingsDiv, {
+		'className': 'custom',
+		'initialize': function() {
+			this.fx = new Fx.Style(this.toolTip, 'opacity', {
+				'duration': 500,
+				'wait': false
+			}).set(0);
+		},
+		'onShow': function(toolTip) {
+			this.fx.start(1);
+		},
+		'onHide': function(toolTip) {
+			this.fx.start(0);
+		}
 	});
 }
 
@@ -112,6 +152,10 @@ function userRating( show )
 					if( !userRatingShown ) {
 						ratingsDiv.setStyle( 'background-position', calcBkgOffset(globalRatingInput.getValue(), 'global') );
 					}
+					
+					// reset the tooltip by re-initialising the ratings div
+					ratingsTip.hide();
+					initRatingsDiv();
 				},
 				'onFailure': function() {
 					// remove ajax spinner

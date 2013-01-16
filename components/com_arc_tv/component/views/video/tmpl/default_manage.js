@@ -24,15 +24,16 @@ window.addEvent( 'domready', function() {
 	vidIdInput = $( 'video_id' );
 	vidStatusInput = $( 'video_status' );
 	
-	// initialise accordion
-	initAccordion();
-	
 	// intercept form submission
 	manageForm = $( 'manage_video_form' );
+	weAreModerating = false;
+	allowSwooshSavingOverride = false;
 	manageFormSaveButton = $( 'manage_form_save_button' );
 	manageFormSubmitButton = $( 'manage_form_submit_button' );
 	manageFormApproveButton = $( 'manage_form_approve_button' );
 	manageFormRejectButton = $( 'manage_form_reject_button' );
+	manageFormManageButton = $( 'manage_form_manage_button' );
+	manageFormModerateButton = $( 'manage_form_moderate_button' );
 	if( manageFormSaveButton !== null ) {
 		setFormSubmitButtonClicker( manageFormSaveButton, 'save' );
 	}
@@ -41,10 +42,18 @@ window.addEvent( 'domready', function() {
 	}
 	if( manageFormApproveButton !== null ) {
 		setFormSubmitButtonClicker( manageFormApproveButton, 'approve' );
+		weAreModerating = true;
 	}
 	if( manageFormRejectButton !== null ) {
 		setFormSubmitButtonClicker( manageFormRejectButton, 'reject' );
+		weAreModerating = true;
 	}
+	if( manageFormModerateButton !== null ) {
+		allowSwooshSavingOverride = true;
+	}
+	
+	// initialise accordion
+	initAccordion();
 	
 	// add sensitivity to 'remove video files' link
 	remVidFilesLink = $( 'remove_vid_files_link' );
@@ -53,15 +62,12 @@ window.addEvent( 'domready', function() {
 	}
 	
 	// initialise roles
-	rolesTableDiv = $( 'manage_roles_table_div' );
 	rolesTableBody = $( 'manage_form_roles_tbody' );
+	rolesAddButtonDiv = $( 'manage_form_add_role_botton_div' );
 	rolesInput = $( 'manage_roles_input' );
 	existingRoles = Json.evaluate( rolesInput.getValue() );
 	if( existingRoles.length > 0 ) {
 		initRoles();
-	}
-	else {
-		rolesTableDiv.setStyle( 'display', 'none' );
 	}
 	
 	// add sensitivity to 'add roles' link
@@ -92,6 +98,10 @@ function initAccordion()
 	// array to store all of the collapsibles
 	collapsibles = new Array();
 	
+	// determine which div to remain showing
+	// status div normally or the media div if moderating
+	var divToShow = ( weAreModerating ? 1 : 0 );
+	
 	clickers.each( function(clicker, i) {
 		// for each div create a slide effect
 		var collapsible = new Fx.Slide( list[i], {
@@ -101,22 +111,30 @@ function initAccordion()
 					this.wrapper.setStyle( 'height', 'auto' );
 				}
 				
-				// if this slider has just closed and video status is not 1 or 3 on then save it
 				var curStatus = vidStatusInput.getValue();
-				if( (this.wrapper.offsetHeight == 0) && !((curStatus == 1) || (curStatus == 3)) ) {
-					submitForm( 'save', list[i] );
-				}
-				// if this slider has just closed and video status is 1 or 3 then DON'T save it
-				else if( (this.wrapper.offsetHeight == 0) && ((curStatus == 1) || (curStatus == 3)) ) {
-					if( $('manage_file_div') != null ) {
-						var noSwooshDiv = $( 'ajax_noswoosh_file_div' );
+				
+				// determine if swooshy saving should be allowed
+				// video should not be status 1 or 3 and we must not be moderating
+				var allowSwooshSaving = ( !((curStatus == 1) || (curStatus == 3) || weAreModerating) || allowSwooshSavingOverride );
+				
+				// if this slider has just closed
+				if( this.wrapper.offsetHeight == 0 ) {
+					if( allowSwooshSaving ) {
+						// save the form
+						submitForm( 'save', list[i] );
 					}
-					else if( $('manage_mod_div') != null ) {
-						var noSwooshDiv = $( 'ajax_noswoosh_mod_div' );
+					else {
+						// don't save the form, show a message instead
+						if( $('manage_file_div') != null ) {
+							var noSwooshDiv = $( 'ajax_noswoosh_file_div' );
+						}
+						else if( $('manage_mod_div') != null ) {
+							var noSwooshDiv = $( 'ajax_noswoosh_mod_div' );
+						}
+						
+						messageSpinnerDiv.setStyle( 'display', 'none' );
+						noSwooshDiv.setStyle( 'display', 'block' );
 					}
-					
-					messageSpinnerDiv.setStyle( 'display', 'none' );
-					noSwooshDiv.setStyle( 'display', 'block' );
 				}
 			}
 		});
@@ -143,8 +161,23 @@ function initAccordion()
 			}
 		});
 		
-		// collapse all but the first div
-		if( i != 0 ) {
+		// collapse all but the correct div
+		_collapseDivs( divToShow );
+	});
+}
+
+/**
+ * Collapse the manage divs but leave specified div showing
+ * 
+ * @param int divToShow  The int of the div to remain on show
+ */
+function _collapseDivs( divToShow )
+{
+	collapsibles.each( function(collapsible, i) {
+		if( i == divToShow ) {
+			collapsible.slideIn();
+		}
+		else {
 			collapsible.hide();
 		}
 	});
@@ -401,8 +434,6 @@ function addRoleToTable( roleInfo )
 	remLink.info = roleInfo;
 	remLink.setText( 'Remove' );
 	remLink.injectInside( delCell );
-	
-	rolesTableDiv.setStyle( 'display', '' );
 }
 
 /**
@@ -435,10 +466,10 @@ function checkAddRolesLink() {
 	});
 	
 	if( haveRoles && haveNames ) {
-		addRolesLink.setStyle( 'display', '' );
+		rolesAddButtonDiv.setStyle( 'display', '' );
 	}
 	else {
-		addRolesLink.setStyle( 'display', 'none' );
+		rolesAddButtonDiv.setStyle( 'display', 'none' );
 	}
 }
 
@@ -547,11 +578,6 @@ function removeRoll( roleRow, roleCell, roleInfo )
 			return true;
 		}
 	});
-	
-	// check if no more rows in tbody then hide table
-	if( rolesTableBody.getChildren() == 0 ) {
-		rolesTableDiv.setStyle( 'display', 'none' );
-	}
 }
 
 /**
@@ -612,6 +638,11 @@ function submitForm( task, element )
 		saveQueryString = $('save_url').getValue();
 	}
 	
+	// switch to status div if moderating or submitting
+	if( (task == 'approve') || (task == 'reject') || (task == 'submit') ) {
+		_collapseDivs( 0 );
+	}
+	
 	// initialise data to send with ajax request
 	var inputString = new Array();
 	
@@ -665,14 +696,30 @@ function submitForm( task, element )
 			updateIdValues( response.id );
 			vidStatusInput.setProperty( 'value', response.status );
 			
-			// if we just successfully moderated a video, update the sidebar div
+			// if we just successfully moderated a video, update the sidebar div and hide the mod buttons
 			if( ((task == 'approve') || (task == 'reject')) && (response.next_id != vidId) ) {
 				// ajax in a fresh status div without checking for ID
 				updateStatusDiv( false );
+				
+				// hide the toolip so it doesn't stick then hide the mod buttons
+				manageFormApproveButton.fireEvent( 'mouseleave' );
+				manageFormRejectButton.fireEvent( 'mouseleave' );
+				manageFormApproveButton.setStyle( 'display', 'none' );
+				manageFormRejectButton.setStyle( 'display', 'none' );
 			}
 			else {
 				// ajax in a fresh status div but check for ID
 				updateStatusDiv( true );
+				
+				// deal with the 'moderate video' button if there is one
+				if( manageFormModerateButton !== null ) {
+					if( task == 'submit' ) {
+						manageFormModerateButton.setStyle( 'display', '' );
+					}
+					else if( task == 'save' ) {
+						manageFormModerateButton.setStyle( 'display', 'none' );
+					}
+				}
 			}
 		},
 		'onFailure': function() {
@@ -705,13 +752,10 @@ function updateStatusDiv( idCheck )
 		'update': statusDiv
 	});
 	
-	// If we aren't going to check IDs then we must be moderating,
-	// so Ajax in a new sidebar after the status div
-	if( !idCheck ) {
-		updateStatusAjax.addEvent( 'onSuccess', function() {
-			updateSidebarDiv();
-		});
-	}
+	// Ajax in a new sidebar after the status div
+	updateStatusAjax.addEvent( 'onSuccess', function() {
+		updateSidebarDiv( idCheck );
+	});
 	
 	updateStatusAjax.request();
 }
@@ -719,16 +763,21 @@ function updateStatusDiv( idCheck )
 /**
  * Ajax in a new sidebar div
  */
-function updateSidebarDiv()
+function updateSidebarDiv( idCheck )
 {
 	// Get the sidebar div
 	var sidebarDiv = $( 'sidebar_div' );
 	
 	// Set the query string
 	var sidebarQueryString = $( 'sidebar_url' ).getValue();
+	sidebarQueryString = sidebarQueryString.replace( 'js.idcheck.replace', (idCheck ? '1' : '0') );
+	
+	// set the post data
+	var inputString = 'video_id=' + vidIdInput.getValue();
 	
 	// Ajax in the updated status div
 	new Ajax( sidebarQueryString, {
+		'data': inputString,
 		'update': sidebarDiv
 	}).request();
 }

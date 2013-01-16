@@ -69,119 +69,30 @@ class ApothFactory_Report_Subreport extends ApothFactory
 	
 	function &getInstances( $requirements, $init = true, $orders = null )
 	{
+		$restrict = $this->getParam( 'restrict' );
+		$requirements['_restrict'] = $restrict;
 		$sId = $this->_getSearchId( $requirements );
 		$ids = $this->_getInstances($sId);
-		$restrict = $this->getParam( 'restrict' );
 		$now = date( 'Y-m-d H:i:s' );
 		
 		if( is_null($ids) ) {
+			$where = $join = $orderBy = array();
+			$this->requirementsToClauses( $requirements, $where, $join );
+			$this->ordersToClauses( $orders, $orderBy, $join );
+			
 			$db = &JFactory::getDBO();
-			
-			$where = $join = array();
-			foreach( $requirements as $col=>$val ) {
-				if( is_array($val) ) {
-					if( empty($val) ) {
-						continue;
-					}
-					foreach( $val as $k=>$v ) {
-						$val[$k] = $db->Quote( $v );
-					}
-					$assignPart = ' IN ('.implode( ', ',$val ).')';
-				}
-				else {
-					$assignPart = ' = '.$db->Quote( $val );
-				}
-				switch( $col ) {
-				case( 'id' ):
-					$where[] = 's.id'.$assignPart;
-					break;
-				
-				case( 'cycle' ):
-					$where[] = 's.cycle_id'.$assignPart;
-					break;
-				
-				case( 'person' ):
-					$where[] = '(s.author_id'.$assignPart.' OR s.reportee_id'.$assignPart.')';
-					break;
-				
-				case( 'author' ):
-					$where[] = 's.author_id'.$assignPart;
-					break;
-				
-				case( 'reportee' ):
-					$where[] = 's.reportee_id'.$assignPart;
-					break;
-				
-				case( 'subject' ):
-					$dbCA = $db->nameQuote( 'ca' );
-					$join[] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses_ancestry' ).' AS '.$dbCA
-						."\n".'   ON '.$dbCA.'.id = s.rpt_group_id';
-					$where[] = $dbCA.'.'.$db->nameQuote( 'ancestor' ).$assignPart;
-					break;
-				
-				case( 'group' ):
-					$where[] = 's.rpt_group_id'.$assignPart;
-					break;
-				
-				case( 'status' ):
-					$where[] = 's.status_id'.$assignPart;
-					break;
-				
-				case( 'role' ):
-					if( isset( $requirements['role_person'] ) ) {
-						$personId = $requirements['role_person'];
-					}
-					else {
-						$u = ApotheosisLib::getUser();
-						$personId = $u->person_id;
-					}
-					
-					$rptTable = ApotheosisLibAcl::getUserTable( 'report.subreports' );
-					$join['role'] = 'INNER JOIN '.$db->nameQUote( $rptTable ).' AS r'
-						."\n".'   ON r.id = s.id';
-					$where['role'] = 'r.role'.$assignPart;
-					break;
-				}
-			}
-			
-			// now set up any 'ORDER BY' clause
-			if( !is_null( $orders ) ) {
-				foreach( $orders as $orderOn=>$orderDir ) {
-					if( $orderDir == 'a' ) {
-						$orderDir = 'ASC';
-					}
-					elseif( $orderDir == 'd' ) {
-						$orderDir = 'DESC';
-					}
-					
-					switch( $orderOn ) {
-					case( 'group_name' ):
-						$dbC = $db->nameQuote( 'c' );
-						$join['groups'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses' ).' AS '.$dbC
-							."\n".'    ON '.$dbC.'.id = s.rpt_group_id';
-						$orderBy[] = $dbP.'.fullname '.$orderDir;
-						
-					case( 'reportee_name' ):
-						$dbP = $db->nameQuote( 'p' );
-						$join['reportees'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_ppl_people' ).' AS '.$dbP
-							."\n".'    ON '.$dbP.'.id = s.reportee_id';
-						$orderBy[] = $dbP.'.surname '.$orderDir;
-						$orderBy[] = $dbP.'.firstname '.$orderDir;
-						break;
-					}
-				}
-			}
-			
-			$query = 'SELECT DISTINCT s.*'
+			$query = 'SELECT DISTINCT s.'.( $init ? '*' : 'id' )
 				."\n".'FROM '.$db->nameQuote( '#__apoth_rpt_subreports' ).' AS s'
-				.( empty($join)  ? '' : "\n".implode("\n", $join) )
-				.( empty($where) ? '' : "\nWHERE ".implode("\n AND ", $where) );
+				.( empty($join)    ? '' : "\n".implode("\n", $join) )
+				.( empty($where)   ? '' : "\nWHERE ".implode("\n AND ", $where) )
+				.( empty($orderBy) ? '' : "\nORDER BY ".implode(',', $orderBy) );
 			if( $restrict ) {
-				$query = ApotheosisLibAcl::limitQuery($query, 'report.subreports'); 
+				$query = ApotheosisLibAcl::limitQuery( $query, 'report.subreports' ); 
 			}
 			
 			$db->setQuery( $query );
 			$data = $db->loadAssocList( 'id' );
+//			dumpQuery( $db, $data );
 			
 			$ids = array_keys( $data );
 			$this->_addInstances( $sId, $ids );
@@ -203,6 +114,144 @@ class ApothFactory_Report_Subreport extends ApothFactory
 		}
 		
 		return $ids;
+	}
+	
+	/**
+	 * Generate sql clauses suitable for use in getInstances.
+	 * Generated clauses are added to $where and $join parameters (passed by reference).
+	 * 
+	 * @param array $requirements  Associative array of column=>value(s) by which to restrict the results
+	 * @param array $where  Array to populate with clauses. Passed by reference,
+	 * @param array $join   Array to populate with clauses. Passed by reference,
+	 */
+	function requirementsToClauses( $requirements, &$where, &$join )
+	{
+		if( !is_array( $where ) ) { $where = array(); }
+		if( !is_array( $join )  ) { $join  = array(); }
+		if( !is_array( $requirements ) || empty( $requirements ) ) { return; }
+		
+		$db = &JFactory::getDBO();
+		foreach( $requirements as $col=>$val ) {
+			if( is_array($val) ) {
+				if( empty($val) ) {
+					continue;
+				}
+				foreach( $val as $k=>$v ) {
+					$val[$k] = $db->Quote( $v );
+				}
+				$assignPart = ' IN ('.implode( ', ',$val ).')';
+			}
+			else {
+				$assignPart = ' = '.$db->Quote( $val );
+			}
+			switch( $col ) {
+			case( 'id' ):
+				$where[] = 's.id'.$assignPart;
+				break;
+			
+			case( 'cycle' ):
+				$where[] = 's.cycle_id'.$assignPart;
+				break;
+			
+			case( 'person' ):
+				$where[] = '(s.author_id'.$assignPart.' OR s.reportee_id'.$assignPart.')';
+				break;
+			
+			case( 'author' ):
+				$where[] = 's.author_id'.$assignPart;
+				break;
+			
+			case( 'reportee' ):
+				$where[] = 's.reportee_id'.$assignPart;
+				break;
+			
+			case( 'subject' ):
+				$dbCA = $db->nameQuote( 'ca' );
+				$join[] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses_ancestry' ).' AS '.$dbCA
+					."\n".'   ON '.$dbCA.'.id = s.rpt_group_id';
+				$where[] = $dbCA.'.'.$db->nameQuote( 'ancestor' ).$assignPart;
+				break;
+			
+			case( 'group' ):
+				$where[] = 's.rpt_group_id'.$assignPart;
+				break;
+			
+			case( 'status' ):
+				$where[] = 's.status_id'.$assignPart;
+				break;
+			
+			case( 'role' ):
+				if( isset( $requirements['role_person'] ) ) {
+					$personId = $requirements['role_person'];
+				}
+				else {
+					$u = ApotheosisLib::getUser();
+					$personId = $u->person_id;
+				}
+				
+				$rptTable = ApotheosisLibAcl::getUserTable( 'report.subreports' );
+				$join['role'] = 'INNER JOIN '.$db->nameQUote( $rptTable ).' AS r'
+					."\n".'   ON r.id = s.id';
+				$where['role'] = 'r.role'.$assignPart;
+				break;
+			
+			case( 'restrict' );
+			case( '_restrict' );
+				$join['restrict'] = '~LIMITINGJOIN~';
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Generate sql clauses suitable for use in getInstances.
+	 * Generated clauses are added to $orderBy parameter (passed by reference).
+	 * 
+	 * @param array $orders  Associative array of column=>direction by which to order the results
+	 * @param array $orderBy  Array to populate with clauses. Passed by reference,
+	 */
+	function ordersToClauses( $orders, &$orderBy, &$join )
+	{
+		if( !is_array( $orderBy ) ) { $orderBy = array(); }
+		if( !is_array( $join )  ) { $join  = array(); }
+		if( !is_array( $orders ) || empty( $orders ) ) { return; }
+		
+		$db = &JFactory::getDBO();
+		foreach( $orders as $orderOn=>$orderDir ) {
+			if( $orderDir == 'a' ) {
+				$orderDir = 'ASC';
+			}
+			elseif( $orderDir == 'd' ) {
+				$orderDir = 'DESC';
+			}
+			
+			switch( $orderOn ) {
+			case( 'group_name' ):
+				$dbC = $db->nameQuote( 'c' );
+				$dbP = $db->nameQuote( 'p' );
+				$join['groups'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses' ).' AS '.$dbC
+					."\n".'    ON '.$dbC.'.id = s.rpt_group_id';
+				$orderBy[] = $dbC.'.fullname '.$orderDir;
+				
+			case( 'reportee_name' ):
+				$dbP = $db->nameQuote( 'p' );
+				$join['reportees'] = 'INNER JOIN '.$db->nameQuote( '#__apoth_ppl_people' ).' AS '.$dbP
+					."\n".'    ON '.$dbP.'.id = s.reportee_id';
+				$orderBy[] = $dbP.'.surname '.$orderDir;
+				$orderBy[] = $dbP.'.firstname '.$orderDir;
+				break;
+			
+			case( 'reportee_tutorgroup' ):
+				$join[] = 'INNER JOIN '.$db->nameQuote( '#__apoth_tt_group_members' ).' AS gm'
+					."\n".'   ON gm.person_id = s.reportee_id'
+					."\n".'  AND '.ApotheosisLibDb::dateCheckSQL( 'gm.valid_from', 'gm.valid_to', $this->getParam( 'date' ), $this->getParam( 'date' ) )
+					."\n".'INNER JOIN '.$db->nameQuote( '#__apoth_cm_courses' ).' AS c'
+					."\n".'   ON c.id = gm.group_id'
+					."\n".'  AND c.type = '.$db->Quote( 'pastoral' );
+				$orderBy[] = 'c.fullname '.$orderDir;
+				break;
+			}
+		}
 	}
 	
 	
@@ -413,6 +462,8 @@ class ApothReportSubreport extends JObject
 			break;
 		
 		case( 'pdf' ):
+			// *** this case doesn't currently get used.
+			// *** Rendering subreports in on printouts is done by directly rendering the section
 			return  $section->renderPDF( $this, $part, $pdfObj );
 			break;
 		}

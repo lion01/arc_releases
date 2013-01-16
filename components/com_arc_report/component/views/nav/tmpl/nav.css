@@ -7,13 +7,40 @@
 
 #arc_nav ul li {
 	display: block;
-	height: 95px;
+	height: 100px;
 	width: 100%;
-	border: 1px solid grey;
+	border: 1px solid #ACA5A5;
+	background: rgba(211, 211, 211, 0.7);
+}
+
+#arc_nav ul li a {
+	display: block;
+	height: 100px;
+}
+
+#arc_nav ul li:first-child {
+	border-radius: 9px 0 0 0;
+	-webkit-border-radius: 9px 0 0 0;
+	-moz-border-radius: 9px 0 0 0;
+}
+
+#arc_nav ul li:last-child {
+	border-radius: 0 0 0 9px;
+	-webkit-border-radius: 0 0 0 9px;
+	-moz-border-radius: 0 0 0 9px;
+	margin-bottom: 0;
 }
 
 #arc_main_narrow {
-	margin-left: 130px;
+	min-height:420px;
+	margin-left: 116px;
+	border:1px solid #ACA5A5;
+	border-radius:0px 9px 9px 9px;
+	-webkit-border-radius: 0 9px 9px 9px;
+	-moz-border-radius: 0 9px 9px 9px;
+}
+#arc_main_narrow h2 {
+	margin:5px 15px;
 }
 
 #arc_nav li {
@@ -23,8 +50,16 @@
 	color: #4b4b4b;
 }
 #arc_nav .current a {
-	color: #00b81c;
+	color: #61995c;
 }
+
+/* This could/should change when Wildern have the customers (eref) template... */
+#arc_nav ul li.current {
+	background:rgba(245,245,245, 1);
+	border-right:none;
+	width:117px;
+}
+
 #arc_nav a:hover {
 	text-decoration: none;
 }
@@ -35,18 +70,45 @@
 	font-size: 50px;
 	line-height: 15px;
 }
-.menu_icon {
-	line-height: 80px;
+
+.nav_wc,
+.nav_over,
+.nav_print,
+.nav_admin
+{
+	font-size:14px;
+	display:block;
 }
-.menu_icon:before {
-	font-size: 150px;
-	line-height: 45px;
-}
-.menu_icon:before,
-.inline_icon:before {
+
+.nav_wc:before,
+.nav_over:before,
+.nav_print:before,
+.nav_admin:before
+{
 	font-family: "EntypoRegular";
+	font-size: 150px;
+	line-height: 40px;
+	display:block;
+	height:80px !important;
 }
-#nav_wc:before    { content: "& "; }
-#nav_over:before  { content: ", "; }
-#nav_print:before { content: "< "; }
-#nav_admin:before { content: "@ "; }
+
+.nav_wc:before,
+.nav_over:before,
+.nav_print:before,
+.nav_admin:before
+{
+	text-shadow: rgba(255, 255, 255, 0.91) 4px 1px 4px;
+	color: #494946;
+}
+
+#arc_nav ul li.current span.nav_wc:before,
+#arc_nav ul li.current span.nav_over:before,
+#arc_nav ul li.current span.nav_print:before,
+#arc_nav ul li.current span.nav_admin:before {
+	color: #61995c;
+}
+
+.nav_wc:before    { content: "& "; }
+.nav_over:before  { content: ", "; }
+.nav_print:before { content: "< "; }
+.nav_admin:before { content: "@ "; }

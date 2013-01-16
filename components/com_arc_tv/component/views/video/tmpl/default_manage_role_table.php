@@ -31,5 +31,10 @@ foreach( $this->curVideo->getRoles() as $roleInfo ) {
 		</tr>
 	</thead>
 	<tbody id="manage_form_roles_tbody">
+		<tr>
+			<td>Owner</td>
+			<td><?php echo $this->model->getDisplayName( $this->curVideo->getDatum('site_id'), $this->curVideo->getDatum('person_id') ); ?></td>
+			<td>&nbsp;</td>
+		</tr>
 	</tbody>
 </table>

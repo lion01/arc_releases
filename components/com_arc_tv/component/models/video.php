@@ -208,11 +208,12 @@ class TvModelVideo extends ApothModel
 	 * Set the sidebar videos for the current user
 	 *
 	 * @param string $criteria  Which criteria to use to populate the sidebar
+	 * @param boolean $idCheck  Should we perform the ID check?
 	 */
-	function setSidebar( $criteria )
+	function setSidebar( $criteria, $idCheck = true )
 	{
 		// do we need to extend persistence of the 'searched' paginator
-		if( $this->savePaginationCheck('searched') ) {
+		if( $this->savePaginationCheck('searched', $idCheck) ) {
 			// prepare sidebar overlays and manage links
 			if( $this->_savedCriteria == 'searched_my' ) {
 				$this->_showSidebarOverlay = true;

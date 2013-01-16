@@ -124,7 +124,7 @@ class ArcXml extends JObject
 	{
 		// if we've run out of properties, load the next chunk
 		if( !isset($this->_result->$property) || (count($this->_result->$property) <= 1) ) {
-			$this->_loadChunk();
+			$this->_loadChunk( $property );
 		}
 		
 		// check again now we've tried to load it
@@ -136,7 +136,7 @@ class ArcXml extends JObject
 		}
 	}
 	
-	function _loadChunk()
+	function _loadChunk( $property = '' )
 	{
 		xml_set_object( $this->_parser, $this );
 		
@@ -148,7 +148,21 @@ class ArcXml extends JObject
 		}
 		
 		// otherwise read in and parse the next chunk of contents
-		$contents = fread($this->_handle, 4096);
+		// goes for a small bite out of the file, but keeps going until a close
+		// tag for the needed property is found
+		$contents = '';
+		$bite = '';
+		$biteLen = 4096;
+		$property = '/'.$property;
+		$propLen = strlen( $property );
+		$offset = -1 * ( $biteLen + $propLen );
+		while( (stripos( $contents, $property, (($offset < 0) ? 0 : $offset) ) === false) && !feof( $this->_handle ) && $bite !== false ) {
+			$bite = fread($this->_handle, $biteLen);
+			$contents .= $bite;
+			$offset += $biteLen;
+		}
+		
+		// with the raw text loaded, parse it into the xml object
 		xml_parse( $this->_parser, $contents );
 	}
 	

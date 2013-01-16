@@ -99,13 +99,59 @@ class ApotheosisData_Behaviour extends ApotheosisData
 	function personScore( $pId, $from, $to )
 	{
 		$db = &JFactory::getDBO();
-		$query = 'SELECT SUM( '.$db->nameQuote( 'score' ).' ) FROM '.$db->nameQuote( '#__apoth_bhv_scores')
-			."\n".'WHERE '.$db->nameQuote( 'person_id' )  .' = '.$db->Quote( $pId )
-			."\n".'  AND '.$db->nameQuote( 'date_issued' ).' BETWEEN '.$db->Quote( $from ).' AND '.$db->Quote( $to );
+		$query = 'SELECT SUM( '.$db->nameQuote( 'score' ).' )'
+			."\n".' FROM '.$db->nameQuote( '#__apoth_bhv_scores')
+			."\n".'WHERE '.$db->nameQuote( 'date_issued' ).' BETWEEN '.$db->Quote( $from ).' AND '.$db->Quote( $to )
+			.( is_null( $pId ) ? '' : "\n".'  AND '.$db->nameQuote( 'person_id' )  .' = '.$db->Quote( $pId ) )
+			."\n".'GROUP BY person_id';
 		$db->setQuery( $query );
-		$r = $db->loadResult();
+		$r = $db->loadResultArray();
 		
-		return $r;
+		if( is_null( $pId ) ) {
+			// work out the average
+			$retVal = array_sum( $r ) / count( $r );
+		}
+		else {
+			$retVal = reset( $r );
+		}
+		
+		if( empty( $retVal ) ) { $retVal = 0; }
+		
+		return $retVal;
+	}
+	
+	function personTally( $pId, $color, $from, $to )
+	{
+		$db = &JFactory::getDBO();
+		$query = 'SELECT COUNT( s.msg_id )'
+			."\n".'FROM '.$db->nameQuote( '#__apoth_bhv_scores').' AS s'
+			."\n".'INNER JOIN '.$db->nameQuote( '#__apoth_msg_tag_map' ).' AS tm'
+			."\n".'   ON tm.msg_id = s.msg_id'
+			."\n".'  AND tm.person_id IS NULL'
+			."\n".'INNER JOIN '.$db->nameQuote( '#__apoth_bhv_inc_types' ).' AS it'
+			."\n".'   ON it.msg_tag = tm.tag_id'
+			.( is_null( $color ) ? '' : "\n".'  AND it.label = '.$db->Quote( $color ) )
+			."\n".'INNER JOIN '.$db->nameQuote( '#__apoth_msg_threads' ).' AS th'
+			."\n".'   ON th.msg_id = s.msg_id'
+			."\n".'  AND th.'.$db->nameQuote( 'order' ).' = 1'
+			."\n".'WHERE '.$db->nameQuote( 'date_issued' ).' BETWEEN '.$db->Quote( $from ).' AND '.$db->Quote( $to )
+			.( is_null( $pId ) ? '' : "\n".'  AND s.'.$db->nameQuote( 'person_id' )  .' = '.$db->Quote( $pId ) )
+			."\n".'GROUP BY s.person_id';
+			
+		$db->setQuery( $query );
+		$r = $db->loadResultArray();
+		
+		if( is_null( $pId ) ) {
+			// work out the average
+			$retVal = array_sum( $r ) / count( $r );
+		}
+		else {
+			$retVal = reset( $r );
+		}
+		
+		if( empty( $retVal ) ) { $retVal = 0; }
+		
+		return $retVal;
 	}
 	
 }

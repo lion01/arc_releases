@@ -1,7 +1,7 @@
 @CHARSET "ISO-8859-1";
 
 .subreport {
-	border: 1px solid grey;
+	border: 1px solid #ACA5A5;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -32,6 +32,7 @@
 .subreport_controls,
 .subreport_status {
 	float: right;
+	margin-bottom:5px;
 }
 .subreport_status {
 	width: 40px;

@@ -16,8 +16,12 @@ $id = $this->subreport->getId();
 $status = $this->subreport->getDatum( 'status_id' );
 
 if( $status == ARC_REPORT_STATUS_SUBMITTED ) {
-	$linkApprove  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_approve', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_APPROVED ) );
-	$linkReject   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_feedback', array( 'report.subreport'=>$id ) );
+	$linkApprove = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_approve', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_APPROVED ) );
+	$linkReject  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_feedback', array( 'report.subreport'=>$id ) );
+}
+else {
+	$linkApprove = false;
+	$linkReject  = false;
 }
 $linkSave     = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_INCOMPLETE ) );
 $linkSubmit   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_submit', array( 'report.subreport'=>$id, 'report.commit'=>1, 'report.status'=>ARC_REPORT_STATUS_SUBMITTED ) );
@@ -25,7 +29,10 @@ $linkPreview  = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_save', 
 $linkPreview2 = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_print_preview', array( 'report.subreport'=>$id ) );
 
 if( ApotheosisLib::getActionId() != ApotheosisLib::getActionIdByName( 'apoth_report_'.$this->get( 'Activity' ).'_subreport' ) ) {
-	$linkSingle   = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_'.$this->get( 'Activity' ).'_subreport', array( 'report.subreport'=>$id ) );
+	$linkSingle = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_'.$this->get( 'Activity' ).'_subreport', array( 'report.subreport'=>$id ) );
+}
+else {
+	$linkSingle = false;
 }
 
 ?>

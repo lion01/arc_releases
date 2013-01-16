@@ -12,23 +12,27 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-$this->view = 'writecheck';
+$this->view = JRequest::getVar( 'view', null );
 JHTML::stylesheet( 'nav.css', $this->scriptPath );
 ?>
 
 <div id="arc_nav">
-	<ul>
-<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_writecheck', array( 'view'=>'writecheck' ) ) ) : ?>
-		<li <?php if( $this->view == 'writecheck' ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span id="nav_wc"    class="menu_icon">Write / Check</span></a></li>
-<?php endif; ?>
-<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_overview', array( 'view'=>'overview' ) ) ) : ?>
-		<li <?php if( $this->view == 'overview'   ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span id="nav_over"  class="menu_icon">Overview</span></a></li>
-<?php endif; ?>
-<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_printshare', array( 'view'=>'printshare' ) ) ) : ?>
-		<li <?php if( $this->view == 'printshare' ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span id="nav_print" class="menu_icon">Print / Share</span></a></li>
-<?php endif; ?>
-<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_admin', array( 'view'=>'admin' ) ) ) : ?>
-		<li <?php if( $this->view == 'admin'      ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span id="nav_admin" class="menu_icon">Admin</span></a></li>
-<?php endif; ?>
-	</ul>
+	<div id="folders">
+		<div id="icon_wrap">
+			<ul>
+		<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_writecheck', array( 'view'=>'writecheck' ) ) ) : ?>
+				<li <?php if( $this->view == 'writecheck' ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span class="nav_wc menu_icon">Write / Check</span></a><br/></li>
+		<?php endif; ?>
+		<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_overview', array( 'view'=>'overview' ) ) ) : ?>
+				<li <?php if( $this->view == 'overview'   ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span class="nav_over menu_icon">Overview</span></a><br/></li>
+		<?php endif; ?>
+		<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_printshare', array( 'view'=>'printshare' ) ) ) : ?>
+				<li <?php if( $this->view == 'printshare' ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span class="nav_print menu_icon">Print / Share</span></a><br/></li>
+		<?php endif; ?>
+		<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_admin', array( 'view'=>'admin' ) ) ) : ?>
+				<li <?php if( $this->view == 'admin'      ) { echo 'class="current"'; } ?>><a href="<?php echo $link; ?>"><span class="nav_admin menu_icon">Admin</span></a><br/></li>
+		<?php endif; ?>
+			</ul>
+		</div>
+	</div>
 </div>

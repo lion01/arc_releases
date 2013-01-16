@@ -90,6 +90,13 @@ class ApothFactory_Report_Section extends ApothFactory
 					$where[] = 's.id'.$assignPart;
 					break;
 				
+				case( 'layout_id' ):
+					$dbLS = $db->nameQuote( '#__apoth_rpt_report_layout_sections' );
+					$join['layout_sections'] = 'INNER JOIN '.$dbLS
+						."\n".'   ON '.$dbLS.'.'.$db->nameQuote( 'section_id' ). ' = s.id';
+					$where[] = $dbLS.'.layout_id'.$assignPart;
+					break;
+				
 				case( 'subreport' ):
 					$where[] = 's.subreport = '.(int)(bool)$val;
 					break;
@@ -151,6 +158,13 @@ class ApothFactory_Report_Section extends ApothFactory
 						}
 						$select[] = $spec.' AS spec';
 						$orderBy[] = 'spec '.$orderDir;
+						break;
+					
+					case( 'order' ):
+						$join['layout_sections'] = 'INNER JOIN '.$dbLS
+							."\n".'   ON '.$dbLS.'.'.$db->nameQuote( 'section_id' ). ' = s.id';
+						$orderBy[] = $db->nameQuote( 'order' ).' '.$orderDir;
+						break;
 					}
 				}
 			}
@@ -173,7 +187,7 @@ class ApothFactory_Report_Section extends ApothFactory
 			
 			$db->setQuery( $query );
 			$data = $db->loadAssocList();
-//			debugQuery( $db, $data );
+//			dumpQuery( $db, $data );
 			
 			if( !empty( $postQuery ) ) {
 				$db->setQuery( $postQuery );
@@ -181,19 +195,20 @@ class ApothFactory_Report_Section extends ApothFactory
 			}
 			
 			// possibility of a section appearing twice in the list means arary_keys is not appropriate
-			foreach( $data as $datum ) {
-				$ids[] = $datum['id'];
+			foreach( $data as $dataIndex=>$dataRow ) {
+				$ids[] = $dataRow['id'];
+				$index[$dataRow['id']] = $dataIndex;
 			}
 			$this->_addInstances( $sId, $ids );
 			
 			if( $init ) {
 				$existing = $this->_getInstances();
-				$newIds = array_diff( $ids, $existing );
+				$newIds = array_diff( array_keys( $index ), $existing );
 				
 				if( !empty($newIds) ) {
 					// initialise and cache
 					foreach( $newIds as $id ) {
-						$objData = $data[$id];
+						$objData = $data[$index[$id]];
 						$obj = new ApothReportSection( $objData );
 						$this->_addInstance( $id, $obj );
 						unset( $obj );
@@ -297,6 +312,64 @@ class ApothReportSection extends JObject
 			.'</div>';
 		
 		return $out;
+	}
+	
+	function renderPDF( $report, $pdf )
+	{
+		ob_start();
+		// find out what fields this section has
+		$fCyc = ApothFactory::_( 'report.cycle' );
+		$fField = ApothFactory::_( 'report.field' );
+		
+		$cycleId = $report->getDatum( 'cycle_id' );
+		$cycle = $fCyc->getInstance( $cycleId );
+		$layoutId = $cycle->getDatum( 'layout_id' );
+		$sectionId = $this->_id;
+		$groupId = $report->getDatum( 'rpt_group_id' );
+		
+		// **** Dev only so positions can be studied
+//		$pdf->Rect( $this->_boundingBox['l'], $this->_boundingBox['t'], $this->_boundingBox['w'], $this->_boundingBox['h'], 'DF', array(), array( 256, 240, 240 ) );
+		
+		$fields = $fField->getInstances( array( 'section'=>$this->_id, 'format'=>'pdf' ), true, array( 'section_order'=>'ASC' ) );
+		foreach( $fields as $fId ) {
+			$rptData = $report->getFieldDatum( $fId );
+			$field = &$fField->getInstance( $fId );
+			if( !is_null( $field ) ) {
+				$field->setContext( $cycleId, $layoutId, $sectionId, $groupId );
+				$field->setConfig();
+				$field->setReportData( $report );
+				$field->setPDFBoundingBox( $this->getPDFBoundingBox() );
+				
+				$pd = $field->getConfig( 'print_displayed' );
+				if( is_null( $pd ) == ($pd == 0) ) {
+					$field->renderPDF( $pdf, $rptData );
+				}
+			}
+		}
+		
+		$err = ob_get_clean();
+		$pdf->writeHTML( $err );
+	}
+	
+	function setPDFBoundingBox( $offsets, $availableWidth, $availableHeight )
+	{
+		$this->_boundingBox = array(
+			'l'=>$this->_core['print_l'] + ( isset( $offsets['l'] ) ? $offsets['l'] : 0 ),
+			't'=>$this->_core['print_t'] + ( isset( $offsets['t'] ) ? $offsets['t'] : 0 ),
+			'w'=>min( $this->_core['print_width'],  $availableWidth ),
+			'h'=>min( $this->_core['print_height'], $availableHeight ),
+		);
+		$this->_boundingBox['r'] = $offsets['r'] + ( $availableWidth  - $this->_boundingBox['w'] );
+		$this->_boundingBox['b'] = $offsets['b'] + ( $availableHeight - $this->_boundingBox['h'] );
+//		dump( $this->_boundingBox, 'section bounding box' );
+	}
+	
+	function getPDFBoundingBox()
+	{
+		if( !isset( $this->_boundingBox ) || empty( $this->_boundingBox ) ) {
+			$this->setPDFBoundingBox( array(), 0, 0 );
+		}
+		return $this->_boundingBox;
 	}
 	
 	function getJavascript( $report, $part )

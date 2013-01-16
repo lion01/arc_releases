@@ -208,6 +208,12 @@ class ReportModelNav extends JModel
 	{
 		$this->filterValues = array();
 		
+		if( !empty( $requirements['cycle'] ) ) {
+			if( !is_array( $requirements['cycle'] ) ) {
+				$requirements['cycle'] = array( $requirements['cycle'] );
+			}
+			$this->filterValues['cycle'] = $requirements['cycle'];
+		}
 		if( !empty( $requirements['subject'] ) ) {
 			if( !is_array( $requirements['subject'] ) ) {
 				$requirements['subject'] = array( $requirements['subject'] );
@@ -235,7 +241,7 @@ class ReportModelNav extends JModel
 		
 		foreach( $this->filterValuesOrdered as $k=>$v ) {
 			$parts = explode( '.', $v, 2 );
-			if( is_array($requirements[$parts[0]])
+			if( isset($requirements[$parts[0]]) && is_array($requirements[$parts[0]])
 			 && ( ( $pos = array_search( $parts[1], $requirements[$parts[0]] ) ) !== false ) ) {
 				unset( $requirements[$parts[0]][$pos] );
 			}

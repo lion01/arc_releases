@@ -104,11 +104,11 @@
 
 #filter_terms .filter_loading {
 	display: none;
-	background: darkgrey;
+	background: #fff;
 	text-align: center;
 }
 #filter_terms .filter_loading div {
 	margin: auto;
-	background: lightgrey;
+	background: #fff;
 	width: 100px;
 }

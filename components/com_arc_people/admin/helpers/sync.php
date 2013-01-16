@@ -96,6 +96,35 @@ class ArcSync_People extends ArcSync
 		return true;
 	}
 	
+	function importPhotos( $params, $jobs )
+	{
+		$tablesArray = array( '#__apoth_ppl_addresses', '#__apoth_ppl_people', '#__users', '#__core_acl_acro' );
+		ApotheosisLibDb::disableDBChecks( $tablesArray );
+		
+		timer( 'importing photos' );
+		
+		// Photo data for:
+		
+		// - staff
+		$j = $this->jobSearch( array('call'=>'arc_people_staff_photos'), $jobs );
+		$xml = $this->_loadReport( $jobs[$j], 'progressive' );
+		$this->_srcId = $jobs[$j]['src'];
+		$this->_importPhotos( $xml );
+		$xml->free();
+		
+		// - pupils
+		$j = $this->jobSearch( array('call'=>'arc_people_pupil_photos'), $jobs );
+		$xml = $this->_loadReport( $jobs[$j], 'progressive' );
+		$this->_srcId = $jobs[$j]['src'];
+		$this->_importPhotos( $xml );
+		$xml->free();
+		
+		ApotheosisLibDb::enableDBChecks( $tablesArray );
+		timer( 'imported photos' );
+		
+		return true;
+	}
+	
 	function _rawToObjects( $rpt, $r )
 	{
 		if( empty($r) ) {
@@ -217,6 +246,36 @@ class ArcSync_People extends ArcSync
 				$retVal = $obj;
 			}
 			break;
+		
+		case( 'arc_people_any_photos' ):
+			$arcId = $r->childData( 'arc_person_id' );
+			$extId = $r->childData( 'primary_id' );
+			
+			if( !is_null($arcId) || !is_null($extId) ) {
+				$obj = new stdClass();
+				$obj->person_id = $arcId;
+				$obj->photo = $r->childData( 'photo' );
+				$obj->_hasPhoto = ( $r->childData('photo_available') == 'T' );
+				$obj->_newId = false;
+				
+				// Determine user ID
+				if( is_null($obj->person_id) && isset($this->externalPeople[$extId]) ) {
+					$obj->person_id = $this->externalPeople[$extId];
+				}
+				
+				// Determine if this is a new photo
+				if( !isset($this->existingPhotos[$obj->person_id]) ) {
+					$obj->_newId = true;
+				}
+			}
+			
+			// check it all went ok before setting return value
+			if( !isset( $obj ) || is_null( $obj->person_id ) ) {
+				$retVal = null;
+			}
+			else {
+				$retVal = $obj;
+			}
 		}
 		
 		return $retVal;
@@ -359,6 +418,23 @@ class ArcSync_People extends ArcSync
 		}
 	}
 	
+	
+	function _setExistingPhotos()
+	{
+		if( !isset($this->existingPhotos) ) {
+			$db = &JFactory::getDBO();
+			$query = 'SELECT '.$db->nameQuote('person_id')
+				."\n".'FROM '.$db->nameQuote('#__apoth_ppl_photos');
+			$db->setQuery( $query );
+			$tmp = $db->loadResultArray();
+			
+			foreach( $tmp as $id ) {
+				$this->existingPhotos[$id] = $id;
+			}
+			
+			if( !isset($this->existingPhotos) ) { $this->existingPhotos = array(); } // to avoid errors
+		}
+	}
 	
 	/**
 	 * Columns required for SIMS XML report creation from an uploaded CSV
@@ -574,6 +650,101 @@ class ArcSync_People extends ArcSync
 		return true;
 	}
 	
+	function _importPhotos( $xml )
+	{
+		$insertVals = array();
+		$updateVals = array();
+		$deleteVals = array();
+		
+		$insertValsCount = $updateValsCount = $deleteValsCount = 0;
+		
+		$this->_setExternalPeople( true, false );
+		$this->_setExistingPhotos();
+		while( ($data = $xml->next('record')) !== false ) {
+			$photo = $this->_rawToObjects( 'arc_people_any_photos', $data );
+			if( $photo ) {
+				// determine if photo is new and unset temp _newId property
+				// then add the photo to the relevant array
+				$isNew = $photo->_newId;
+				unset( $photo->_newId );
+				$hasPhoto = $photo->_hasPhoto;
+				unset( $photo->_hasPhoto );
+				
+				// convert the given image to a base64-encoded png for storage
+				if( $hasPhoto ) {
+					$imgData = base64_decode( $photo->photo );
+					$im = @imagecreatefromstring( $imgData );
+					
+					// maybe it's a bmp image?
+					if( $im == false ) {
+						echo $photo->person_id.' trying as a bmp<br />';
+						$config = &JFactory::getConfig();
+						$dirName = $config->getValue('config.tmp_path');
+						$tmpName = tempnam( $dirName, 'photo_'.time().'_' );
+						file_put_contents( $tmpName, $imgData );
+						$im = imagecreatefrombmp( $tmpName );
+						unlink( $tmpName );
+					}
+					else {
+						echo $photo->person_id.' was fine<br />';
+					}
+					
+					// if the image could not be interpreted, don't let it get into the db
+					if( $im == false ) {
+						echo '<b>'.$photo->person_id.' was not even a bmp</b><br />';
+						$photo->photo = null;
+						$hasPhoto = false;
+					}
+					else {
+						ob_start();
+						imagepng( $im );
+						$photo->photo = base64_encode( ob_get_clean() );
+					}
+				}
+				
+				if( $isNew ) {
+					if( $hasPhoto ) {
+						$insertVals[] = $photo;
+					}
+				}
+				else {
+					if( $hasPhoto ) {
+						$updateVals[] = $photo;
+					}
+					else {
+						unset( $photo->photo );
+						$deleteVals[] = $photo;
+					}
+				}
+				
+			}
+			
+			// send data to db if the list is getting a bit long
+			if( ($insertNum = count($insertVals)) >= 10 ) {
+				ApotheosisLibDb::insertList( '#__apoth_ppl_photos', $insertVals );
+				$insertVals = array();
+				$insertValsCount += $insertNum;
+			}
+			if( ($updateNum = count($updateVals)) >= 10 ) {
+				ApotheosisLibDb::updateList( '#__apoth_ppl_photos', $updateVals, array( 'person_id' ) );
+				$updateVals = array();
+				$updateValsCount += $updateNum;
+			}
+			if( ($deleteNum = count($deleteVals)) >= 1000 ) {
+				ApotheosisLibDb::deleteList( '#__apoth_ppl_photos', $deleteVals );
+				$deleteVals = array();
+				$deleteValsCount += $deleteNum;
+			}
+		}
+		
+		// store / update / delete photos in db
+		ApotheosisLibDb::insertList( '#__apoth_ppl_photos', $insertVals );
+		ApotheosisLibDb::updateList( '#__apoth_ppl_photos', $updateVals, array( 'person_id' ) );
+		ApotheosisLibDb::deleteList( '#__apoth_ppl_photos', $deleteVals );
+		
+		timer( 'imported photos ('.$insertValsCount.' inserts, '.$updateValsCount.' updates, '.$deleteValsCount.' deletes)' );
+	}
+	
 	/**
 	 * Cleans up an address to make it safe and valid enough to include in our database
 	 */
@@ -738,4 +909,134 @@ class ArcSync_People extends ArcSync
 		return $string.ApotheosisLib::generateLuhn( $string, '-' );
 	}
 }
+
+
+/**
+ * Converts a .bmp (bitmap image) into a gd image for further processing
+ * http://bytes.com/topic/php/answers/3033-there-bmp-support-gd
+ * 
+ * @param $src
+ * @param $dest
+ */
+function ConvertBMP2GD($src, $dest = false) {
+	if(!($src_f = fopen($src, "rb"))) {
+		return false;
+	}
+	if(!($dest_f = fopen($dest, "wb"))) {
+		return false;
+	}
+	$header = unpack("vtype/Vsize/v2reserved/Voffset", fread($src_f,14));
+	$info = unpack("Vsize/Vwidth/Vheight/vplanes/vbits/Vcompression/Vimagesize/Vxres/Vyres/Vncolor/Vimportant",fread($src_f, 40));
+	
+	extract($info);
+	extract($header);
+	
+	if($type != 0x4D42) { // signature "BM"
+		return false;
+	}
+	
+	$palette_size = $offset - 54;
+	$ncolor = $palette_size / 4;
+	$gd_header = "";
+	// true-color vs. palette
+	$gd_header .= ($palette_size == 0) ? "\xFF\xFE" : "\xFF\xFF";
+	$gd_header .= pack("n2", $width, $height);
+	$gd_header .= ($palette_size == 0) ? "\x01" : "\x00";
+	if($palette_size) {
+	$gd_header .= pack("n", $ncolor);
+	}
+	// no transparency
+	$gd_header .= "\xFF\xFF\xFF\xFF";
+	
+	fwrite($dest_f, $gd_header);
+	
+	if($palette_size) {
+	$palette = fread($src_f, $palette_size);
+	$gd_palette = "";
+	$j = 0;
+	while($j < $palette_size) {
+	$b = $palette{$j++};
+	$g = $palette{$j++};
+	$r = $palette{$j++};
+	$a = $palette{$j++};
+	$gd_palette .= "$r$g$b$a";
+	}
+	$gd_palette .= str_repeat("\x00\x00\x00\x00", 256 - $ncolor);
+	fwrite($dest_f, $gd_palette);
+	}
+	
+	$scan_line_size = (($bits * $width) + 7) >> 3;
+	$scan_line_align = ($scan_line_size & 0x03) ? 4 - ($scan_line_size &
+	0x03) : 0;
+	
+	for($i = 0, $l = $height - 1; $i < $height; $i++, $l--) {
+	// BMP stores scan lines starting from bottom
+	fseek($src_f, $offset + (($scan_line_size + $scan_line_align) *
+	$l));
+	$scan_line = fread($src_f, $scan_line_size);
+	if($bits == 24) {
+	$gd_scan_line = "";
+	$j = 0;
+	while($j < $scan_line_size) {
+	$b = $scan_line{$j++};
+	$g = $scan_line{$j++};
+	$r = $scan_line{$j++};
+	$gd_scan_line .= "\x00$r$g$b";
+	}
+	}
+	else if($bits == 8) {
+	$gd_scan_line = $scan_line;
+	}
+	else if($bits == 4) {
+	$gd_scan_line = "";
+	$j = 0;
+	while($j < $scan_line_size) {
+	$byte = ord($scan_line{$j++});
+	$p1 = chr($byte >> 4);
+	$p2 = chr($byte & 0x0F);
+	$gd_scan_line .= "$p1$p2";
+	}
+	$gd_scan_line = substr($gd_scan_line, 0, $width);
+	}
+	else if($bits == 1) {
+	$gd_scan_line = "";
+	$j = 0;
+	while($j < $scan_line_size) {
+	$byte = ord($scan_line{$j++});
+	$p1 = chr((int) (($byte & 0x80) != 0));
+	$p2 = chr((int) (($byte & 0x40) != 0));
+	$p3 = chr((int) (($byte & 0x20) != 0));
+	$p4 = chr((int) (($byte & 0x10) != 0));
+	$p5 = chr((int) (($byte & 0x08) != 0));
+	$p6 = chr((int) (($byte & 0x04) != 0));
+	$p7 = chr((int) (($byte & 0x02) != 0));
+	$p8 = chr((int) (($byte & 0x01) != 0));
+	$gd_scan_line .= "$p1$p2$p3$p4$p5$p6$p7$p8";
+	}
+	$gd_scan_line = substr($gd_scan_line, 0, $width);
+	}
+	
+	fwrite($dest_f, $gd_scan_line);
+	}
+	fclose($src_f);
+	fclose($dest_f);
+	return true;
+}
+
+/**
+ * Opens a .bmp file and gives back the gd image resource created from it
+ * http://bytes.com/topic/php/answers/3033-there-bmp-support-gd
+ * 
+ * @param $filename
+ */
+function imagecreatefrombmp($filename) {
+	$tmp_name = tempnam("/tmp", "GD");
+	if(ConvertBMP2GD($filename, $tmp_name)) {
+		$img = imagecreatefromgd($tmp_name);
+		unlink($tmp_name);
+		return $img;
+	}
+	return false;
+}
+
 ?>

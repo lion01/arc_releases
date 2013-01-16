@@ -36,7 +36,7 @@ class ReportModelWritecheck extends JModel
 	
 	function getNextCycle()
 	{
-		if( is_null($this->_cycle) ) {
+		if( !isset( $this->_cycle ) || is_null( $this->_cycle ) ) {
 			$id = reset( $this->_cycles );
 		}
 		else {

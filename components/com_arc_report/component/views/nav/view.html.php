@@ -32,8 +32,6 @@ class ReportViewNav extends JView
 	
 	function displayNav()
 	{
-		$this->view = JRequest::getVar( $view, null );
-		
 		parent::display( 'nav' );
 	}
 	

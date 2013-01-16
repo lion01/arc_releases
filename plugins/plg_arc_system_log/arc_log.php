@@ -80,6 +80,9 @@ class plgSystemArc_log extends JPlugin
 				.'<h3>Timings (log id: '.self::$_logId.')</h3>'
 				.'<table>';
 		}
+		else {
+			$str = '';
+		}
 		// aggregate the data and prepare it for display / logging
 		foreach( self::$_times as $func=>$times ) {
 			$interrupted = !is_null( $times['_cur'] );
@@ -141,7 +144,7 @@ class plgSystemArc_log extends JPlugin
 	function startTimer( $func )
 	{
 		if( self::$_debug ) { $tm = microtime( true ); }
-		if( !is_null( self::$_times[$func]['_cur'] ) ) {
+		if( isset(self::$_times[$func]['_cur']) && !is_null( self::$_times[$func]['_cur'] ) ) {
 			self::stopTimer( $func );
 		}
 		self::$_times[$func]['_cur'] = microtime( true );

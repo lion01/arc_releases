@@ -19,7 +19,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<a id="vidhome_button" class="btn" href="<?php echo $link; ?>">TV home</a>
 			<?php endif; ?>
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_myvids', array() ) ) ): ?>
-			<a id="myvids_button" class="btn" href="<?php echo $link; ?>">My Videos</a>
+			<a id="myvids_button" class="btn" href="<?php echo $link; ?>">My videos</a>
 			<?php endif; ?>
 			<?php if( ($link = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>'' ) ) ) ): ?>
 			<a id="upload_button" class="btn" href="<?php echo $link; ?>">Upload</a>

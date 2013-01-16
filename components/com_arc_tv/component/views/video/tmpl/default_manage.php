@@ -20,7 +20,7 @@ echo JHTML::_( 'arc.hidden', 'submit_url'  , ApotheosisLibAcl::getUserLinkAllowe
 echo JHTML::_( 'arc.hidden', 'approve_url' , ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_approve', array('tv.videoId'=>$this->curVideo->getId()                                             )), 'id="approve_url"' );
 echo JHTML::_( 'arc.hidden', 'reject_url'  , ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_reject',  array('tv.videoId'=>$this->curVideo->getId()                                             )), 'id="reject_url"'  );
 echo JHTML::_( 'arc.hidden', 'status_url'  , ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage_status',  array('tv.videoId'=>$this->curVideo->getId(), 'js.idcheck.replace'=>'js.idcheck.replace' )), 'id="status_url"'  );
-echo JHTML::_( 'arc.hidden', 'sidebar_url' , ApotheosisLibAcl::getUserLinkAllowed('arc_tv_sidebar_ajax',   array()                                                                                   ), 'id="sidebar_url"' );
+echo JHTML::_( 'arc.hidden', 'sidebar_url' , ApotheosisLibAcl::getUserLinkAllowed('arc_tv_sidebar_ajax',   array(                                        'js.idcheck.replace'=>'js.idcheck.replace' )), 'id="sidebar_url"' );
 ?>
 <div id="manage_div">
 	<form id="manage_video_form" method="post" action="<?php echo ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv', array() ); ?>">
@@ -55,7 +55,7 @@ echo JHTML::_( 'arc.hidden', 'sidebar_url' , ApotheosisLibAcl::getUserLinkAllowe
 				</div>
 			</div>
 			<div class="manage_pane">
-				<span class="manage_pane_clicker">Title and Description...</span>
+				<span class="manage_pane_clicker">Title, Description and Tags...</span>
 				<div class="manage_slider">
 					<input type="hidden" name="manage_meta_pane" value="1" />
 					<div class="manage_form_input_row">
@@ -78,13 +78,13 @@ echo JHTML::_( 'arc.hidden', 'sidebar_url' , ApotheosisLibAcl::getUserLinkAllowe
 					<input type="hidden" name="manage_credits_pane" value="1" />
 					<div class="manage_form_input_row">
 						<div class="manage_form_label_div">Role:</div>
-						<div class="manage_form_input_div"><?php echo JHTML::_( 'arc_tv.roles', 'manage_roles_roles_input'); ?></div>
+						<div class="manage_form_input_div"><?php echo JHTML::_( 'arc_tv.roles', 'manage_roles_roles_input', null, array(), '(^|\W)([\w\040]+(\'s)?)(?=$|\W)' ); ?></div>
 					</div>
 					<div class="manage_form_input_row">
 						<div class="manage_form_label_div">Name:</div>
 						<div class="manage_form_input_div"><?php echo JHTML::_( 'arc_people.people', 'manage_roles_people_input', '', 'teacher OR pupil', true, array('multiple'=>'multiple') ); ?></div>
 					</div>
-					<div class="manage_form_input_row">
+					<div class="manage_form_input_row" id="manage_form_add_role_botton_div">
 						<div class="manage_form_label_div">&nbsp;</div>
 						<div class="manage_form_input_div"><a id="add_roles_link" class="btn" href="#">Add Roles</a></div>
 					</div>

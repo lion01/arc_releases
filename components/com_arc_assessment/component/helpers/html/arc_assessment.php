@@ -356,9 +356,10 @@ class JHTMLArc_Assessment
 			}
 			$asp = &$cache[$aspId][0];
 			$m = $asp->getMark( $pId, $gId );
+			$style = $asp->getDisplayStyle();
 			
 			if( is_null($m) ) {
-				$retVal = array( 'html'=>'&nbsp;', 'raw'=>'', 'mark'=>null, 'color'=>'grey', 'group'=>$gId, 'hasMark'=>false );
+				$retVal = array( 'html'=>'&nbsp;', 'htmlLong'=>'&nbsp;', 'raw'=>'', 'mark'=>null, 'color'=>'grey', 'group'=>$gId, 'hasMark'=>false );
 			}
 			else {
 				$inputName = ( $usage == 'edit' ? 'marks['.$aspId.']['.$pId.']['.$gId.']' : '' );
@@ -366,6 +367,8 @@ class JHTMLArc_Assessment
 				$retVal = $m;
 				$retVal['hasMark'] = true;
 				$retVal['html'] = $retVal['raw'] = JHTML::_( 'arc_assessment.markHtml', $aspId, $m['mark'], $usage, $inputId, $inputName );
+				$mData = ApotheosisData::_( 'assessment.markInfo', $m['mark'], $style['style'] );
+				$retVal['htmlLong'] = $mData['description'];
 			}
 		}
 		return $retVal;

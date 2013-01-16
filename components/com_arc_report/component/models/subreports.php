@@ -92,7 +92,7 @@ class ReportModelSubreports extends JModel
 		if( $requirements !== $this->_requirementsUsed ) {
 			$this->_requirementsUsed = $requirements;
 			$this->_subreports = &ApothPagination::_( 'report.subreport', $this->_subreports );
-			$this->_subreports->setData( $requirements, array( 'group_name', 'reportee_name' ) );
+			$this->_subreports->setData( $requirements, array( 'group_name'=>'a', 'reportee_name'=>'a' ) );
 		}
 	}
 	

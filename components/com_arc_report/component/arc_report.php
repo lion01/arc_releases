@@ -9,7 +9,6 @@
  * as published by the Free Software Foundation.
  * The disclaimer of warranty as stated in the GPL applies to this program
  */
-
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // Require the base controller and the library

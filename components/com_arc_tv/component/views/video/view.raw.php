@@ -52,10 +52,15 @@ class TvViewVideo extends JView
 		parent::display( 'manage_status' );
 	}
 	
+	/**
+	 * Retrieve an updated sidebar div
+	 */
 	function sidebar()
 	{
 		$this->sidebarContentsOnly = true;
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
+		$this->showSidebarOverlay = $this->get( 'ShowSidebarOverlay' );
+		$this->sidebarPreviewLinkMod = $this->get( 'SidebarPreviewLinkMod' );
 		
 		parent::display( 'sidebar' );
 	}

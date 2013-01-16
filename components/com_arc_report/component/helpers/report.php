@@ -75,14 +75,21 @@ class ApothReportField_Report__Undefined extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		$style = isset( $this->_config['style'] ) ? $this->_config['style'].' ' : '';
 		$txt = '<span style="'.$style.'background: red;">Undefined field';
 		ob_start();
 		var_dump_pre( $this );
 		$txt .= ob_get_clean().'</span>';
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
+		
 		return parent::renderHTML( $txt );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		ob_start();
+		var_dump_pre( $this );
+		$txt = 'Undefined field'.ob_get_clean();
+		parent::renderPDF( $pdf, $txt );
 	}
 }
 
@@ -98,16 +105,22 @@ class ApothReportField_Report_Text extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		if( isset( $this->_config['style'] ) ) {
 			$txt = '<span style="'.$this->_config['style'].'">'.$this->_config['text'].'</span>';
 		}
 		else {
 			$txt = $this->_config['text'];
 		}
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
-		return parent::renderHTML( $txt );
+		
+		return parent::renderHTML( $txt, false, false );
 	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		$txt = ( isset( $this->_config['print_text'] ) ? $this->_config['print_text'] : $this->_config['text'] );
+		parent::renderPDF( $pdf, $txt );
+	}
+	
 }
 
 /**
@@ -122,13 +135,16 @@ class ApothReportField_Report_More extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		$html = '<a href="#" class="btn toggler" '
 			.'otherText="'.( isset( $this->_config['text_alt'] ) ? $this->_config['text_alt'] : $this->_config['text'] ).'">'
 			.$this->_config['text']
 			.'</a>';
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
-		return parent::renderHTML( $html );
+		
+		return parent::renderHTML( $html, false, false );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
 	}
 	
 	function getScripts()
@@ -151,18 +167,30 @@ class ApothReportField_Report_Statements extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
+		if( isset( $this->_config['text']) ) {
+			$value = $this->_config['text'];
+		}
+		
 		$html = '<textarea name="f_'.$this->_id.'"'
 			.' class="report_statement_text"'
 			.' style="top 0px; left: 0px; width: '.($this->_core['web_width'] - 45).'px; height: '.($this->_core['web_height'] - 10).'px"'
-			.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
+			.( ((isset($this->_config['disabled']) && $this->_config['disabled'])) ? ' disabled="disabled"' : '' )
 			.( empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '' )
 			.'>'.$value.'</textarea>';
-		if( !$this->_config['disabled'] && ( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_statement', array( 'report.subreport'=>$this->_rptData['id'], 'report.field'=>$this->getId() ) ) ) ) {
+		if( ((isset($this->_config['disabled']) && !$this->_config['disabled'])) && ( $link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_ajax_statement', array( 'report.subreport'=>$this->_rptData['id'], 'report.field'=>$this->getId() ) ) ) ) {
 			$html .= '<a href="'.$link.'" class="report_statement_bank modal btn" target="blank" rel="{handler:\'iframe\', size:{x:640,y:480}}"><span class="inline_icon"></span><span class="bank_text">bank</span></a>';
 		}
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
-		return parent::renderHTML( $html, true );
+		
+		return parent::renderHTML( $html, true, false );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		if( isset( $this->_config['text']) ) {
+			$value = $this->_config['text'];
+		}
+		$txt = $value;
+		parent::renderPDF( $pdf, $txt );
 	}
 	
 	function getScripts()
@@ -309,15 +337,20 @@ class ApothReportField_Report_Textarea extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		$html = '<textarea name="f_'.$this->_id.'"'
 			.' class="report_textarea"'
 			.' style="top 0px; left: 0px; width: '.$this->_core['web_width'].'px; height: '.$this->_core['web_height'].'px"'
-			.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
+			.( (isset($this->_config['disabled']) && $this->_config['disabled']) ? ' disabled="disabled"' : '' )
 			.( empty( $value ) ? ' title="'.$this->_core['web_default'].'"' : '' )
 			.'>'.$value.'</textarea>';
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
-		return parent::renderHTML( $html );
+		
+		return parent::renderHTML( $html, false, false );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		$txt = $value;
+		parent::renderPDF( $pdf, $txt );
 	}
 	
 	function getScripts()
@@ -340,7 +373,6 @@ class ApothReportField_Report_Radiolist extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		if( !isset( $this->_config['options'] ) || empty( $this->_config['options'] ) ) {
 			$html = '<div class="radio">';
 		}
@@ -364,20 +396,26 @@ class ApothReportField_Report_Radiolist extends ApothReportField
 				$html .= '<div style="'.$rStyle.'">';
 				$name = 'f_'.$this->_core['id'];
 				$id = $name.'_'.$k;
-				if( $this->_config['controls'] !== false ) {
+				if( isset($this->_config['controls']) && ($this->_config['controls'] !== false) ) {
 					$html .= "\n\t".'<input type="radio" name="'.$name.'" id="'.$id.'" value="'.$k.'" '
 						.( $this->_config['disabled'] ? ' disabled="disabled"' : '' )
 						.( $k == $value ? 'checked="checked" ' : '' ).'/>';
 				}
-				if( $this->_config['labels'] !== false ) {
+				if( isset($this->_config['labels']) && ($this->_config['labels'] !== false) ) {
 					$html .= "\n\t".'<label for="'.$id.'">'.$v.'</label>';
 				}
 				$html .= '</div>';
 			}
 			$html .= '</div>';
 		}
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
-		return parent::renderHTML( $html );
+		
+		return parent::renderHTML( $html, false, false );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		$txt = $this->_config['options'][$value];
+		parent::renderPDF( $pdf, $txt );
 	}
 }
 
@@ -393,10 +431,15 @@ class ApothReportField_Report_Value extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'report '.get_class().' renderHTML' );
 		$html = 'A lookup of past data';
-		plgSystemArc_log::stopTimer( 'report '.get_class().' renderHTML' );
+		
 		return parent::renderHTML( $html );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		$txt = 'A lookup of past data';
+		parent::renderPDF( $pdf, $txt );
 	}
 }
 ?>

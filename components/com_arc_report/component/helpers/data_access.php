@@ -154,5 +154,26 @@ class ApotheosisData_Report extends ApotheosisData
 			}
 		}
 	}
+	
+	function reportees( $requirements, $orders )
+	{
+		$fSub = ApothFactory::_( 'report.subreport' );
+		$where = $join = $orderBy = array();
+		$fSub->requirementsToClauses( $requirements, $where, $join );
+		$fSub->ordersToClauses( $orders, $orderBy, $join );
+		
+		$db = &JFactory::getDBO();
+		$query = 'SELECT DISTINCT s.reportee_id'
+			."\n".'FROM '.$db->nameQuote( '#__apoth_rpt_subreports' ).' AS s'
+			.( empty($join)    ? '' : "\n".implode("\n", $join) )
+			.( empty($where)   ? '' : "\nWHERE ".implode("\n AND ", $where) )
+			.( empty($orderBy) ? '' : "\nORDER BY ".implode(',', $orderBy) );
+		
+		$db->setQuery( $query );
+		$r = $db->loadResultArray();
+//		dumpQuery( $db, $r );
+		
+		return $r;
+	}
 }
 ?>

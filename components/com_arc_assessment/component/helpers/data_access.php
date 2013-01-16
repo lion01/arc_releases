@@ -44,6 +44,24 @@ class ApotheosisData_Assessment extends ApotheosisData
 		return $this->styleInfoCache[$style];
 	}
 	
+	function markInfo( $mark, $style )
+	{
+		if( !isset($this->markInfoCache) ) {
+			$this->markInfoCache = array();
+		}
+		
+		$key = $mark.$style;
+		if( !isset($this->markInfoCache[$key]) ) {
+			$db = &JFactory::getDBO();
+			$db->setQuery( 'SELECT *'
+				."\n".'FROM #__apoth_sys_markstyles'
+				."\n".'WHERE style = '.$db->Quote($style)
+				."\n".'  AND pc_equivalent = '.$db->Quote( $mark ) );
+			$this->markInfoCache[$key] = $db->loadAssoc();
+		}
+		return $this->markInfoCache[$key];
+	}
+	
 	function prepare( $aspId = null, $pId = null, $gId = null, $validFrom = null, $validTo = null, $limPeople = null, $limGroups = null, $restrict = true )
 	{
 //		global $doDump;
@@ -90,6 +108,7 @@ class ApotheosisData_Assessment extends ApotheosisData
 		// then that lets us know what group assignments we want in our assessments
 		$requirements['groups'] = $groups;
 		$this->_assessments = &$this->fAss->getInstances( $requirements );
+//		if( $doDump ) { dump( $requirements, 'requirements' ); }
 //		if( $doDump ) { dump( $this->_assessments, 'assessments' ); }
 		
 		$aspEnrolments = array();

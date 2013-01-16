@@ -49,7 +49,12 @@ JHTML::_( 'Arc.tip' );
 		<a id="remove_vid_files_link" class="btn" href="<?php echo $delLink; ?>">Remove Video Files</a>
 		<?php endif; ?>
 	</div>
-	<input id="manage_form_save_button" style="margin-top: 10px;" type="submit" value="Save Draft" name="task" class="arcTip" title="Save the video for later" />
-	<input id="manage_form_submit_button" style="margin-top: 10px;" type="submit" value="Submit" name="task" class="arcTip" title="Submit the video for moderation" />
+	<input id="manage_form_save_button" style="margin-top: 10px;" type="submit" value="Save Draft" name="task" class="btn arcTip" title="Save the video for later" />
+	<input id="manage_form_submit_button" style="margin-top: 10px;" type="submit" value="Submit" name="task" class="btn arcTip" title="Submit the video for moderation" />
+	<?php if( $link = ApotheosisLibAcl::getUserLinkAllowed('arc_tv_manage', array('tv.videoId'=>$this->curVideo->getId())) ): ?>
+		<?php $modButtonVisibility = ($this->curVideo->getDatum('status') == ARC_TV_PENDING) ? '' : 'style="display: none;"'; ?>
+		<input id="manage_form_moderate_button" type="submit" value="Moderate Video" name="task" class="btn arcTip" title="Moderate the video" <?php echo $modButtonVisibility; ?> />
+		<?php echo JHTML::_( 'arc.hidden', 'vidId', $this->curVideo->getId() ); ?>
+	<?php endif; ?>
 	<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 </div>

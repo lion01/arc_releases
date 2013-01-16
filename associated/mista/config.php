@@ -45,5 +45,5 @@ $config['rpt_sizeMax'] = 50000;
 $config['rpt_sizeAccuracy'] = 200;
 
 // This list contains all the reports that we know exist and are safe to run.
-$config['rpt_trusted'] = array( 'arc_course_curriculum', 'arc_course_pastoral', 'arc_people_contacts', 'arc_people_pupils', 'arc_people_relationships', 'arc_people_staff', 'arc_people_staff_future', 'arc_student_attendance', 'arc_timetable_classes', 'arc_timetable_instances', 'arc_timetable_patterns', 'arc_timetable_members', 'test');
+$config['rpt_trusted'] = array( 'arc_course_curriculum', 'arc_course_pastoral', 'arc_people_contacts', 'arc_people_pupils', 'arc_people_relationships', 'arc_people_staff', 'arc_people_staff_future', 'arc_people_staff_photos', 'arc_people_pupil_photos', 'arc_student_attendance', 'arc_timetable_classes', 'arc_timetable_instances', 'arc_timetable_patterns', 'arc_timetable_members', 'test');
 ?>

@@ -111,6 +111,11 @@ class ApotheosisData_Course extends ApotheosisData
 		return $groups;
 	}
 	
+	function subject( $gId )
+	{
+		return reset( $this->subjects( array( $gId ) ) );
+	}
+	
 	/**
 	 * "Subjects" are defined as being the highest level groups below a root node
 	 * 
@@ -246,21 +251,6 @@ class ApotheosisData_Course extends ApotheosisData
 				."\n".'LEFT JOIN `jos_apoth_cm_pastoral_map` AS m'
 				."\n".'  ON m.course = c.id'
 				."\n".' WHERE c.id = '.$db->Quote($gId);
-			$db->setQuery($query);
-			$checked[$gId] = $db->loadResult();
-		}
-		return $checked[$gId];
-	}
-	
-	function subject( $gId )
-	{
-		static $checked = array();
-		
-		if( !isset( $checked[$gId] ) ) {
-			$db = &JFactory::getDBO();
-			$query = 'SELECT parent'
-				."\n".' FROM jos_apoth_cm_courses'
-				."\n".' WHERE id = '.$db->Quote($gId);
 			$db->setQuery($query);
 			$checked[$gId] = $db->loadResult();
 		}

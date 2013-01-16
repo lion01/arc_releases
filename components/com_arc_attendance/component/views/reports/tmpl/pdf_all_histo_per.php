@@ -26,7 +26,7 @@ foreach( $allPer as $meaning=>$values ) {
 $i = 0;
 $allPerList = '';
 foreach( reset($this->_data['all']) as $meaning=>$v ) {
-	if( isset($this->_data['all_totals']['meaning_limited'][$meaning]) && ($this->allTotal > 0) ) {
+	if( isset($this->_data['all_totals']['meaning_limited'][$meaning]) && isset($this->allTotal) && ($this->allTotal > 0) ) {
 		$meaningCount = ( ($this->_data['all_totals']['meaning_limited'][$meaning]/$this->allTotal)*100 );
 		if( $meaningCount > 0 ) {
 			$allPerList .= '<div class="colorbox" style="background: #'.$this->colours[$i].';"></div><span class="colorbox_key">'.$meaning.': </span><span class="colorbox_value">'.number_format( $meaningCount, 1 ).'%</span><br />'."\n";

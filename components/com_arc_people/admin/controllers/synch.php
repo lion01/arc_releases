@@ -62,10 +62,10 @@ class PeopleAdminControllerSynch extends PeopleAdminController
 				$r3 = ApotheosisData::_( 'core.addToImportQueue', $id, $src, 'arc_people_staff_future', array('complete'=>$complete) );
 				$r4 = ApotheosisData::_( 'core.addToImportQueue', $id, $src, 'arc_people_pupils', array('complete'=>$complete) );
 				$r = ($r1 && $r2 && $r3 && $r4);
+				
+				// pause to datestamp separate the import jobs
+				sleep( 1 );
 			}
-			
-			// pause to datestamp separate the import jobs
-			sleep( 1 );
 			
 			if( $params['ppl_relation'] == 1 ) {
 				$id = ApotheosisData::_( 'core.addImportBatch', 'people', 'importRelations', $params );
@@ -75,6 +75,20 @@ class PeopleAdminControllerSynch extends PeopleAdminController
 				}
 				$r1 = ApotheosisData::_( 'core.addToImportQueue', $id, $src, 'arc_people_relationships', array('complete'=>$complete) );
 				$r = $r1;
+				
+				// pause to datestamp separate the import jobs
+				sleep( 1 );
+			}
+			
+			if( $params['ppl_photo'] == 1 ) {
+				$id = ApotheosisData::_( 'core.addImportBatch', 'people', 'importPhotos', $params );
+				if( $id === false ) {
+					$r = false;
+					break;
+				}
+				$r1 = ApotheosisData::_( 'core.addToImportQueue', $id, $src, 'arc_people_staff_photos', array('complete'=>$complete) );
+				$r2 = ApotheosisData::_( 'core.addToImportQueue', $id, $src, 'arc_people_pupil_photos', array('complete'=>$complete) );
+				$r = ( $r1 && $r2 );
 			}
 			break;
 		}

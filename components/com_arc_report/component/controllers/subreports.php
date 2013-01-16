@@ -41,6 +41,11 @@ class ReportControllerSubreports extends ReportController
 		$navModel->setActivity( $activity );
 		$model->setActivity( $activity );
 		
+		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
+		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
+		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
 		
 		// Get the search requirements from any pre-submitted search form
 		$searchGroups = JRequest::getVar( 'groups', false );
@@ -65,11 +70,6 @@ class ReportControllerSubreports extends ReportController
 		}
 		
 		// Set up the breadcrumbs
-		$fCrumbs = ApothFactory::_( 'core.breadcrumb' );
-		$fCrumbs->setPersistent( 'instances',    true, ARC_PERSIST_ALWAYS );
-		$fCrumbs->setPersistent( 'searches',     true, ARC_PERSIST_ALWAYS );
-		$fCrumbs->setPersistent( 'structures',   true, ARC_PERSIST_ALWAYS );
-		$fCrumbs->setPersistent( 'searchParams', true, ARC_PERSIST_ALWAYS );
 		$model->resetBreadcrumbs( $fCrumbs );
 		$navModel->resetFilterCrumbs( $fCrumbs );
 		

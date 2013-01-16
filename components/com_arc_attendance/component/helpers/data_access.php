@@ -433,8 +433,8 @@ class ApotheosisData_Attendance extends ApotheosisData
 			."\n".' AND da.date >= dd.valid_from AND (da.date <= dd.valid_to OR dd.valid_to IS NULL)'
 			."\n".'~LIMITINGJOIN1~'
 			."\n".'~LIMITINGJOIN2~'
-			."\n".'WHERE da.person_id = '.$db->Quote($requirements['pupil'])
-			."\n".'  AND da.date <= '.$db->Quote( $end ).' AND da.date >= '.$db->Quote( $start )
+			."\n".'WHERE da.date <= '.$db->Quote( $end ).' AND da.date >= '.$db->Quote( $start )
+			.(isset( $requirements['pupil'] ) ? "\n".'  AND da.person_id = '.$db->Quote($requirements['pupil']) : '' )
 			."\n".'GROUP BY dd.statutory, cp.fullname, acm.meaning';
 		$query = ApotheosisLibAcl::limitQuery( $query, 'people.arc_people', 'da', 'person_id', false, null, '~LIMITINGJOIN1~');
 		$query = ApotheosisLibAcl::limitQuery( $query, 'timetable.groups',  'da', 'course_id', false, null, '~LIMITINGJOIN2~');

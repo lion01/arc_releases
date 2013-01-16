@@ -44,13 +44,54 @@ class ApothReportField_People_Photo extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'people '.get_class().' renderHTML' );
-// **** TODO - make the avatar load the user's actual photo
-//		$src = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_eportfolio_file', array( 'people.arc_people'=>$this->_rptData[$this->_config['field']], 'people.files'=>'avatar' ) );
-		$src = JURI::base().'components'.DS.'com_arc_people'.DS.'images'.DS.'avatar_default.png';
-		$html = '<img class="profile" src="'.$src.'" /> ('.$src.')';
-		plgSystemArc_log::stopTimer( 'people '.get_class().' renderHTML' );
-		return parent::renderHTML( $html );
+		$fileInfo = $this->_getPhotoFile();
+		$html = '<img class="profile" src="'.$fileInfo['src'].'" />';
+		return parent::renderHTML( $html, false, false );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		$l = $this->_core['print_l'] + $this->_boundBox['l'];
+		$t = $this->_core['print_t'] + $this->_boundBox['t'];
+		$w = $this->_core['print_width'];
+		$h = $this->_core['print_height'];
+		$r = $this->_boundBox['r'] + ( $this->_boundBox['w'] - ( $this->_core['print_l'] + $this->_core['print_width'] ) );
+		
+		$l += $this->_core['print_pad_l'];
+		$t += $this->_core['print_pad_t'];
+		$r += $this->_core['print_pad_r'];
+		
+		$fileInfo = $this->_getPhotoFile();
+		$pdf->image( $fileInfo['src'], $l, $t, $w, $h, $fileInfo['type'], '', '', true );
+		
+		if( $this->_core['print_border'] ) {
+			$pdf->rect( $l, $t, $w, $h);
+		}
+	}
+	
+	function _getPhotoFile()
+	{
+		if( isset( $this->_config['person_id'] ) ) {
+			$pId = $this->_config['person_id'];
+		}
+		else {
+			$pId = $this->_rptData[$this->_config['field']];
+		}
+		
+		if( empty( $pId ) ) {
+			$src = false;
+		}
+		else {
+			$src = ApotheosisData::_( 'people.photo', $pId );
+			$type = 'jpeg';
+		}
+		
+		if( $src == false ) {
+			$src = JURI::base().'components'.DS.'com_arc_people'.DS.'images'.DS.'avatar_default.png';
+			$type = 'png';
+		}
+		
+		return array( 'src'=>$src, 'type'=>$type );;
 	}
 }
 
@@ -66,15 +107,24 @@ class ApothReportField_People_Name extends ApothReportField
 {
 	function renderHTML( $value )
 	{
-		plgSystemArc_log::startTimer( 'people '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
 			$html = htmlspecialchars( ApotheosisData::_( 'people.displayName', $this->_rptData[$this->_config['field']], $this->_config['format'] ) );
 		}
 		else {
 			$html = '<i>name</i>';
 		}
-		plgSystemArc_log::stopTimer( 'people '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
+	}
+	
+	function renderPDF( $pdf, $value )
+	{
+		if( is_null( $value ) ) {
+			$txt = ApotheosisData::_( 'people.displayName', $this->_rptData[$this->_config['field']], $this->_config['format'] );
+		}
+		else {
+			$txt = '[[name]]';
+		}
+		parent::renderPDF( $pdf, $txt );
 	}
 }
 ?>
