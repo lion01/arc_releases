@@ -61,7 +61,7 @@ function vivifyFieldMore( t )
 							'duration': 700,
 							'transition': Fx.Transitions.Cubic.easeOut,
 							'onStart': function() { slider.doing2 = true; },
-							'onComplete': function() { slider.doing2 = false; },
+							'onComplete': function() { slider.doing2 = false; }
 						} ).start( oldH, newH );
 					}
 					

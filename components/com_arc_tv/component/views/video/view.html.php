@@ -27,7 +27,7 @@ class TvViewVideo extends JView
 	function __construct()
 	{
 		$document = &JFactory::getDocument();
-		$document->setTitle( JText::_('Arc TV Manager') );
+		$document->setTitle( JText::_('Arc TV') );
 		$this->addPath = JURI::base().'components'.DS.'com_arc_tv'.DS.'views'.DS.'video'.DS.'tmpl'.DS;
 		
 		parent::__construct();
@@ -38,11 +38,13 @@ class TvViewVideo extends JView
 	 */
 	function home()
 	{
+		$this->model = &$this->getModel();
+		
 		$this->mainView = 'video';
 		$this->curVideo = &$this->get( 'Video' );
 		$this->vidDivTitle = 'Video of the Week...';
 		$this->wrapperType = 'recommended';
-		$this->wrapperDivTitle = 'Recommended For You...';
+		$this->wrapperDivTitle = 'Recommended for you...';
 		
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
 		$this->tagCloud = &$this->get( 'TagCloud' );
@@ -56,17 +58,17 @@ class TvViewVideo extends JView
 	 */
 	function video()
 	{
+		$this->model = &$this->getModel();
+		
 		$this->mainView = 'video';
 		$this->curVideo = &$this->get( 'Video' );
 		$this->vidDivTitle = $this->curVideo->getDatum( 'title' );
 		$this->wrapperType = 'recommended'; // **** will be comments eventually
-		$this->wrapperDivTitle = 'Recommended For You...'; // **** will be comments eventually
+		$this->wrapperDivTitle = 'Recommended for you...'; // **** will be comments eventually
 		
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
 		$this->tagCloud = &$this->get( 'TagCloud' );
 		$this->tagCloudDivTitle = 'Tags...';
-		
-		$this->siteId = $this->get( 'SiteId' );
 		
 		parent::display();
 	}
@@ -74,16 +76,16 @@ class TvViewVideo extends JView
 	/**
 	 * Display the search page
 	 */
-	function search()
+	function search( $searchDivTitle )
 	{
 		$this->model = &$this->getModel();
 		$this->searchPageCount = $this->model->getPageCount( 'searched' );
 		
 		$this->mainView = 'search';
-		$this->searchDivTitle = 'Search Results...';
+		$this->searchDivTitle = $searchDivTitle;
 		if( $this->searchPageCount == 0 ) {
 			$this->wrapperType = 'recommended';
-			$this->wrapperDivTitle = 'Recommended For You...';
+			$this->wrapperDivTitle = 'Recommended for you...';
 		}
 		
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
@@ -98,10 +100,12 @@ class TvViewVideo extends JView
 	 */
 	function manage()
 	{
+		$this->model = &$this->getModel();
+		
 		$this->mainView = 'manage';
 		$this->curVideo = &$this->get( 'Video' );
 
-		$this->manageDivTitle = ( $this->curVideo->getId() < 0 ) ? 'Upload a video...' : 'Manage a Video...';
+		$this->manageDivTitle = ( $this->curVideo->getId() < 0 ) ? 'Upload a video...' : 'Manage a video...';
 		
 		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
 		$this->tagCloud = &$this->get( 'TagCloud' );
@@ -112,28 +116,6 @@ class TvViewVideo extends JView
 		$this->moderate = ApotheosisLibAcl::getUserLinkAllowed('arc_tv_moderate', array()) ? true : false;
 		
 		$this->submitted = ( $this->curVideo->getDatum('status') == ARC_TV_PENDING );
-		
-		parent::display();
-	}
-	
-	/**
-	 * Display the moderation page
-	 */
-	function moderate()
-	{
-		$this->model = &$this->getModel();
-		$this->searchPageCount = $this->model->getPageCount( 'searched' );
-		
-		$this->mainView = 'search';
-		$this->searchDivTitle = 'Videos for moderation...';
-		if( $this->searchPageCount == 0 ) {
-			$this->wrapperType = 'recommended';
-			$this->wrapperDivTitle = 'Recommended For You...';
-		}
-		
-		$this->sidebarDivTitle = $this->get( 'SidebarTitle' );
-		$this->tagCloud = &$this->get( 'TagCloud' );
-		$this->tagCloudDivTitle = 'Tags...';
 		
 		parent::display();
 	}

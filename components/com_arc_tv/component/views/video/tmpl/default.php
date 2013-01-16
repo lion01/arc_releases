@@ -14,9 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // show the recommended div if we are on a video page or a search page with no results
 if( ($this->mainView == 'video') || (($this->mainView == 'search') && ($this->searchPageCount == 0)) ) {
-	echo '<div id="recommend_div">';
-		echo $this->loadTemplate( 'wrapper' );
-	echo '</div>';
+	echo '<div id="recommend_div">'.$this->loadTemplate( 'wrapper' ).'</div>';
 }
 ?>
 <div id="homepage_left_div">
@@ -27,7 +25,11 @@ if( ($this->mainView == 'video') || (($this->mainView == 'search') && ($this->se
 			break;
 			
 		case( 'search' ):
+			$this->showOverlay = $this->get( 'ShowOverlay' );
+			$this->previewLinkMod = $this->get( 'PreviewLinkMod' );
 			echo $this->loadTemplate( 'search' );
+			$this->showOverlay = false;
+			$this->previewLinkMod = false;
 			break;
 			
 		case( 'manage' ):

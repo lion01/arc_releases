@@ -15,7 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 $roleArray = array();
 foreach( $this->curVideo->getRoles() as $roleInfo ) {
 	if( !isset($roleInfo['person_name']) ) {
-		$roleInfo['person_name'] = ( $roleInfo['site_id'] == $this->siteId ) ? ApotheosisData::_('people.displayName', $roleInfo['person_id'], 'person') : 'Person from another school';
+		$roleInfo['person_name'] = $this->model->getDisplayName( $roleInfo['site_id'], $roleInfo['person_id'] );
 	}
 	$roleArray[] = $roleInfo;
 }

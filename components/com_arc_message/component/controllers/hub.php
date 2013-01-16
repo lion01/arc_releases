@@ -21,18 +21,15 @@ class MessageControllerHub extends MessageController
 	{
 		parent::__construct( $config );
 		$this->_redisplay = false;
-		$tag = JRequest::getVar( 'tags' );
-		if( $tag === '' ) {
-			// model->setTags relies on this
-			JRequest::setVar( 'tags', '21', 'GET' ); // behaviour inbox in base install. Should really be a config option (default folder)
-		}
 	}
 	
 	function display()
 	{
 		$model = &$this->getModel( 'hub' );
 		$model->setDate();
-		$model->setTags();
+		if( JRequest::getVar( 'tags' ) !== '' ) {
+			$model->setTags();
+		}
 		$viewType = JRequest::getVar( 'format', 'html' );
 		$page = JRequest::getVar( 'page', null );
 		

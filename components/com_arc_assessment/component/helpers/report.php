@@ -24,6 +24,7 @@ class ApothReportField_Assessment_Mark extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		$aspId = $this->_config['aspId'];
 		$pId = $this->_rptData[$this->_core['lookup_source']];
 		$gId = null;
@@ -36,6 +37,7 @@ class ApothReportField_Assessment_Mark extends ApothReportField
 			$m = htmlspecialchars( $value );
 		}
 		$m .= '(needs proper asp, pupil, group vals)';
+		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
 	}
 }
@@ -52,6 +54,7 @@ class ApothReportField_Assessment_MarkAverage extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
 			$aspIds = $this->_config['aspIds'];
 			$pId = $this->_rptData[$this->_core['lookup_source']];
@@ -63,6 +66,7 @@ class ApothReportField_Assessment_MarkAverage extends ApothReportField
 		else {
 			$m = htmlspecialchars( $value );
 		}
+		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
 	}
 }
@@ -79,6 +83,7 @@ class ApothReportField_Assessment_MarkSummary extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'assessment '.get_class().' renderHTML' );
 		// get relevant config
 		$aspIds = $this->_config['aspIds'];
 		$pId = $this->_rptData[$this->_core['lookup_source']];
@@ -168,6 +173,7 @@ class ApothReportField_Assessment_MarkSummary extends ApothReportField
 		}
 		$html .= '</table>';
 		
+		plgSystemArc_log::stopTimer( 'assessment '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
 }

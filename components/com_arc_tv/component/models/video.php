@@ -34,6 +34,10 @@ class TvModelVideo extends ApothModel
 		$this->_coreParams = &JComponentHelper::getParams( 'com_arc_core' );
 		$this->_dimensions = null;
 		$this->_searchTerms = array();
+		$this->_searchedTag = array();
+		$this->_searchedIds = array();
+		$this->_showOverlay = false;
+		$this->_previewLinkMod = false;
 	}
 	
 	function __sleep(){
@@ -119,6 +123,24 @@ class TvModelVideo extends ApothModel
 	}
 	
 	/**
+	 * Get the IDs of videos owned by the specified person
+	 * 
+	 * @param array $peopleList  Array containing site and person IDs
+	 * @return array $retVal  Array of the video IDs owned by the people supplied indexed on site ID then person ID
+	 */
+	function getVidsBy( $peopleList )
+	{
+		$raw = $this->fVideo->getVidsBy( $peopleList );
+		
+		$retVal = array();
+		foreach( $raw as $idInfo ) {
+			$retVal[$idInfo['site_id']][$idInfo['person_id']][] = $idInfo['id'];
+		}
+		
+		return $retVal;
+	}
+	
+	/**
 	 * Get the next recommended video
 	 * 
 	 * @return mixed  Video object if found, false otherwise
@@ -180,16 +202,6 @@ class TvModelVideo extends ApothModel
 	}
 	
 	/**
-	 * Get the next tag searched video
-	 *
-	 * @return mixed  Video object if found, false otherwise
-	 */
-	function &getNextSearchedTag()
-	{
-		return $this->_getNextPagedVideo( 'searched_tag' );
-	}
-	
-	/**
 	 * Set the tag searched videos for the current user
 	 *
 	 * @param array $searchTerms  The user's search terms 
@@ -198,16 +210,6 @@ class TvModelVideo extends ApothModel
 	{
 		$this->_searchedTag = $searchedTag;
 		$this->_setPagedVideos( 'searched', 'searched_tag' );
-	}
-	
-	/**
-	 * Get the next video for moderation
-	 *
-	 * @return mixed  Video object if found, false otherwise
-	 */
-	function &getNextSearchedMod()
-	{
-		return $this->_getNextPagedVideo( 'searched_mod' );
 	}
 	
 	/**
@@ -224,6 +226,17 @@ class TvModelVideo extends ApothModel
 	function setSearchedMy()
 	{
 		$this->_setPagedVideos( 'searched', 'searched_my' );
+	}
+	
+	/**
+	 * Set the IDs searched videos for the current user
+	 * 
+	 * @param array $searchedIds  Array of video IDs to perform the search with
+	 */
+	function setSearchedIds( $searchedIds)
+	{
+		$this->_searchedIds = $searchedIds;
+		$this->_setPagedVideos( 'searched', 'searched_ids' );
 	}
 	
 	/**
@@ -290,7 +303,7 @@ class TvModelVideo extends ApothModel
 				$requirements['searched'] = array_unique( $searchTerms[0] );
 				$requirements['exclude_ids'] = $searchTerms[1];
 				$order = array( 'relevance'=>'d' );
-				$this->_sidebarTitle = 'Related Videos...';
+				$this->_sidebarTitle = 'Related videos...';
 				break;
 				
 			case( 'viewed' ):
@@ -300,7 +313,7 @@ class TvModelVideo extends ApothModel
 				$requirements['viewed_from'] = date( 'Y-m-d', strtotime('-'.$days.' days') );
 				$requirements['viewed_to'] = date( 'Y-m-d' ).' 23:59:59';
 				$order = array( 'view_count'=>'d' );
-				$this->_sidebarTitle = 'Most Viewed...';
+				$this->_sidebarTitle = 'Most viewed...';
 				break;
 					
 			case( 'searched' ):
@@ -325,12 +338,17 @@ class TvModelVideo extends ApothModel
 				$requirements['owner'] = $pId;
 				break;
 			
+			case( 'searched_ids' ):
+				$requirements['status'] = ARC_TV_APPROVED;
+				$requirements['id'] = $this->_searchedIds;
+				break;
+			
 			case( 'searched_recent' ):
 				// **** probably look to see if we have search data from awakened model
 				// **** if so use it or fallback to most viewed
 				$requirements['status'] = ARC_TV_APPROVED;
 				$requirements['id'] = array( 19, 29, 39, 49, 59, 89 ); // **** need more info on this
-				$this->_sidebarTitle = 'Searched Videos...';
+				$this->_sidebarTitle = 'Searched videos...';
 				break;
 		}
 		
@@ -527,6 +545,58 @@ class TvModelVideo extends ApothModel
 	function getErrMsg()
 	{
 		return $this->_curVideo->getErrMsg();
+	}
+	
+	/**
+	 * Retrieve the username to display based on site iD and Arc Person ID
+	 * 
+	 * @param int $siteId  The site ID for the current user
+	 * @param string $pId  The person ID for the current user
+	 * @return string  The username to display
+	 */
+	function getDisplayName( $siteId, $pId )
+	{
+		return ( $siteId == $this->getSiteId() ) ? ApotheosisData::_('people.displayName', $pId, 'person') : 'Person from another school';
+	}
+	
+	/**
+	 * Get are we showing mini status icon overlays status
+	 * 
+	 * @return boolean  True if showing, false if not
+	 */
+	function getShowOverlay()
+	{
+		return $this->_showOverlay;
+	}
+	
+	/**
+	 * Set are we showing mini status icon overlays status
+	 * 
+	 * @param boolean $show  True if showing, false if not
+	 */
+	function setShowOverlay( $show )
+	{
+		$this->_showOverlay = $show;
+	}
+	
+	/**
+	 * Get are we using mod link for preview status
+	 * 
+	 * @return boolean  True if moderation link, false if regular video page link
+	 */
+	function getPreviewLinkMod()
+	{
+		return $this->_previewLinkMod;
+	}
+	
+	/**
+	 * Set are we using mod link for preview status
+	 * 
+	 * @param boolean $show  True if moderation link, false if regular video page link
+	 */
+	function setPreviewLinkMod( $modLink )
+	{
+		$this->_previewLinkMod = $modLink;
 	}
 	
 	/**

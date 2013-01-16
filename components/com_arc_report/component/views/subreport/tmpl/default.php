@@ -19,7 +19,9 @@ JHTML::script( 'vivify_controlset.js', $this->scriptPath, true );
 
 foreach( $this->scripts as $script ) {
 	$pathInfo = pathinfo( $script );
-	JHTML::script( $pathInfo['filename'], $pathInfo['dirname'].DS );
+	$fileName = $pathInfo['filename']
+		.( ( isset( $pathInfo['extension'] ) && !empty( $pathInfo['extension'] ) ) ? '.'.$pathInfo['extension'] : '' );
+	JHTML::script( $fileName, $pathInfo['dirname'].DS );
 }
 ?>
 

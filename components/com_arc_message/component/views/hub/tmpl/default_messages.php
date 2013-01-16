@@ -17,7 +17,7 @@ JHTML::_('behavior.tooltip');
 <div id="controls">
 <form method="post" name="msg_control_form">
 <input type="hidden" name="thread_ids" id="thread_ids" value="" />
-<button type="submit" class="btn" id="button_refresh" name="task" title="Refresh"><span>&nbsp;Refresh</span></button>
+<button type="submit" class="btn" id="button_refresh" name="task" title="Refresh" value="refresh"><span>&nbsp;Refresh</span></button>
 
 <?php
 if( !$this->empty ) {
@@ -46,7 +46,7 @@ if( (($link = ApotheosisLibAcl::getUserLinkAllowed('apoth_msg_hub_pdf', array())
 </form>
 
 <?php
-$linkReq = array( 'core.page'=>0, 'message.tags'=>JRequest::getVar( 'tags' ), 'message.scopes'=>JRequest::getVar( 'scope' ) );
+$linkReq = array( 'core.page'=>0, 'message.tags'=>$this->get( 'tagIds' ), 'message.scopes'=>JRequest::getVar( 'scope' ) );
 if( $this->page > 1 ) {
 	$linkReq['core.page'] = 0;
 	$prevPage = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_msg_hub_paged', $linkReq );

@@ -30,7 +30,7 @@ function vivifySubreport( p )
 	
 	p.lock = function() {
 		overlay.fade.start( 1 ); // fade in the notification overlay
-	}
+	};
 	
 	p.unlock = function( reload ) {
 		reload = ( typeof( reload ) == 'undefined' ? true : reload );
@@ -67,5 +67,5 @@ function vivifySubreport( p )
 			overlay.fade.stop();
 			overlay.fade.start( 0 ); // fade out the notification overlay
 		}
-	}
+	};
 }

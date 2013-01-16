@@ -16,9 +16,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 require_once( JPATH_SITE.DS.'components'.DS.'com_arc_core'.DS.'libraries'.DS.'apoth_library.php' ); 
 require_once( JPATH_COMPONENT.DS.'controller.php' );
 
-//echo 'view: '.JRequest::getWord('view').'<br />';
-//echo 'task: '.JRequest::getWord('task').'<br />';
-//echo 'scope: '.JRequest::getWord('scope').'<br />';
+/*
+echo 'view: '.JRequest::getWord('view').'<br />';
+echo 'task: '.JRequest::getWord('task').'<br />';
+echo 'scope: '.JRequest::getWord('scope').'<br />';
+// */
 
 // Require specific controller if requested
 if( $controllerEnd = JRequest::getWord('view') ) {

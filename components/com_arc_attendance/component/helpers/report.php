@@ -24,6 +24,7 @@ class ApothReportField_Attendance_Score extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'attendance '.get_class().' renderHTML' );
 		$pId = $this->_rptData[$this->_core['lookup_source']];
 		
 		if( is_null( $value ) ) {
@@ -36,6 +37,7 @@ class ApothReportField_Attendance_Score extends ApothReportField
 		else {
 			$m = htmlspecialchars( $value );
 		}
+		plgSystemArc_log::stopTimer( 'attendance '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
 	}
 }
@@ -52,6 +54,7 @@ class ApothReportField_Attendance_Graph extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'attendance '.get_class().' renderHTML' );
 		$pId  = $this->_rptData[$this->_core['lookup_source']];
 		$from = $this->_config['from'];
 		$to   = $this->_config['to'];
@@ -75,6 +78,7 @@ class ApothReportField_Attendance_Graph extends ApothReportField
 		$html = ob_get_clean();
 		unset( $this->_data );
 		unset( $this->colours );
+		plgSystemArc_log::stopTimer( 'attendance '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
 }

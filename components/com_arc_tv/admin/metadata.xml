@@ -39,6 +39,14 @@ task=moderate</params>
 task=myvids</params>
 			</action>
 			<action>
+				<name>arc_tv_uservids</name>
+				<menu_text>User videos</menu_text>
+				<description>View a list of videos owned by a given user</description>
+				<params>view=video
+task=idssearch
+userid=~tv.userid~</params>
+			</action>
+			<action>
 				<name>arc_tv_tag</name>
 				<menu_text>Tagged videos</menu_text>
 				<description>View a list of videos that have a particular tag</description>

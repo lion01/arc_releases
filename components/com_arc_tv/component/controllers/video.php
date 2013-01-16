@@ -103,7 +103,7 @@ class TvControllerVideo extends TvController
 			$this->model->setTagCloud();
 			
 			// display
-			$this->view->search();
+			$this->view->search( 'Search results...' );
 		}
 		else {
 			global $mainframe;
@@ -118,8 +118,11 @@ class TvControllerVideo extends TvController
 	 */
 	function tag()
 	{
+		// tag being searched on
+		$tag = JRequest::getVar( 'tag' );
+		
 		// retrieve the tag to search with
-		$searchedTag = array( JRequest::getVar('tag') );
+		$searchedTag = array( $tag );
 		
 		// set the searched tag
 		$this->model->setSearchedTag( $searchedTag );
@@ -131,7 +134,7 @@ class TvControllerVideo extends TvController
 		$this->model->setTagCloud();
 		
 		// display
-		$this->view->search();
+		$this->view->search( 'Videos containing the tag \''.$tag.'\'...' );
 	}
 	
 	/**
@@ -140,7 +143,13 @@ class TvControllerVideo extends TvController
 	 */
 	function moderate()
 	{
-		// set modearation as the search type
+		// set the showing of mini status icon preview overlays
+		$this->model->setShowOverlay( true );
+		
+		// set the video preview link to be the manage page, not the video page
+		$this->model->setPreviewLinkMod( true );
+		
+		// set moderation as the search type
 		$this->model->setSearchedMod();
 		
 		// search can have recommended for you if no results found
@@ -153,16 +162,19 @@ class TvControllerVideo extends TvController
 		$this->model->setTagCloud();
 		
 		// display
-		$this->view->moderate();
+		$this->view->search( 'Videos for moderation...' );
 	}
 	
 	/**
-	 * Search for videos owned by the current usel
+	 * Search for videos owned by the current user
 	 * Calls appropriate display function
 	 */
 	function myVids()
 	{
-		// set modearation as the search type
+		// set the showing of mini status icon preview overlays
+		$this->model->setShowOverlay( true );
+		
+		// set myVids as the search type
 		$this->model->setSearchedMy();
 		
 		// search can have recommended for you if no results found
@@ -175,7 +187,37 @@ class TvControllerVideo extends TvController
 		$this->model->setTagCloud();
 		
 		// display
-		$this->view->moderate();
+		$this->view->search( 'My videos...' );
+	}
+	
+	/**
+	 * Search for videos owned by the current user
+	 * Calls appropriate display function
+	 */
+	function idsSearch()
+	{
+		// get the user ID
+		$siteIdTuple = JRequest::getVar( 'userid' );
+		
+		// determine user name
+		$userNameInfo = explode( '_', $siteIdTuple );
+		$userName = $this->model->getDisplayName( $userNameInfo[0], $userNameInfo[1] );
+		
+		// get IDs from the session
+		$session = &JSession::getInstance( 'none', array() );
+		$ids = $session->get( $siteIdTuple, array(), 'userVidIds' );
+		
+		// set user video IDs as the search type
+		$this->model->setSearchedIds( $ids );
+		
+		// sidebar is most viewed
+		$this->model->setSidebar( 'viewed' ); // **** recent searches stuff needs to be an option here
+		
+		// tag cloud
+		$this->model->setTagCloud();
+		
+		// display
+		$this->view->search( 'Videos owned by '.$userName );
 	}
 	
 	/**

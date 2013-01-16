@@ -38,21 +38,28 @@ function loadMore()
 		new Ajax( $( 'ajax_page_url' ).value, {
 			'method':'get',
 			'onSuccess': function() {
-				if( this.response.text.test( /~~End~~$/ ) ) {
-					$( 'list_footer' ).setStyle( 'display', 'block' );
-					$( 'list_loader' ).setStyle( 'display', 'none' );
+				try{
+					if( this.response.text.test( /~~End~~$/ ) ) {
+						$( 'list_footer' ).setStyle( 'display', 'block' );
+						$( 'list_loader' ).setStyle( 'display', 'none' );
+					}
+					else {
+						// create then adopt the elements from the response
+						// mustn't just append the html as that throws away the old DOM elements
+						var el = new Element( 'div' );
+						el.innerHTML = this.response.text;
+						$( 'list_container' ).adopt( el.getChildren() );
+						$( 'list_loader' ).setStyle( 'display', 'none' );
+						_incPageId( $( 'ajax_page_url' ) );
+						window.fireEvent( 'subreportsLoaded' ); // make active parts active
+						loadingMore = false;
+						window.fireEvent( 'scroll' ); // check that what has been loaded is enough to fill the page
+					}
 				}
-				else {
-					// create then adopt the elements from the response
-					// mustn't just append the html as that throws away the old DOM elements
-					var el = new Element( 'div' );
-					el.innerHTML = this.response.text;
-					$( 'list_container' ).adopt( el.getChildren() );
-					$( 'list_loader' ).setStyle( 'display', 'none' );
-					_incPageId( $( 'ajax_page_url' ) );
-					window.fireEvent( 'subreportsLoaded' ); // make active parts active
-					loadingMore = false;
-					window.fireEvent( 'scroll' ); // check that what has been loaded is enough to fill the page
+				catch( E ) {
+					alert( 'Something went wrong.'
+							+"\r\n"+'Please submit a help request and include the following:'
+							+"\r\n"+'"'+E+'"' );
 				}
 			},
 			'onFailure': function() {
@@ -95,6 +102,9 @@ function injectScripts()
 		return true;
 	}
 	var names = Json.evaluate( el.getText() );
+	if( (typeof( names ) != 'object') || typeof( names.each ) != 'function' ) {
+		return true;
+	}
 	names.each( function( n ) {
 		if( !allScripts.contains( n ) ) {
 			allScripts.include( n );

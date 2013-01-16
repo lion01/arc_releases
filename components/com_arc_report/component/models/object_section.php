@@ -258,6 +258,7 @@ class ApothReportSection extends JObject
 		$maxBottom = 0; // track the input which requires most height
 		
 		foreach( $fields as $fId ) {
+			plgSystemArc_log::startTimer( 'report object_section renderHTML fieldloop' );
 			$rptData = $report->getFieldDatum( $fId );
 			$field = &$fField->getInstance( $fId );
 			if( $fId == 'changePart' ) {
@@ -272,8 +273,11 @@ class ApothReportSection extends JObject
 				$field->setReportData( $report );
 				
 				$maxBottom = max( $maxBottom, $field->getHTMLBottom() );
+				plgSystemArc_log::startTimer( 'report object_section renderHTML fieldRender' );
 				$out .= $field->renderHTML( $rptData );
+				plgSystemArc_log::stopTimer( 'report object_section renderHTML fieldRender' );
 			}
+			plgSystemArc_log::stopTimer( 'report object_section renderHTML fieldloop' );
 		}
 		
 		$out = str_replace( '~BOTTOMHOLDER~', $maxBottom, $out )

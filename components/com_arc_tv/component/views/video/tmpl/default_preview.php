@@ -11,9 +11,27 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+// determine if we are showing status dot overlyas on the previews
+if( isset($this->showOverlay) && $this->showOverlay ) {
+	$curStatus = $this->curPreview->getStatusInfo();
+	$overlayHtml = '<div class="preview_overlay">'.JHTML::_( 'arc.dotMini', $curStatus['colour'], $curStatus['status'] ).'</div>';
+}
+else {
+	$overlayHtml = '';
+}
+
+// determine which preview link to use: manage for moderation search, video page otherwise
+if( isset($this->previewLinkMod) && $this->previewLinkMod ) {
+	$previewLink = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_manage', array('tv.videoId'=>$this->curPreview->getId()) );
+}
+else {
+	$previewLink = ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array('tv.videoId'=>$this->curPreview->getId()) );
+}
 ?>
 <div class="preview_div">
-	<a href="<?php echo ApotheosisLibAcl::getUserLinkAllowed( 'arc_tv_video', array( 'tv.videoId'=>$this->curPreview->getId() ) ); ?>">
+	<?php echo $overlayHtml; ?>
+	<a href="<?php echo $previewLink; ?>">
 		<img src="<?php echo $this->curPreview->getThumbnail(); ?>" width="150" height="84" /><br />
 	</a>
 	<div class="vid_info">

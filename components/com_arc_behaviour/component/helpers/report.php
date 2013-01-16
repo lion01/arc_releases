@@ -24,6 +24,7 @@ class ApothReportField_Behaviour_Score extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'behaviour '.get_class().' renderHTML' );
 		$pId = $this->_rptData[$this->_core['lookup_source']];
 		
 		if( is_null( $value ) ) {
@@ -32,6 +33,7 @@ class ApothReportField_Behaviour_Score extends ApothReportField
 		else {
 			$m = htmlspecialchars( $value );
 		}
+		plgSystemArc_log::stopTimer( 'behaviour '.get_class().' renderHTML' );
 		return parent::renderHTML( $m );
 	}
 }
@@ -48,6 +50,7 @@ class ApothReportField_Behaviour_Graph extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'behaviour '.get_class().' renderHTML' );
 		$requirements = array(
 			'person_id'=>$this->_rptData[$this->_core['lookup_source']],
 			'start_date'=>$this->_config['from'],
@@ -66,6 +69,7 @@ class ApothReportField_Behaviour_Graph extends ApothReportField
 		include( JPATH_SITE.DS.'components'.DS.'com_arc_behaviour'.DS.'views'.DS.'reports'.DS.'tmpl'.DS.'panel.php' );
 		$html = ob_get_clean();
 		
+		plgSystemArc_log::stopTimer( 'behaviour '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
 	

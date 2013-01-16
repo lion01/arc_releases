@@ -489,3 +489,43 @@ WHERE gm.valid_from < NOW()
   AND gm.valid_to > NOW()
   AND gm.is_student = 1
   AND pro.property = 'ARC';
+
+
+-- -------------- --
+-- 1.8.0 to 1.8.1 --
+-- -------------- --
+
+-- #####  dev_600_tv_videotagsauthorfilms  #####
+
+-- new action for owner vids
+INSERT INTO `jos_apoth_sys_actions`
+(`id`, `menu_id`, `option`, `task`, `params`, `name`, `menu_text`, `description`)
+VALUES
+(NULL, 399, NULL, NULL, 'view=video\ntask=idssearch', 'arc_tv_uservids', 'User videos', 'View a list of videos owned by a given user');
+
+# -- keep the id of new action
+SELECT @newId := LAST_INSERT_ID();
+
+# -- setup the acl for new action
+INSERT INTO `jos_apoth_sys_acl` (`action`, `role`, `sees`, `allowed`)
+SELECT @newId, role, sees, allowed
+FROM jos_apoth_sys_acl AS acl
+INNER JOIN jos_apoth_sys_actions AS a
+   ON a.id = acl.action
+WHERE a.name = 'arc_tv_tag';
+
+
+-- ------------------- --
+-- 1.8.1 to 1.8.1-rc.2 --
+-- ------------------- --
+
+CREATE TABLE `jos_apoth_sys_log_times` (
+	`log_id` BIGINT( 20 ) NOT NULL,
+	`func` VARCHAR( 255 ) NOT NULL,
+	`ok` BOOL NOT NULL,
+	`time` FLOAT NULL,
+	`count` INT UNSIGNED NULL,
+	`avg` FLOAT NULL,
+	INDEX (`log_id`)
+) ENGINE = MYISAM 
+

@@ -308,6 +308,8 @@ class ApothFactory_Message_Message extends ApothFactory
 		
 		// Get our proper id if we're doing a new entry
 		$fThread = ApothFactory::_( 'message.Thread' );
+		$fThread->setDate();
+		$this->setDate();
 		$this->_clearCachedInstances( $id );
 		$this->_clearCachedSearches();
 		if( $isNew ) {
@@ -322,6 +324,8 @@ class ApothFactory_Message_Message extends ApothFactory
 			$thread->commit();
 		}
 		else {
+			// the thread's commit function does this, so new messages are dealt with
+			// but changes to existing messages must also trigger clearing the searches
 			$fThread->_clearCachedInstances();
 			$fThread->_clearCachedSearches();
 		}
@@ -591,6 +595,8 @@ class ApothMessage extends JObject
 	
 	function setTags( $general = array(), $personal = array() )
 	{
+		if( !is_array( $general  ) ) { $general  = array(); }
+		if( !is_array( $personal ) ) { $personal = array(); }
 		$general  = array_unique( $general );
 		$personal = array_unique( $personal );
 		$this->_tagLabels = array();

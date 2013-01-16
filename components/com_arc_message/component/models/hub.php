@@ -108,6 +108,7 @@ class MessageModelHub extends JModel
 	{
 		$this->fMsg->clearCache();
 		$this->fThread->clearCache();
+		$this->threadPager->clearCache( false );
 		unset($this->curThread);
 		unset($this->message);
 		$this->threads = array();
@@ -136,10 +137,10 @@ class MessageModelHub extends JModel
 		if( !empty($this->threads) ) {
 			// get the entry from our array
 			if( !isset($this->curThread) || is_null($this->curThread) || $this->curThread === false ) {
-				end($this->threads);
+				reset($this->threads);
 			}
 			else {
-				prev($this->threads);
+				next($this->threads);
 			}
 			unset($this->curThread);
 			if( !is_null(key($this->threads)) ) {
@@ -221,7 +222,6 @@ class MessageModelHub extends JModel
 		$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
 		$tmp = ApotheosisData::_( 'message.helperData', 'eventAfter'.ucfirst($method), 'message', $this->message->getId(), $method );
 		return $tmp;
-		
 	}
 	
 	function _setMessageData( $data )
@@ -254,7 +254,10 @@ class MessageModelHub extends JModel
 	
 	function setTags()
 	{
-		$tagList = JRequest::getVar('tags'); // guaranteed non-empty by controller construct
+		$tagList = JRequest::getVar( 'tags', '' );
+		if( $tagList === '' ) {
+			$tagList = '21'; // behaviour inbox in base install. Should really be a config option (default folder)
+		}
 		$tags = explode( ',', $tagList );
 		foreach( $tags as $id=>$tag ) {
 			if( !is_numeric($tag) ) {

@@ -562,7 +562,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 	 * Get a list of the top 10 videos for a given user based on their views record 
 	 * 
 	 * @param int $siteId  The site ID for the current user
-	 * @param string $pId  The site ID for the current user
+	 * @param string $pId  The person ID for the current user
 	 * @return array  Array of video ID, most viewed first
 	 */
 	function getUserFaves( $siteId, $pId )
@@ -643,6 +643,30 @@ class ApothFactory_Tv_Video extends ApothFactory
 		$db->setQuery( $query );
 		
 		return $db->loadResult();
+	}
+	
+	/**
+	 * Get an array of video IDs owned by the specified people
+	 * 
+	 * @param array $peopleList  Array containing site and people IDs
+	 * @return array  Array of the video IDs owned by the specified people
+	 */
+	function getVidsBy( $personList )
+	{
+		$db = &self::getVidDBO();
+		
+		foreach( $personList as $person ) {
+			$wheres[] = '('.$db->nameQuote('site_id').' = '.$db->Quote($person['site_id']).' AND '.$db->nameQuote('person_id').' = '.$db->Quote($person['person_id']).')';
+		}
+		$whereString = '( '.implode( "\n".'   OR ', $wheres ).' )';
+		$whereString .= "\n".'  AND ('.$db->nameQuote('status').' = '.ARC_TV_APPROVED.')';
+		
+		$query = 'SELECT '.$db->nameQuote('id').', '.$db->nameQuote('site_id').', '.$db->nameQuote('person_id')
+			."\n".'FROM '.$db->nameQuote('videos')
+			."\n".'WHERE '.$whereString;
+		$db->setQuery($query);
+		
+		return $db->loadAssocList();
 	}
 	
 	/**

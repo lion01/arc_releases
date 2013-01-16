@@ -122,6 +122,7 @@ class ApothFactory_Message_Thread extends ApothFactory
 							."\n".'   ON t_order.id = t.id'
 							."\n".'INNER JOIN '.$db->nameQuote( '#__apoth_msg_messages' ).' AS m_order'
 							."\n".'   ON m_order.id = t_order.msg_id';
+						$where[] = 't_order.order = 1';
 						$orderBy[] = 'COALESCE( m_order.applies_on, m_order.created ) '.$orderDir;
 						break;
 					}

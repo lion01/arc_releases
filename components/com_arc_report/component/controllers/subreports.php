@@ -28,6 +28,7 @@ class ReportControllerSubreports extends ReportController
 	 */
 	function display()
 	{
+		plgSystemArc_log::startTimer( 'report controllerSubreports display' );
 		$model = $this->getModel( 'subreports' );
 		$view = &$this->getView ( 'subreports', 'html' );
 		$navView = &$this->getView ( 'nav', 'html' );
@@ -54,6 +55,7 @@ class ReportControllerSubreports extends ReportController
 			$rId = $r->getId();
 			$link = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_report_'.$activity.'_subreport', array( 'report.subreport'=>$rId ) );
 			if( $link ) {
+				plgSystemArc_log::stopTimer( 'report controllerSubreports display' );
 				global $mainframe;
 				$mainframe->redirect( $link );
 			}
@@ -70,10 +72,12 @@ class ReportControllerSubreports extends ReportController
 		$view->display();
 		
 		$this->saveModel();
+		plgSystemArc_log::stopTimer( 'report controllerSubreports display' );
 	}
 	
 	function showpage()
 	{
+		plgSystemArc_log::startTimer( 'report controllerSubreports showpage' );
 		$model = $this->getModel( 'subreports' );
 		$view = &$this->getView ( 'subreports', jRequest::getVar( 'format', 'html' ) );
 		
@@ -86,10 +90,12 @@ class ReportControllerSubreports extends ReportController
 		else {
 			echo '~~End~~';
 		}
+		plgSystemArc_log::stopTimer( 'report controllerSubreports showpage' );
 	}
 	
 	function showsingle()
 	{
+		plgSystemArc_log::startTimer( 'report controllerSubreports showsingle' );
 		$model = $this->getModel( 'subreports' );
 		$view = &$this->getView ( 'subreports', jRequest::getVar( 'format', 'html' ) );
 		
@@ -102,6 +108,7 @@ class ReportControllerSubreports extends ReportController
 		else {
 			echo 'No Report';
 		}
+		plgSystemArc_log::stopTimer( 'report controllerSubreports showsingle' );
 	}
 	
 }

@@ -44,6 +44,7 @@ class ApothReportField_Course_Name extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'course '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
 			switch( $this->_core['lookup_source'] ) {
 			case( 'rpt_group_id' ):
@@ -55,6 +56,7 @@ class ApothReportField_Course_Name extends ApothReportField
 				$value = ApotheosisData::_( 'course.name', ApotheosisData::_( 'timetable.tutorgroup', $this->_rptData['reportee_id'] ) );
 			}
 		}
+		plgSystemArc_log::stopTimer( 'course '.get_class().' renderHTML' );
 		return parent::renderHTML( htmlspecialchars( $value ) );
 	}
 }

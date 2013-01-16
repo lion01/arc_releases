@@ -44,10 +44,12 @@ class ApothReportField_People_Photo extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'people '.get_class().' renderHTML' );
 // **** TODO - make the avatar load the user's actual photo
 //		$src = ApotheosisLibAcl::getUserLinkAllowed( 'apoth_eportfolio_file', array( 'people.arc_people'=>$this->_rptData[$this->_config['field']], 'people.files'=>'avatar' ) );
 		$src = JURI::base().'components'.DS.'com_arc_people'.DS.'images'.DS.'avatar_default.png';
 		$html = '<img class="profile" src="'.$src.'" /> ('.$src.')';
+		plgSystemArc_log::stopTimer( 'people '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
 }
@@ -64,12 +66,14 @@ class ApothReportField_People_Name extends ApothReportField
 {
 	function renderHTML( $value )
 	{
+		plgSystemArc_log::startTimer( 'people '.get_class().' renderHTML' );
 		if( is_null( $value ) ) {
 			$html = htmlspecialchars( ApotheosisData::_( 'people.displayName', $this->_rptData[$this->_config['field']], $this->_config['format'] ) );
 		}
 		else {
 			$html = '<i>name</i>';
 		}
+		plgSystemArc_log::stopTimer( 'people '.get_class().' renderHTML' );
 		return parent::renderHTML( $html );
 	}
 }

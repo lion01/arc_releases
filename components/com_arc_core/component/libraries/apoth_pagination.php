@@ -117,6 +117,17 @@ class ApothPagination extends JObject
 		}
 	}
 	
+	function clearCache( $resetPage = true )
+	{
+		$this->_factory->clearCache();
+		$this->_pagedIds = array();
+		$this->_pageCount = 0;
+		if( $resetPage ) {
+			$this->_page = 0;
+			$this->_loadedPages = array();
+		}
+	}
+	
 	function setPageSize( $size, $rollSize = null ) 
 	{
 		if( !is_null( $rollSize ) ) {
