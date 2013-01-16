@@ -51,7 +51,7 @@ class ApotheosisControllerAjax extends ApotheosisController
 			$referer = JRequest::getString( 'HTTP_REFERER', '', 'server' );
 			$actionId = ApotheosisLib::getActionId( $referer );
 		}
-		ApotheosisLib::setTmpAction( ApotheosisLib::getActionIdByName('apoth_ass_main_search') );
+		ApotheosisLib::setTmpAction( $actionId );
 		
 		$model->setTreeNodeData( $nodeId, $actionId );
 		

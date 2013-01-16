@@ -349,10 +349,10 @@ class ApotheosisData_People extends ApotheosisData
 	function peopleListNames( $var )
 	{
 		if( $var ) {
-			return array( 'current', 'everyone', 'pupilof.~group_id~', 'pupil', 'parent', 'teacher', 'staff' );
+			return array( 'current', 'everyone', 'pupilof.~group_id~', 'pupil', 'truant', 'parent', 'teacher', 'staff' );
 		}
 		else {
-			return array( 'current', 'everyone', 'pupil', 'parent', 'teacher', 'staff' );
+			return array( 'current', 'everyone', 'pupil', 'truant', 'parent', 'teacher', 'staff' );
 		}
 	}
 	
@@ -418,12 +418,19 @@ class ApotheosisData_People extends ApotheosisData
 					."\n".'  ON r.relation_id = p.id'
 					."\n".' AND r.`parental` = r.`correspondence` = r.`reports` = 1'
 					."\n".' AND r.`legal_order` = 0'
-				 	."\n".'INNER JOIN #__apoth_tt_group_members AS gm'
+					."\n".'INNER JOIN #__apoth_tt_group_members AS gm'
 					."\n".'  ON gm.person_id = r.pupil_id'
 					."\n".' AND gm.role = '.ApotheosisLibAcl::getRoleId( 'group_participant_student')
 					."\n".' AND '.ApotheosisLibDb::dateCheckSql('gm.valid_from', 'gm.valid_to', date('Y-m-d H:i:s'), date('Y-m-d H:i:s') );
 				break;
 			
+			case( 'truant' ) :
+				$type = 'pupil';
+				$joins[] = 'INNER JOIN #__apoth_att_truants AS tr'
+					."\n".'  ON tr.pupil_id = p.id'
+					."\n".' AND '.ApotheosisLibDb::dateCheckSql('tr.valid_from', 'tr.valid_to', date('Y-m-d H:i:s'), date('Y-m-d H:i:s') );
+				break;
+				
 			case( 'teacher' ) :
 				$type = 'teacher';
 				$joins[] = 'INNER JOIN #__apoth_tt_group_members AS gm'

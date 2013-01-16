@@ -40,7 +40,7 @@ window.addEvent( 'domready', function() {
 	
 	// add reset search form event to reset button
 	$( 'search_reset' ).addEvent( 'click', function() {
-		resetSearch();
+		window.fireEvent( 'arcResetSearch' );
 	});
 	
 	cookie = readCookie('markBook_search');
@@ -49,8 +49,7 @@ window.addEvent( 'domready', function() {
 	}
 });
 
-function resetSearch()
-{
+window.addEvent( 'arcResetSearch', function() {
 	// get hold of the search form
 	var form = $( 'search_container' );
 	
@@ -80,7 +79,7 @@ function resetSearch()
 			});
 		}
 	});
-}
+} );
 
 function readCookie( name )
 {

@@ -198,11 +198,14 @@ class MessageControllerHub extends MessageController
 				$mainframe->enqueueMessage( $statuses['bad'].' message'.($statuses['bad'] > 1 ? 's' : '' ).' failed to save', 'error' );
 			}
 		}
+		$model = &$this->getModel( 'hub' );
+		$model->clearRecipients();
 		$this->display();
 	}
 	
 	function send()
 	{
+		JHTML::script( 'extranames.js', JURI::base().'components'.DS.'com_arc_message'.DS.'views'.DS.'hub'.DS.'tmpl'.DS );
 		$statuses = $this->_send( 'send' );
 		
 		global $mainframe;
@@ -217,6 +220,56 @@ class MessageControllerHub extends MessageController
 				$mainframe->enqueueMessage( $statuses['bad'].' message'.($statuses['bad'] > 1 ? 's' : '' ).' failed to send', 'error' );
 			}
 		}
+		$model = &$this->getModel( 'hub' );
+		$r = $model->getRecipients();
+		$listLength = 3;
+		if( !empty( $r['all'] ) ) {
+			$r1 = $r2 = array();
+			$rNum = count( $r['all'] );
+			$rStop = min( $rNum, $listLength );
+			
+			$names = array();
+			for( $i = 0; $i < $rStop; $i++ ) {
+				$names[] = ApotheosisData::_( 'people.displayName', $r['all'][$i], 'teacher' );
+			}
+			$str = implode( ', ', $names );
+			if( $rNum > $rStop ) {
+				JHTML::script( 'extranames.js', JURI::base().'components'.DS.'com_arc_message'.DS.'views'.DS.'hub'.DS.'tmpl'.DS );
+				$str .= '<a href="#" id="moreAll"> more...</a><div id="extraAll" style="display:none;">, ';
+				$names = array();
+				for( ; $i < $rNum; $i++ ) {
+					$names[] = ApotheosisData::_( 'people.displayName', $r['all'][$i], 'teacher' );
+				}
+				$str .= implode( ', ', $names );
+				$str .= '</div>';
+			}
+			
+			$mainframe->enqueueMessage( 'All sent messages were sent to:<br />'.$str );
+		}
+		if( !empty( $r['some'] ) ) {
+			$r1 = $r2 = array();
+			$rNum = count( $r['some'] );
+			$rStop = min( $rNum, $listLength );
+			
+			$names = array();
+			for( $i = 0; $i < $rStop; $i++ ) {
+				$names[] = ApotheosisData::_( 'people.displayName', $r['some'][$i], 'teacher' );
+			}
+			$str = implode( ', ', $names );
+			if( $rNum > $rStop ) {
+				JHTML::script( 'extranames.js', JURI::base().'components'.DS.'com_arc_message'.DS.'views'.DS.'hub'.DS.'tmpl'.DS );
+				$str .= '<a href="#" id="moreSome"> more...</a><div id="extraSome" style="display:none;">, ';
+				$names = array();
+				for( ; $i < $rNum; $i++ ) {
+					$names[] = ApotheosisData::_( 'people.displayName', $r['some'][$i], 'teacher' );
+				}
+				$str .= implode( ', ', $names );
+				$str .= '</div>';
+			}
+			
+			$mainframe->enqueueMessage( 'Messages were sent to:<br />'.$str );
+		}
+		$model->clearRecipients();
 		$this->display();
 	}
 	

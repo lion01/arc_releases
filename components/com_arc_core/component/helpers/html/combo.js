@@ -85,11 +85,36 @@ var ArcCombo = new Class({
 		if( this.listVisibility == 1 ) {
 			this.list.show();
 		}
+		
+		window.addEvent( 'arcResetSearch', function() {
+			this.deselect();
+		}.bind( this ));
+		
 	},
 	
 	// Function to delete the combo options (part of our custom garbage collection routine)
 	trash: function() {
 		this.list.trashPool();
+	},
+	
+	// Choose the item(s) already selected in the original html input
+	deselect: function() {
+		var c = this.element.getChildren();
+		var l = c.length;
+		
+		for( var i = 0; i < l; i++ ) {
+			if( c[i].selected ) {
+				c[i].selected = false;
+			}
+		}
+		this.chosen.empty();
+		this.input.empty();
+		this.list.empty();
+		
+		this.list.initPool();
+		this.list.resetPool();
+		this.list.filter( this.input.get() );
+		this.element.fireEvent( 'change' );
 	},
 	
 	// Choose the item(s) already selected in the original html input
@@ -168,6 +193,11 @@ var ArcComboChosen = new Class({
 		if( el ) {
 			el.remove();
 		}
+	},
+	
+	// Removes all options from the chosen area
+	empty: function() {
+		this.element.empty();
 	}
 });
 
@@ -343,6 +373,11 @@ var ArcComboInput = new Class({
 	// Reset combo input value to whatever it was when we first clicked it
 	reset: function() {
 		this.element.value = this.oldVal;
+	},
+	
+	// Reset combo input value to an empty string
+	empty: function() {
+		this.element.value = '';
 	}
 });
 
@@ -427,6 +462,14 @@ var ArcComboOptions = new Class({
 		}
 		
 		Garbage.elements.remove( null );
+	},
+	
+	// Remove all items in the list (both internal and on-page)
+	empty: function() {
+		this.trashPool();
+		this.element.empty();
+		this.wasConsidered = undefined;
+		this.considered = undefined;
 	},
 	
 	// Move the focus to the combo input if this option is clicked

@@ -42,7 +42,7 @@ elseif( is_array($this->seriesIds) && !empty($this->seriesIds) ) {
 	}
 	echo '<input type="hidden" id="threadListUrl" name="threadListUrl" value="'.ApotheosisLib::getActionLinkByName( 'apoth_msg_hub_ajax',    array('message.tasks'=>'search') ).'">'."\n";
 	echo '<input type="hidden" id="threadUrl"     name="threadUrl"     value="'.ApotheosisLib::getActionLinkByName( 'apoth_msg_thread_ajax', array('message.tasks'=>'toggleThread') ).'">'."\n";
-	echo '<input type="hidden" id="loadImg"       name="loadImg"       value="'.ApotheosisLib::arcLoadImgUrl()."\n";
+	echo '<input type="hidden" id="loadImg"       name="loadImg"       value="'.ApotheosisLib::arcLoadImgUrl().'">'."\n";
 	echo $this->loadTemplate( 'graph' );
 	
 	foreach( $this->seriesIds as $this->sId ) {

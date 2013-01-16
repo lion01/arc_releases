@@ -12,7 +12,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-Forename,Surname,Gender,Subject Code,Subject,Class<?php
+Arc id,UPN,Forename,Surname,Gender,Subject Code,Subject,Class<?php
 foreach($this->ass as $aId) {
 	$a = &$this->fAss->getInstance( $aId );
 	$aspects = &$a->getAspects();

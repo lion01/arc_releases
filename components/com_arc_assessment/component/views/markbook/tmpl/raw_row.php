@@ -12,7 +12,9 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-echo  '"'.addcslashes($this->person->surname,   '\"').'"';
+echo  '"'.addcslashes($this->person->id,        '\"').'"';
+echo ',"'.addcslashes($this->person->upn,       '\"').'"';
+echo ',"'.addcslashes($this->person->surname,   '\"').'"';
 echo ',"'.addcslashes($this->person->firstname, '\"').'"';
 echo ',"'.addcslashes($this->person->gender,    '\"').'"';
 echo ',"'.addcslashes($this->group->subjshort,  '\"').'"';

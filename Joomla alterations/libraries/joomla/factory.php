@@ -561,10 +561,10 @@ class JFactory
 		$options	= array ( 'driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix );
 		
 		// *** Arc modification to enable ssl
-		$options['ssl']		= $conf->getValue( 'config.dbssl'     );
-		$options['sslcert']	= $conf->getValue( 'config.dbsslcert' );
-		$options['sslkey']	= $conf->getValue( 'config.dbsslkey'  );
-		$options['sslca']	= $conf->getValue( 'config.dbsslca'   );
+		$options['dbssl']		= $conf->getValue( 'config.dbssl'     );
+		$options['dbsslcert']	= $conf->getValue( 'config.dbsslcert' );
+		$options['dbsslkey']	= $conf->getValue( 'config.dbsslkey'  );
+		$options['dbsslca']	= $conf->getValue( 'config.dbsslca'   );
 		// *** end Arc mod
 		
 		$db =& JDatabase::getInstance( $options );

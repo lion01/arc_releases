@@ -19,6 +19,8 @@ jimport( 'joomla.application.component.model' );
  */
 class MessageModelHub extends JModel
 {
+	var $_recipients = array();
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -213,12 +215,50 @@ class MessageModelHub extends JModel
 		$this->message = &$this->fMsg->getInstance( $msgId );
 	}
 	
+	/**
+	 * Keep track of which recently sent messages were sent to whom
+	 */
+	function logRecipients()
+	{
+		$r = $this->message->getRecipients( ApotheosisData::_( 'message.tagId', 'folder', 'Inbox' ) );
+		$rList = array();
+		if( is_array( $r ) ) {
+			$rList = array_merge( $rList, $r );
+		}
+		$this->_recipients[$this->message->getId()] = array_unique( $rList );
+	}
+	
+	/**
+	 * Retrieves all recipients of recently sent messages
+	 */
+	function getRecipients()
+	{
+		$retVal = array( 'all'=>reset($this->_recipients), 'some'=>array() );
+		foreach( $this->_recipients as $mId=>$rList ) {
+			$int = array_intersect( $retVal['all'], $rList );
+			$retVal['some'] = array_unique( array_merge( $retVal['some'], array_diff( $rList, $int ), array_diff( $retVal['all'], $int ) ) );
+			$retVal['all'] = $int;
+		}
+		
+		// ensure the returned arrays are sequentially indexed
+		if( !is_array( $retVal['all'] ) ) { $retVal['all'] = array(); }
+		$retVal['all']  = array_values( $retVal['all']  );
+		$retVal['some'] = array_values( $retVal['some'] );
+		return $retVal;
+	}
+	
+	function clearRecipients()
+	{
+		$this->_recipients = array();
+	}
+	
 	function sendMessage( $data, $method )
 	{
 		$this->_setMessageData( $data );
 		$this->message->setRecipients( ApotheosisData::_( 'message.recipients', $this->message, $method ) );
 		$ok = $this->message->commit();
 		if( $ok ) {
+			$this->logRecipients();
 			$threadId = $this->message->getThreadId();
 			$this->threads[$threadId] = &$this->fThread->getInstance( $threadId );
 			$tmp = ApotheosisData::_( 'message.helperData', 'eventAfter'.ucfirst($method), 'message', $this->message->getId(), $method );

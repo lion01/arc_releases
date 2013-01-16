@@ -507,7 +507,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 	{
 		$db = &self::getVidDBO();
 		$query = 'REPLACE INTO '.$db->nameQuote('video_ratings')
-			."\n".'VALUES ('.$db->Quote($id).', '.$db->Quote($siteId).', '.$db->Quote($personId).', '.$db->Quote($rating).')';
+			."\n".'VALUES ('.$db->Quote($id).', '.$db->Quote($siteId).', '.$db->Quote($personId).', '.$db->Quote($rating).', NOW())';
 		$db->setQuery($query);
 		$db->query();
 		
@@ -665,18 +665,26 @@ class ApothFactory_Tv_Video extends ApothFactory
 		
 		// if we have less than 10 results from ratings 
 		// then make up to 10 with most viewed
-		if( ($count = count($rated)) < 10 ) {
-			$quotedRated = array();
-			foreach( $rated as $id ) {
-				$quotedRated[] = $db->Quote($id);
+		$count = count( $rated );
+		if( $count < 10 ) {
+			// if there are rated videos, exclude these from the next query
+			if( $count > 0 ) {
+				$haveRated = true;
+				$quotedRated = array();
+				foreach( $rated as $id ) {
+					$quotedRated[] = $db->Quote($id);
+				}
+				$quotedRated = implode( ', ', $quotedRated );
 			}
-			$quotedRated = implode( ', ', $quotedRated );
+			else {
+				$haveRated = false;
+			}
 			
 			$query = 'SELECT '.$db->nameQuote('video_id').', COUNT(*) AS '.$db->nameQuote('video_views')
 				."\n".'FROM '.$db->nameQuote('views')
 				."\n".'WHERE '.$db->nameQuote('site_id').' = '.$db->Quote($siteId)
 				."\n".'  AND '.$db->nameQuote('person_id').' = '.$db->Quote($pId)
-				."\n".'  AND '.$db->nameQuote('video_id').' NOT IN ('.$quotedRated.')'
+				.($haveRated ? "\n".'  AND '.$db->nameQuote('video_id').' NOT IN ('.$quotedRated.')' : '')
 				."\n".'GROUP BY '.$db->nameQuote('video_id')
 				."\n".'ORDER BY '.$db->nameQuote('video_views').' DESC'
 				."\n".'LIMIT '.(10 - $count);

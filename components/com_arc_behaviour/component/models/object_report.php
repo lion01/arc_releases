@@ -509,6 +509,9 @@ class ApothReport extends JObject
 		$config = &JFactory::getConfig();
 		$dirName = $config->getValue('config.tmp_path');
 		$dir = opendir( $dirName );
+		if( !$dir ) {
+			return;
+		}
 		do {
 			$fName = readdir( $dir );
 			$matches = array();

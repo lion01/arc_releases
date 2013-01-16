@@ -698,11 +698,16 @@ class ApothMessage extends JObject
 		if( is_null($folder) ) {
 			return $this->_recipients;
 		}
-		elseif( !isset($this->_recipients[$folder]) ) {
-			return array();
-		}
 		else {
-			return $this->_recipients[$folder];
+			$retVal = array();
+			foreach( $this->_recipients as $pId=>$channels ) {
+				foreach( $this->_recipients[$pId] as $channel=>$tag ) {
+					if( $tag == $folder ) {
+						$retVal[] = $pId;
+					}
+				}
+			}
+			return array_unique( $retVal );
 		}
 	}
 	

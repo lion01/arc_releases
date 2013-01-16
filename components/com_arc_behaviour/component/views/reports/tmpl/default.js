@@ -165,7 +165,6 @@ window.addEvent('domready', function() {
 	var selects = $ES( 'select[multiple]' );
 //	var selects = $ES( '#incidents' );
 	
-	console.log( $E('body') );
 	
 	if( selects.length > 0 ) {
 		optTipDiv = new Element( 'div', {
@@ -175,7 +174,6 @@ window.addEvent('domready', function() {
 	}
 	
 	
-	console.log( selects );
 	
 	selects.each( function( list ) {
 		var w = 20;
