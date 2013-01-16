@@ -638,3 +638,16 @@ VALUES
 (311, 6, NULL, 1),
 (312, 3, NULL, 1),
 (312, 6, NULL, 1);
+
+
+-- -------------- --
+-- 1.8.4 to 1.8.5 --
+-- -------------- --
+
+-- #####  hot_630_tv_nomods  #####
+
+# -- params list for action rename in dev_597_tv_modemail did not include needed line breaks
+UPDATE `jos_apoth_sys_actions`
+SET `params` = 'view=video\ntask=approve\nvidId=~tv.videoId~\nformat=raw'
+WHERE `jos_apoth_sys_actions`.`id` = 285
+LIMIT 1;

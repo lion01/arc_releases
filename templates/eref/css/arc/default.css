@@ -61,16 +61,16 @@ fieldset.col {
 	width:115px;
 	min-height:450px;
 	margin-bottom:20px;
-	border-radius: 15px 0 0 15px;
+	border-radius: 10px 0 0 10px;
 	font-size:10pt;
 }
 
 #arc_main {
 	word-wrap:break-word;
-	padding:10px;
+	padding:15px;
 	min-height:400px;
-	-moz-border-radius: 15px;
-	border-radius: 15px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 	overflow:hidden;
 }
 
@@ -125,7 +125,7 @@ fieldset.col {
 {
     font-family: 'EntypoRegular';
 	font-size:150px;
-	line-height:45px;
+	line-height:40px;
 }
 
 .inbox:before 		{ content: "% "; }
@@ -163,13 +163,13 @@ fieldset.col {
 
  #mod_arc_tasks {
  	float:left;
- 	margin-left:25px;
+ 	margin-left:35px;
  }
 
  #mod_arc_context {
  	float:right;
  	height:50px;
- 	margin-right:25px;
+ 	margin-right:35px;
  }
 
 #mod_arc_context .btn
@@ -217,7 +217,7 @@ fieldset.col {
 .button_list .list_wrapper ul {
     position: absolute;
     top: 40px;
-    width: 100px;
+    width: 99px;
 	border:solid 1px #c2c2c2;
     list-style-type: none;
     visibility:hidden;
@@ -251,17 +251,17 @@ fieldset.col {
 #category_settings.button_list span.label:before { content: "@"; }
 
 .list_wrapper ul li {
-	transition: background 1s;
-	-moz-transition: background 1s; /* Firefox 4 */
-	-webkit-transition: background 1s; /* Safari and Chrome */
-	-o-transition: background 1s; /* Opera */
+	transition: background 0.5s;
+	-moz-transition: background 0.5s; /* Firefox 4 */
+	-webkit-transition: background 0.5s; /* Safari and Chrome */
+	-o-transition: background 0.5s; /* Opera */
 }
 
 .list_wrapper ul li a {
-	transition: color 1s;
-	-moz-transition: color 1s; /* Firefox 4 */
-	-webkit-transition: color 1s; /* Safari and Chrome */
-	-o-transition: color 1s; /* Opera */
+	transition: color 0.5s;
+	-moz-transition: color 0.5s; /* Firefox 4 */
+	-webkit-transition: color 0.5s; /* Safari and Chrome */
+	-o-transition: color 0.5s; /* Opera */
 }
 
 #icon_wrap ul li.cur:hover a,
@@ -271,8 +271,8 @@ fieldset.col {
 #icon_wrap ul li span.archive:before, #icon_wrap ul li span.archive, #icon_wrap ul li span.archive,
 #icon_wrap ul li span.searched:before, #icon_wrap ul li span.searched, #icon_wrap ul li span.searched
 {
-	transition: background 1s;
-	-moz-transition: background 1s; /* Firefox 4 */
-	-webkit-transition: background 1s; /* Safari and Chrome */
-	-o-transition: background 1s; /* Opera */
+	transition: background 0.5s;
+	-moz-transition: background 0.5s; /* Firefox 4 */
+	-webkit-transition: background 0.5s; /* Safari and Chrome */
+	-o-transition: background 0.5s; /* Opera */
 }

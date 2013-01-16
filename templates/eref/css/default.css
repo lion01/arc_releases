@@ -40,7 +40,10 @@ footer, header, nav, section, audio, video {
 body {
 	min-height: 400px;
 	-webkit-text-size-adjust: 100%;
-	font-family: helvetica, verdana, arial;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 140%;
+	color: #333;
 }
 
 #wrapper {
@@ -85,9 +88,9 @@ header * {
 	padding: 0px;
 	margin: 20px 20px;
 	overflow: hidden;
-    -webkit-border-radius: 15px;	
-	-moz-border-radius: 15px;
-	border-radius: 15px;
+    -webkit-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 }
 
 #content p, h1, h2, h3, h4, h5, h6 {

@@ -13,9 +13,14 @@
 /* layout bits */
 #messages {
 	min-height: 650px !important;
-	margin-left: 115px;
-	border-radius: 0 15px 15px 15px;
+	margin: 0px 10px 10px 115px;
 	padding-bottom: 25px;
+	border-radius: 0 10px 10px 10px;
+	-webkit-border-radius: 0 10px 10px 10px;
+	-moz-border-radius: 0 10px 10px 10px;
+	box-shadow:4px 4px 10px 0px rgba(111, 111, 111, 0.6);
+	-webkit-box-shadow:4px 4px 10px 0px rgba(111, 111, 111, 0.6);
+	-moz-box-shadow:4px 4px 10px 0px rgba(111, 111, 111, 0.6);
 }
 
 #folders h4 {
@@ -26,20 +31,37 @@
 	width: 114px !important;
 }
 
+#icon_wrap, #icon_wrap ul {
+	border-radius:9px 0px 0px 9px;
+	-webkit-border-radius: 9px 0 0 9px;
+	-moz-border-radius: 9px 0 0 9px;
+}
+
+#icon_wrap ul ul {
+	border-radius:9px 0 0 0;
+	-webkit-border-radius: 9px 0 0 0;
+	-moz-border-radius: 9px 0 0 0;
+}
+
 #icon_wrap ul li {
 	width: 114px;
-	border-right: solid 1px #cacaca;
-	border-bottom: solid 1px #cacaca;
+	border-right: solid 1px #ACA5A5;
+	border-bottom: solid 1px #ACA5A5;
 	height: 100px;
 	overflow: hidden;
+	background-color: #c6c6be;
 }
 
 #icon_wrap ul ul li:first-child {
-	border-radius: 15px 0 0 0;
+	border-radius: 9px 0 0 0;
+	-webkit-border-radius: 9px 0 0 0;
+	-moz-border-radius: 9px 0 0 0;
 }
 
 #icon_wrap > ul > li:last-child {
-	border-radius: 0 0 0 15px;
+	border-radius: 0 0 0 9px;
+	-webkit-border-radius: 0 0 0 9px;
+	-moz-border-radius: 0 0 0 9px;
 	margin-bottom: 0;
 	border-bottom: none;
 }
@@ -92,6 +114,8 @@
 
 #controls input {
 	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
 	padding: 2px;
 	height: 40px;
 }
@@ -126,4 +150,31 @@
 
 #msg_search .search {
 	border: solid 1px #e6e6e6;
+}
+
+table {
+	padding-right: 10px;
+}
+
+table td {
+	padding-left: 2px;
+}
+
+table tr {
+	line-height: 140%; 
+}
+
+table tr:hover td {
+	transition: background 0.1s;
+	-moz-transition: background 0.1s; /* Firefox 4 */
+	-webkit-transition: background 0.1s; /* Safari and Chrome */
+	-o-transition: background 0.1s; /* Opera */
+	background: #c6c6be;}
+
+table tr:nth-child(even) { 
+	background-color:#e0e0dc; 
+}
+
+table tr:nth-child(odd) { 
+	background-color:#whiteSmoke; 
 }

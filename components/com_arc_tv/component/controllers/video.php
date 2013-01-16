@@ -25,6 +25,7 @@ class TvControllerVideo extends TvController
 	function __construct()
 	{
 		parent::__construct();
+		$this->registerTask( 'save draft', 'save' );
 		$this->registerTask( 'approve', 'approval' );
 		$this->registerTask( 'reject', 'approval' );
 		

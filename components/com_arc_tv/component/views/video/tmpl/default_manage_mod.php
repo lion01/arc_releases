@@ -11,6 +11,8 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+JHTML::_( 'Arc.tip' );
 ?>
 <div id="manage_mod_div">
 	<div class="manage_form_input_row">
@@ -20,8 +22,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<div class="manage_form_input_row">
 		<div class="manage_form_label_div">Approval:</div>
 		<div class="manage_form_input_div">
-			<input id="manage_form_approve_button" type="submit" value="Approve" name="task" />
-			<input id="manage_form_reject_button" type="submit" value="Reject" name="task" />
+			<input id="manage_form_approve_button" type="submit" value="Approve" name="task" class="arcTip" title="Approve the video" />
+			<input id="manage_form_reject_button" type="submit" value="Reject" name="task" class="arcTip" title="Reject the video" />
 			<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 		</div>
 	</div>

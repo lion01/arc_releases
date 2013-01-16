@@ -350,6 +350,7 @@ class ApothFactory_Tv_Video extends ApothFactory
 		foreach( $tmp as $info ) {
 			$formats[$info['res']][] = $info['enc'];
 		}
+		ksort( $formats );
 		
 		return $formats;
 	}
@@ -1031,11 +1032,28 @@ class ApothTvVideoVideo extends JObject
 	 */
 	var $_core = array();
 	
+	var $_scriptsUrl;
+	var $_formats;
+	var $_resolutions;
+	var $_titleIndex;
+	var $_descIndex;
+	var $_tags;
+	var $_roles;
+	var $_filters;
+	var $_res;
+	var $_uploadDate;
+	var $_globalRating;
+	var $_userRating;
+	var $_statusComment;
+	var $_statusCommentLog;
+	var $_statusChanged;
+	
 	function __construct( $data )
 	{
 		$this->_core = $data;
 		$this->_scriptsUrl = '';
 		$this->_formats = null;
+		$this->_resolutions = null;
 		$this->_titleIndex = null;
 		$this->_descIndex = null;
 		$this->_tags = null;
@@ -1047,6 +1065,7 @@ class ApothTvVideoVideo extends JObject
 		$this->_userRating = null;
 		$this->_statusComment = null;
 		$this->_statusCommentLog = null;
+		$this->_statusChanged = null;
 	}
 	
 	/**
@@ -1109,11 +1128,19 @@ class ApothTvVideoVideo extends JObject
 	function getFormats()
 	{
 		if( is_null($this->_formats) ) {
-			$fVideo = &ApothFactory::_( 'tv.video' );
-			$this->_formats = $fVideo->getInstanceFormats( $this->getId() );
+			$this->_loadFormats();
 		}
 		
 		return $this->_formats;
+	}
+	
+	/**
+	 * Load the available formats for this video
+	 */
+	function _loadFormats()
+	{
+		$fVideo = &ApothFactory::_( 'tv.video' );
+		$this->_formats = $fVideo->getInstanceFormats( $this->getId() );
 	}
 	
 	/**
@@ -1124,12 +1151,34 @@ class ApothTvVideoVideo extends JObject
 	function getFormatsAtRes()
 	{
 		if( is_null($this->_formats) ) {
-			$fVideo = &ApothFactory::_( 'tv.video' );
-			$this->_formats = $fVideo->getInstanceFormats( $this->getId() );
+			$this->_loadFormats();
 		}
 		
 		$res = $this->getRes();
+		
 		return $this->_formats[$res];
+	}
+	
+	/**
+	 * Retrieve all the currently available resolutions for this video
+	 * 
+	 * @return array  An array of the video resolutions
+	 */
+	function getResolutions()
+	{
+		if( is_null($this->_resolutions) ) {
+			$this->_loadResolutions();
+		}
+		
+		return $this->_resolutions;
+	}
+	
+	/**
+	 * Load the available resolutions for this video
+	 */
+	function _loadResolutions()
+	{
+		$this->_resolutions = array_keys( $this->getFormats() );
 	}
 	
 	/**
@@ -1290,6 +1339,7 @@ class ApothTvVideoVideo extends JObject
 	
 	/**
 	 * Retrieve the video resolution
+	 * *** using 360 as a default if it has not been explicitly set
 	 * 
 	 * @return int  The current desired resolution
 	 */
@@ -1307,6 +1357,15 @@ class ApothTvVideoVideo extends JObject
 	 */
 	function setRes( $res )
 	{
+		if( is_null($this->_resolutions) ) {
+			$this->_loadResolutions();
+		}
+		
+		// if the requested resolution is not available then set the first available resolution instead
+		if( array_search($res, $this->_resolutions) !== true ) {
+			$res = reset( $this->_resolutions );
+		} 
+		
 		$this->_res = $res;
 	}
 	

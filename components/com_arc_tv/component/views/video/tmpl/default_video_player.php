@@ -15,7 +15,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // add javascript
 JHTML::script( 'default_video_player.js', $this->addPath, true );
 
+/* *** some day people will pick this from interface
+$resolutions = $this->curVideo->getResolutions();
 $this->curVideo->setRes( 360 );
+// */
 $formats = $this->curVideo->getFormatsAtRes();
 ?>
 <div id="player_div">

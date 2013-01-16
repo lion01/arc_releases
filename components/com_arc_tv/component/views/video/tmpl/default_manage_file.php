@@ -11,6 +11,8 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+JHTML::_( 'Arc.tip' );
 ?>
 <div id="manage_file_div">
 	<?php
@@ -47,7 +49,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<a id="remove_vid_files_link" class="btn" href="<?php echo $delLink; ?>">Remove Video Files</a>
 		<?php endif; ?>
 	</div>
-	<input id="manage_form_save_button" style="margin-top: 10px;" type="submit" value="Save" name="task" />
-	<input id="manage_form_submit_button" style="margin-top: 10px;" type="submit" value="Submit" name="task" />
+	<input id="manage_form_save_button" style="margin-top: 10px;" type="submit" value="Save Draft" name="task" class="arcTip" title="Save the video for later" />
+	<input id="manage_form_submit_button" style="margin-top: 10px;" type="submit" value="Submit" name="task" class="arcTip" title="Submit the video for moderation" />
 	<?php echo $this->loadTemplate( 'manage_ajax_spinners' ); ?>
 </div>

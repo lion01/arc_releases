@@ -43,7 +43,7 @@ echo JHTML::_( 'arc.hidden', 'status_url',  ApotheosisLibAcl::getUserLinkAllowed
 				</div>
 			</div>
 			<div class="manage_pane">
-				<span class="manage_pane_clicker">Media Preview...</span>
+				<span class="manage_pane_clicker">Media...</span>
 				<div class="manage_slider">
 					<p>This preview will be limited by the progress made by the encoding server. Please check back soon to see any progress.</p>
 					<?php if( $this->curVideo->getId() < 0 ): ?>
@@ -54,7 +54,7 @@ echo JHTML::_( 'arc.hidden', 'status_url',  ApotheosisLibAcl::getUserLinkAllowed
 				</div>
 			</div>
 			<div class="manage_pane">
-				<span class="manage_pane_clicker">Meta...</span>
+				<span class="manage_pane_clicker">Title and Description...</span>
 				<div class="manage_slider">
 					<input type="hidden" name="manage_meta_pane" value="1" />
 					<div class="manage_form_input_row">
@@ -96,7 +96,7 @@ echo JHTML::_( 'arc.hidden', 'status_url',  ApotheosisLibAcl::getUserLinkAllowed
 				</div>
 			</div>
 			<div class="manage_pane">
-				<span class="manage_pane_clicker">Access Filters...</span>
+				<span class="manage_pane_clicker">Permissions...</span>
 				<div class="manage_slider">
 					<input type="hidden" name="manage_filters_pane" value="1" />
 					<div class="manage_form_input_row">

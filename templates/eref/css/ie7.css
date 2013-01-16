@@ -14,8 +14,8 @@
 .archive,
 .searched
 {
-	font-size:15px;
-	line-height:15px;
+	font-size:14px;
+	line-height:140%;
 	text-align:center;
 }
 
@@ -27,7 +27,7 @@
 .searched span
 {
     font-family: 'EntypoRegular';
-	font-size:115px;
+	font-size:150px;
 	line-height:55px;
 	text-align:center;
 }

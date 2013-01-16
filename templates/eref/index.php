@@ -48,13 +48,13 @@
 	?>
 	
 <!--[if IE 7]>
-	<link rel="stylesheet" href="<?php echo $path; ?>/css/ie7.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $path; ?>/css/arc/ie7.css" type="text/css" />
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/scripts/html5.js"></script>
 <![endif]-->
 
 <!--[if IE 8]>
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/scripts/html5.js"></script>
-	<link rel="stylesheet" href="<?php echo $path; ?>/css/ie8.php?pie='.<?php echo urlencode( base64_encode ( $pie ) ); ?>.'" type="text/css" />
+	<link rel="stylesheet" href="<?php echo $path; ?>/css/arc/ie8.php?pie='.<?php echo urlencode( base64_encode ( $pie ) ); ?>.'" type="text/css" />
 <![endif]--> 
 
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/<?php echo $this->template ?>/scripts/login.js"></script>
